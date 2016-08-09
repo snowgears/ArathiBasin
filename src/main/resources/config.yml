@@ -1,0 +1,14 @@
+# Thanks for downloading ArathiBasin! #
+#==============================#
+
+# If you want to use permissions with ArathiBasin, you must set this to true #
+usePermissions: false
+
+blueTeamName: "Alliance"
+redTeamName: "Horde"
+
+minTeamSize: 5
+maxTeamSize: 15
+
+scoreWarning: 1400
+scoreWin: 1600

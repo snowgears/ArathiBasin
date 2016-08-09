@@ -1,0 +1,16 @@
+name: ArathiBasin
+author: Tanner Embry (SnowGears)
+description: Domination mini-game based on Arathi Basin from World of Warcraft!
+version: 1.0
+main: com.snowgears.arathibasin.ArathiBasin
+commands:
+   arathi:
+      description: Different commands pertaining to plugin
+      usage: /<command>
+permissions:
+    arathi.join:
+        description: Allows player to join the arathi basin mini-game
+        default: op
+    arathi.operator:
+        description: Allows player use all operator actions associated with plugin
+        default: op
