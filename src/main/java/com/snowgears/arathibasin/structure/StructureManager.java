@@ -47,6 +47,36 @@ public class StructureManager {
         return null;
     }
 
+    public void startStructureTasks(){
+        for(Structure structure : structures.values()){
+            if(structure instanceof Base){
+                Base base = (Base)structure;
+                base.startScanTask();
+            }
+        }
+    }
+
+    public void stopStructureTasks(){
+        for(Structure structure : structures.values()){
+            if(structure instanceof Base){
+                Base base = (Base)structure;
+                base.stopScanTask();
+            }
+        }
+    }
+
+    public Structure getStructure(StructureModule module, Location location){
+        for(Structure structure : structures.values()){
+            if(structure.getWorld().getName().equals(location.getWorld().getName())){
+                for(Location loc : structure.getLocations(module)){
+                    if(loc.equals(location))
+                        return structure;
+                }
+            }
+        }
+        return null;
+    }
+
     public Structure getSelectedStructure(Player player){
         if(selectedStructures.containsKey(player.getUniqueId())){
             String structureName = selectedStructures.get(player.getUniqueId());
@@ -140,9 +170,9 @@ public class StructureManager {
                             String color = config.getString("structure.color");
                             try {
                                 DyeColor c = DyeColor.valueOf(color);
-                                structure.setColor(c);
+                                structure.setColor(c, null);
                             } catch (Exception e) {
-                                structure.setColor(DyeColor.WHITE);
+                                structure.setColor(DyeColor.WHITE, null);
                             }
 
                             for (StructureModule module : StructureModule.values()) {

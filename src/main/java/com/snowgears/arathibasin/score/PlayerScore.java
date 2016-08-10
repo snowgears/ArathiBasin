@@ -1,7 +1,7 @@
 package com.snowgears.arathibasin.score;
 
 import com.snowgears.arathibasin.ArathiBasin;
-import com.snowgears.arathibasin.BattleTeam;
+import com.snowgears.arathibasin.game.BattleTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -31,7 +31,7 @@ public class PlayerScore {
     public PlayerScore(Player player){
         this.playerUUID = player.getUniqueId();
 
-        BattleTeam team = ArathiBasin.getPlugin().getTeamManager().getCurrentTeam(player);
+        BattleTeam team = ArathiBasin.getPlugin().getArathiGame().getTeamManager().getCurrentTeam(player);
         setupScoreboard(team);
     }
 
@@ -90,13 +90,13 @@ public class PlayerScore {
         Score redScore = objective.getScore(ChatColor.RED +""+  ChatColor.BOLD + ArathiBasin.getPlugin().getRedTeamName());
         redScore.setScore(14);
 
-        Score redScoreNum = objective.getScore("    "+ChatColor.RED +""+  ChatColor.BOLD + ArathiBasin.getPlugin().getTeamManager().getRedTeam().getScore());
+        Score redScoreNum = objective.getScore("    "+ChatColor.RED +""+  ChatColor.BOLD + ArathiBasin.getPlugin().getArathiGame().getTeamManager().getRedTeam().getScore());
         redScoreNum.setScore(13);
 
         Score blueScore = objective.getScore(ChatColor.BLUE +""+ ChatColor.BOLD + ArathiBasin.getPlugin().getBlueTeamName());
         blueScore.setScore(12);
 
-        Score blueScoreNum = objective.getScore("    "+ChatColor.BLUE +""+ ChatColor.BOLD + ArathiBasin.getPlugin().getTeamManager().getBlueTeam().getScore());
+        Score blueScoreNum = objective.getScore("    "+ChatColor.BLUE +""+ ChatColor.BOLD + ArathiBasin.getPlugin().getArathiGame().getTeamManager().getBlueTeam().getScore());
         blueScoreNum.setScore(11);
 
         Score placeHolder = objective.getScore("");

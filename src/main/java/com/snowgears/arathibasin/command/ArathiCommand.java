@@ -28,13 +28,29 @@ public class ArathiCommand implements CommandExecutor {
             sender.sendMessage("/arathi join <team>");
             sender.sendMessage("/arathi quit");
             sender.sendMessage("/arathi fstart");
-
+        }
+        else if(args.length == 1){
             //TODO delete this
             if(sender instanceof Player){
                 Player player = (Player)sender;
-                Structure structure = plugin.getStructureManager().getSelectedStructure(player);
-                if(structure != null)
-                    structure.setColor(DyeColor.WHITE);
+                if(args[0].equalsIgnoreCase("red")) {
+                    plugin.getArathiGame().getTeamManager().removePlayer(player);
+                    plugin.getArathiGame().getTeamManager().getRedTeam().add(player);
+                    player.sendMessage("You are now on the red team.");
+                }
+                else if(args[0].equalsIgnoreCase("blue")){
+                    plugin.getArathiGame().getTeamManager().removePlayer(player);
+                    plugin.getArathiGame().getTeamManager().getBlueTeam().add(player);
+                    player.sendMessage("You are now on the blue team.");
+                }
+                else if(args[0].equalsIgnoreCase("start")){
+                    plugin.getArathiGame().startGame();
+                    player.sendMessage("The arathi game has been started.");
+                }
+                else if(args[0].equalsIgnoreCase("end")){
+                    plugin.getArathiGame().endGame();
+                    player.sendMessage("The arathi game has been ended..");
+                }
             }
         }
         return true;

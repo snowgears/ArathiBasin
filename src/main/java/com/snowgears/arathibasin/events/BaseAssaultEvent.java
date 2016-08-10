@@ -9,16 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This is a custom event that is called whenever a base is captured by Players.
+ * This is a custom event that is called whenever a base is broken by an enemy Player.
  */
 
-public class BaseCaptureEvent extends Event{
+public class BaseAssaultEvent extends Event{
 
     private static final HandlerList handlers = new HandlerList();
     private Base base;
     private List<Player> players;
 
-    public BaseCaptureEvent(Base base, List<Player> players) {
+    public BaseAssaultEvent(Base base, List<Player> players) {
         this.base = base;
         this.players = players;
         if(players == null)

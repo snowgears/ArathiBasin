@@ -2,6 +2,7 @@ package com.snowgears.arathibasin;
 
 import com.snowgears.arathibasin.command.ArathiCommand;
 import com.snowgears.arathibasin.command.StructureCommand;
+import com.snowgears.arathibasin.game.ArathiGame;
 import com.snowgears.arathibasin.game.GameListener;
 import com.snowgears.arathibasin.score.PlayerScoreboardListener;
 import com.snowgears.arathibasin.structure.SetupStructureListener;
@@ -23,6 +24,7 @@ public class ArathiBasin extends JavaPlugin {
     private final GameListener gameListener = new GameListener(this);
     private final SetupStructureListener setupListener = new SetupStructureListener(this);
     private StructureManager structureManager;
+    private ArathiGame arathiGame = new ArathiGame();
 
     private boolean usePerms;
     private String blueTeamName;
@@ -78,6 +80,10 @@ public class ArathiBasin extends JavaPlugin {
 
     public StructureManager getStructureManager(){
         return structureManager;
+    }
+
+    public ArathiGame getArathiGame(){
+        return arathiGame;
     }
 
     public String getBlueTeamName(){

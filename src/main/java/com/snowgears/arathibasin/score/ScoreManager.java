@@ -15,6 +15,9 @@ public class ScoreManager {
         playerScores = new HashMap<>();
     }
 
+    //TODO make a scan task to count resources toward score as well
+    //method to startScoreTask() and endScoreTask() that will be called when ArathiGame starts and ends
+
     public PlayerScore getPlayerScore(Player player){
         if(playerScores.containsKey(player.getUniqueId()))
             return playerScores.get(player.getUniqueId());

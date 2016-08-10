@@ -1,6 +1,6 @@
 package com.snowgears.arathibasin.game;
 
-import com.snowgears.arathibasin.TeamManager;
+import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.score.ScoreManager;
 
 /**
@@ -17,12 +17,17 @@ public class ArathiGame {
     }
 
     public boolean startGame(){
-        //TODO
+        ArathiBasin.getPlugin().getStructureManager().startStructureTasks();
         return true;
     }
 
     public boolean endGame(){
+        ArathiBasin.getPlugin().getStructureManager().stopStructureTasks();
         //TODO
         return true;
+    }
+
+    public TeamManager getTeamManager(){
+        return teamManager;
     }
 }

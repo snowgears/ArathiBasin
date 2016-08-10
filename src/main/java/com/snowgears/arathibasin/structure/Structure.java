@@ -40,12 +40,14 @@ public abstract class Structure {
         return color;
     }
 
-    public void setColor(DyeColor color){
+    protected void setColor(DyeColor color, List<Player> players){
         this.color = color;
     }
 
     public ArrayList<Location> getLocations(StructureModule module){
-        return locations.get(module);
+        if(locations.containsKey(module))
+            return locations.get(module);
+        return null;
     }
 
     public List<Player> scan(StructureModule module, int distance){
