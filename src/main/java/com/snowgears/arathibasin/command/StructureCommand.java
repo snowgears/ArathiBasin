@@ -172,6 +172,11 @@ public class StructureCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.RED+"/structure define <base/spawn> <name>");
                     return true;
                 }
+                if(plugin.getStructureManager().getStructure(structure.getName()) != null){
+                    player.sendMessage(ChatColor.RED + "There is already a structure with that name.");
+                    return true;
+                }
+
                 plugin.getStructureManager().addStructure(structure);
                 System.out.println("[ArathiBasin] Name of created structure: "+structure.getName());
                 plugin.getStructureManager().selectStructure(player, structure.getName());

@@ -6,12 +6,14 @@ import com.snowgears.arathibasin.game.GameListener;
 import com.snowgears.arathibasin.score.PlayerScoreboardListener;
 import com.snowgears.arathibasin.structure.SetupStructureListener;
 import com.snowgears.arathibasin.structure.StructureManager;
+import com.snowgears.arathibasin.util.FileUtils;
 import com.snowgears.arathibasin.util.UnzipUtility;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 public class ArathiBasin extends JavaPlugin {
 
@@ -47,7 +49,7 @@ public class ArathiBasin extends JavaPlugin {
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             configFile.getParentFile().mkdirs();
-            copy(getResource("config.yml"), configFile);
+            FileUtils.copy(getResource("config.yml"), configFile);
         }
         config = YamlConfiguration.loadConfiguration(configFile);
 
@@ -60,13 +62,14 @@ public class ArathiBasin extends JavaPlugin {
         scoreWarning = config.getInt("scoreWarning");
         scoreWin = config.getInt("scoreWin");
 
-        structureManager = new StructureManager(this);
-
         generateWorld();
+
+        structureManager = new StructureManager(this);
     }
 
     public void onDisable() {
         plugin = null;
+        this.structureManager.saveStructures();
     }
 
     public boolean usePerms(){
@@ -93,21 +96,6 @@ public class ArathiBasin extends JavaPlugin {
         return maxTeamSize;
     }
 
-    public void copy(InputStream in, File file) {
-        try {
-            OutputStream out = new FileOutputStream(file);
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            out.close();
-            in.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void generateWorld(){
 
         File world_arathi = new File(plugin.getServer().getWorldContainer(), "world_arathi");
@@ -119,7 +107,7 @@ public class ArathiBasin extends JavaPlugin {
             world_arathi.mkdir();
 
         File dest = new File(world_arathi, "world_arathi.zip");
-        this.copy(getResource("world_arathi.zip"), dest); //copy zip file into world folder
+        FileUtils.copy(getResource("world_arathi.zip"), dest); //copy zip file into world folder
 
         UnzipUtility uu = new UnzipUtility();
         //try to unzip the file into the battleground world folder
