@@ -1,4 +1,4 @@
-package com.snowgears.arathibasin.scoreboard;
+package com.snowgears.arathibasin.score;
 
 import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.BattleTeam;
@@ -13,7 +13,7 @@ import java.util.UUID;
  * Basic object used to store different scores and statistics of a single {@link Player}.
  *
  * <P>Various values to indicate current state of scoring.
- * <P>Each PlayerScore object contains a scoreboard for the associated Player.
+ * <P>Each PlayerScore object contains a score for the associated Player.
  */
 
 public class PlayerScore {

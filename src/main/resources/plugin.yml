@@ -7,6 +7,9 @@ commands:
    arathi:
       description: Different commands pertaining to plugin
       usage: /<command>
+   structure:
+      description: This command is used for setting up a world to be used for the Arathi game.
+      usage: /<command>
 permissions:
     arathi.join:
         description: Allows player to join the arathi basin mini-game

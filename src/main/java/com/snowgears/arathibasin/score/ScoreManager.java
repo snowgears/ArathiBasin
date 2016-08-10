@@ -1,4 +1,4 @@
-package com.snowgears.arathibasin.scoreboard;
+package com.snowgears.arathibasin.score;
 
 import org.bukkit.entity.Player;
 

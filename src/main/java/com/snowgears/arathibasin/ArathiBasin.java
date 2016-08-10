@@ -1,14 +1,14 @@
 package com.snowgears.arathibasin;
 
-import com.snowgears.arathibasin.scoreboard.PlayerScore;
-import com.snowgears.arathibasin.scoreboard.PlayerScoreboardListener;
-import com.snowgears.arathibasin.scoreboard.ScoreManager;
+import com.snowgears.arathibasin.command.ArathiCommand;
+import com.snowgears.arathibasin.command.StructureCommand;
+import com.snowgears.arathibasin.game.GameListener;
+import com.snowgears.arathibasin.score.PlayerScoreboardListener;
+import com.snowgears.arathibasin.structure.SetupStructureListener;
+import com.snowgears.arathibasin.structure.StructureManager;
 import com.snowgears.arathibasin.util.UnzipUtility;
 import org.bukkit.WorldCreator;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -17,9 +17,10 @@ public class ArathiBasin extends JavaPlugin {
 
     private static ArathiBasin plugin;
     private YamlConfiguration config;
-    private final PlayerScoreboardListener controlListener = new PlayerScoreboardListener(this);
-    private TeamManager teamManager;
-    private ScoreManager scoreManager;
+    private final PlayerScoreboardListener scoreListener = new PlayerScoreboardListener(this);
+    private final GameListener gameListener = new GameListener(this);
+    private final SetupStructureListener setupListener = new SetupStructureListener(this);
+    private StructureManager structureManager;
 
     private boolean usePerms;
     private String blueTeamName;
@@ -35,7 +36,13 @@ public class ArathiBasin extends JavaPlugin {
 
     public void onEnable() {
         plugin = this;
-        getServer().getPluginManager().registerEvents(controlListener, this);
+        getServer().getPluginManager().registerEvents(scoreListener, this);
+        getServer().getPluginManager().registerEvents(gameListener, this);
+        getServer().getPluginManager().registerEvents(setupListener, this);
+
+
+        this.getCommand("arathi").setExecutor(new ArathiCommand(this));
+        this.getCommand("structure").setExecutor(new StructureCommand(this));
 
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
@@ -53,9 +60,7 @@ public class ArathiBasin extends JavaPlugin {
         scoreWarning = config.getInt("scoreWarning");
         scoreWin = config.getInt("scoreWin");
 
-        teamManager = new TeamManager();
-        scoreManager = new ScoreManager();
-
+        structureManager = new StructureManager(this);
 
         generateWorld();
     }
@@ -64,38 +69,12 @@ public class ArathiBasin extends JavaPlugin {
         plugin = null;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(cmd.getName().equalsIgnoreCase("arathi") && args.length == 0){
-            if(sender instanceof Player){
-                Player player = (Player)sender;
-                teamManager.addPlayer(player);
-                PlayerScore score = new PlayerScore(player);
-                if(player.getWorld().getName().equals("world_arathi"))
-                    player.teleport(getServer().getWorld("world").getSpawnLocation());
-                else
-                    player.teleport(getServer().getWorld("world_arathi").getSpawnLocation());
-            }
-        }
-        else if(cmd.getName().equalsIgnoreCase("arathi") && args.length == 1){
-            if(sender instanceof Player){
-                Player player = (Player)sender;
-                player.getWorld().strikeLightningEffect(player.getLocation());
-            }
-        }
-        return true;
-    }
-
     public boolean usePerms(){
         return usePerms;
     }
 
-    public TeamManager getTeamManager(){
-        return teamManager;
-    }
-
-    public ScoreManager getScoreManager(){
-        return scoreManager;
+    public StructureManager getStructureManager(){
+        return structureManager;
     }
 
     public String getBlueTeamName(){
@@ -132,20 +111,20 @@ public class ArathiBasin extends JavaPlugin {
     private void generateWorld(){
 
         File world_arathi = new File(plugin.getServer().getWorldContainer(), "world_arathi");
-        System.out.println(world_arathi.getAbsolutePath());
         if(world_arathi.exists()) {
             getServer().createWorld(new WorldCreator("world_arathi"));
             return;
         }
+        else
+            world_arathi.mkdir();
 
-        File dest = new File(world_arathi.getAbsolutePath()+"/world_arathi.zip");
-        System.out.println(dest.getAbsolutePath());
+        File dest = new File(world_arathi, "world_arathi.zip");
         this.copy(getResource("world_arathi.zip"), dest); //copy zip file into world folder
 
         UnzipUtility uu = new UnzipUtility();
         //try to unzip the file into the battleground world folder
         try {
-            uu.unzip(dest.getAbsolutePath(), plugin.getServer().getWorldContainer().getAbsolutePath());
+            uu.unzip(dest.getAbsolutePath(), world_arathi.getAbsolutePath());
             dest.delete();
         } catch (IOException e) {
             e.printStackTrace();
