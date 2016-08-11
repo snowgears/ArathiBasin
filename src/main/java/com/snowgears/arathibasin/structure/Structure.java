@@ -50,7 +50,7 @@ public abstract class Structure {
         return null;
     }
 
-    public List<Player> scan(StructureModule module, int distance){
+    protected List<Player> scan(StructureModule module, int distance){
         List<Player> players = new ArrayList<>();
         if(locations.containsKey(module)){
             ArrayList<Location> locs = locations.get(module);

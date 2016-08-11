@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Base extends Structure{
 
@@ -20,20 +21,6 @@ public class Base extends Structure{
     private int scanTaskID;
     private int delayedCaptureTaskID;
     private boolean isContested;
-
-    //color is current state of Base
-    //RED - red team owns the base and it is generating resources for them
-    //BLUE - blue team owns the base and it is generating resources for them
-    //PINK - red team has captured the base but is in the one minute waiting period
-    //LIGHT_BLUE - blue team has captured the base but it is in the one minute waiting period
-    //WHITE - neutral
-
-    //TRANSITIONS
-    //-------------------------------------------
-    //WHITE -> PINK - assault (RED) (instant)
-    //PINK -> WHITE - assault (BLUE) (instant)
-    //PINK -> RED - capture (RED) (after 1 minute waiting period)
-    //PINK -> BLUE - defend (BLUE) (instant)
 
     public Base(String name, String world){
         super(name, world);
@@ -55,7 +42,7 @@ public class Base extends Structure{
     }
 
     //this method scans for all players near the BASE_FLAG and calls a color transition based on the team distribution
-    public void scanTask(){
+    private void scanTask(){
         List<Player> playersNearFlag = this.scan(StructureModule.BASE_FLAG, 5);
 
         List<Player> redTeam = new ArrayList<>();
@@ -118,14 +105,7 @@ public class Base extends Structure{
         }
     }
 
-    //TODO think of some way to make this more efficient
-    //so the base doesn't have to scan all floor blocks every 2 seconds even when uncontested
-    //variable like isContested
-
     private void colorTransition(List<Player> players, DyeColor captureColor){
-        //TODO this will call custom BaseEvents (if color transition is complete)
-        //TODO implement this either instantly or with 1 minute delayed task to check if color is the same
-        //TODO make sure colorTransition cancels all delayed tasks as well, in case base is switched back and forth between 1 minute
 
         //don't scan all floor blocks when base is uncontested
         if(isContested == false && captureColor == this.color)
@@ -134,35 +114,62 @@ public class Base extends Structure{
         boolean transitionComplete = false;
         ArrayList<Location> floor = this.getLocations(StructureModule.BASE_GLASS_FLOOR);
         if(floor != null){
-            ArrayList<Block> newFloor = new ArrayList<>();
-            for(Location location : floor){
-                //grab any blocks that are not the current color of the base
-                Block block = location.getBlock();
-                if(block.getData() != color.getData())
-                    newFloor.add(block);
+            ArrayList<Block> floorToChange = new ArrayList<>();
+            if(color == DyeColor.WHITE && (captureColor == DyeColor.PINK || captureColor == DyeColor.LIGHT_BLUE)) {
+                //ensure that when red team and blue team are competing for a WHITE base, it regresses to WHITE
+                for (Location location : floor) {
+                    //grab any blocks that are not the capturing color of the base
+                    Block block = location.getBlock();
+                    if (block.getData() != captureColor.getData() && block.getData() != DyeColor.WHITE.getData())
+                        floorToChange.add(block);
+                }
+                if(!floorToChange.isEmpty())
+                    captureColor = DyeColor.WHITE;
+                else{
+                    //continue as normal
+                    for (Location location : floor) {
+                        //grab any blocks that are not the capturing color of the base
+                        Block block = location.getBlock();
+                        if (block.getData() != captureColor.getData())
+                            floorToChange.add(block);
+                    }
+                }
+            }
+            else{
+                for (Location location : floor) {
+                    //grab any blocks that are not the capturing color of the base
+                    Block block = location.getBlock();
+                    if (block.getData() != captureColor.getData())
+                        floorToChange.add(block);
+                }
             }
 
-            if(newFloor.isEmpty()){
+            //floor is totally full with new color
+            if(floorToChange.isEmpty()) {
+                transitionComplete = true;
                 isContested = false;
             }
             else{
                 isContested = true;
-
-                if(floor.size() == newFloor.size())
+                ArrayList<Integer> randomIndex = new ArrayList<>();
+                while(randomIndex.size() < 5) {
+                    int i = ThreadLocalRandom.current().nextInt(0, floorToChange.size());
+                    if(!randomIndex.contains(i))
+                        randomIndex.add(i);
+                }
+                for(int i : randomIndex) {
+                    setBlock(floorToChange.get(i), Material.STAINED_GLASS, captureColor);
+                }
+                if(floorToChange.size() == 5) { //these 5 were just filled in above
                     transitionComplete = true;
+                    isContested = false;
+                }
             }
+        }
 
-            if(transitionComplete){
-                if((this.color == DyeColor.RED && (captureColor == DyeColor.RED || captureColor == DyeColor.PINK)) ||
-                   (this.color == DyeColor.BLUE && (captureColor == DyeColor.BLUE || captureColor == DyeColor.LIGHT_BLUE))){
-                    //only cancel if color is not variation of own team (RED = RED/PINK)
-                    //cancel delayed capture task (if any), as base has changed
-                    Bukkit.getScheduler().cancelTask(delayedCaptureTaskID);
-                }
-
-                if(this.color != captureColor) {
-                    this.setColor(captureColor, players);
-                }
+        if(transitionComplete){
+            if(this.color != captureColor) {
+                this.setColor(captureColor, players);
             }
         }
     }
@@ -171,6 +178,10 @@ public class Base extends Structure{
     protected void setColor(DyeColor color, List<Player> players){
         this.previousColor = this.color;
         this.color = color;
+
+        if(this.color != this.previousColor) {
+            Bukkit.getScheduler().cancelTask(delayedCaptureTaskID);
+        }
 
         for(Map.Entry<StructureModule, ArrayList<Location>> entry : locations.entrySet()){
             Iterator<Location> iterator = entry.getValue().iterator();
@@ -192,25 +203,39 @@ public class Base extends Structure{
         }
 
         //set a delayed task for the transition of the base from secondary color to primary color
-        setupDelayedCaptureTask(players);
+        if(color == DyeColor.PINK || color == DyeColor.LIGHT_BLUE) {
+            setupDelayedCaptureTask(players);
+            if(color != previousColor){
+                if(color == DyeColor.PINK) {
+                    BaseAssaultEvent event = new BaseAssaultEvent(this, DyeColor.RED, players);
+                    Bukkit.getServer().getPluginManager().callEvent(event);
+                }
+                else{
+                    BaseAssaultEvent event = new BaseAssaultEvent(this, DyeColor.BLUE, players);
+                    Bukkit.getServer().getPluginManager().callEvent(event);
+                }
+            }
+        }
 
-        if((color == DyeColor.LIGHT_BLUE || color == DyeColor.PINK) && previousColor != color) {
-            BaseAssaultEvent event = new BaseAssaultEvent(this, players);
+        if(color == DyeColor.RED && previousColor == DyeColor.LIGHT_BLUE){
+            BaseDefendEvent event = new BaseDefendEvent(this, DyeColor.RED, players);
             Bukkit.getServer().getPluginManager().callEvent(event);
         }
-        else if((color == DyeColor.RED && previousColor == DyeColor.LIGHT_BLUE) ||
-                (color == DyeColor.BLUE && previousColor == DyeColor.PINK)){
-            BaseDefendEvent event = new BaseDefendEvent(this, players);
+        else if(color == DyeColor.BLUE && previousColor == DyeColor.PINK){
+            BaseDefendEvent event = new BaseDefendEvent(this, DyeColor.BLUE, players);
             Bukkit.getServer().getPluginManager().callEvent(event);
         }
-        else if((color == DyeColor.RED || color == DyeColor.BLUE) && previousColor != color) {
-            BaseCaptureEvent event = new BaseCaptureEvent(this, players);
+        else if(color == DyeColor.RED && previousColor != color) {
+            BaseCaptureEvent event = new BaseCaptureEvent(this, DyeColor.RED, players);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+        }
+        else if(color == DyeColor.BLUE && previousColor != color) {
+            BaseCaptureEvent event = new BaseCaptureEvent(this, DyeColor.BLUE, players);
             Bukkit.getServer().getPluginManager().callEvent(event);
         }
     }
 
     private void setupDelayedCaptureTask(final List<Player> players){
-
         delayedCaptureTaskID = Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
             @Override
             public void run() {
@@ -237,6 +262,25 @@ public class Base extends Structure{
                 break;
             case WHITE:
                 location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.WOOL.getId());
+                break;
+        }
+    }
+
+    private void setBlock(Block block, Material type, DyeColor color){
+        if(type == Material.STAINED_GLASS)
+            block.setTypeIdAndData(Material.STAINED_GLASS.getId(), color.getData(), true);
+        else
+            block.setTypeIdAndData(Material.WOOL.getId(), color.getWoolData(), true);
+
+        switch(color){
+            case RED:
+                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
+                break;
+            case BLUE:
+                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.LAPIS_BLOCK.getId());
+                break;
+            case WHITE:
+                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.WOOL.getId());
                 break;
         }
     }

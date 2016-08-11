@@ -137,6 +137,7 @@ public class StructureCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.GRAY + "To add blocks, right click them with a BLAZE_ROD.");
                 player.sendMessage(ChatColor.GRAY + "To remove blocks, left click them with a BLAZE_ROD.");
             }
+            //TODO delete this
             else if(args[0].equalsIgnoreCase("setcolor")){
 
                 Structure structure = plugin.getStructureManager().getSelectedStructure(player);
@@ -152,7 +153,7 @@ public class StructureCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.RED + "Unable to resolve color: "+args[1]);
                     return true;
                 }
-                structure.setColor(color);
+                //structure.setColor(color, null);
                 plugin.getStructureManager().addStructure(structure);
                 player.sendMessage(ChatColor.GRAY+"The color of the selected structure has been set to "+color.toString());
             }

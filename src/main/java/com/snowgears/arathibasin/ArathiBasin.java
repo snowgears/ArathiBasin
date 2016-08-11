@@ -24,7 +24,7 @@ public class ArathiBasin extends JavaPlugin {
     private final GameListener gameListener = new GameListener(this);
     private final SetupStructureListener setupListener = new SetupStructureListener(this);
     private StructureManager structureManager;
-    private ArathiGame arathiGame = new ArathiGame();
+    private ArathiGame arathiGame;
 
     private boolean usePerms;
     private String blueTeamName;
@@ -67,6 +67,7 @@ public class ArathiBasin extends JavaPlugin {
         generateWorld();
 
         structureManager = new StructureManager(this);
+        arathiGame = new ArathiGame();
     }
 
     public void onDisable() {

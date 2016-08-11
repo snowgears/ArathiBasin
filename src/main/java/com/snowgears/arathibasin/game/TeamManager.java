@@ -37,6 +37,12 @@ public class TeamManager {
         return null;
     }
 
+    public BattleTeam getTeam(DyeColor color){
+        if(color == DyeColor.RED)
+            return redTeam;
+        return blueTeam;
+    }
+
     public BattleTeam getRedTeam(){
         return redTeam;
     }

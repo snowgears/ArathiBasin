@@ -4,6 +4,7 @@ import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.util.FileUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -53,6 +54,10 @@ public class StructureManager {
                 Base base = (Base)structure;
                 base.startScanTask();
             }
+            else{
+                Spawn spawn = (Spawn)structure;
+                spawn.removeGates();
+            }
         }
     }
 
@@ -61,6 +66,10 @@ public class StructureManager {
             if(structure instanceof Base){
                 Base base = (Base)structure;
                 base.stopScanTask();
+            }
+            else{
+                Spawn spawn = (Spawn)structure;
+                spawn.resetGates();
             }
         }
     }
@@ -102,6 +111,14 @@ public class StructureManager {
     public void deselectStructure(Player player){
         if(selectedStructures.containsKey(player.getUniqueId())){
             selectedStructures.remove(player.getUniqueId());
+        }
+    }
+
+    public void resetStructures(String world){
+        for(Structure structure : structures.values()){
+            if(structure.getWorld().getName().equals(world)){
+                structure.setColor(DyeColor.WHITE, null);
+            }
         }
     }
 

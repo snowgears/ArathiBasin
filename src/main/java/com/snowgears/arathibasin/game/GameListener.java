@@ -6,6 +6,7 @@ import com.snowgears.arathibasin.events.BaseCaptureEvent;
 import com.snowgears.arathibasin.events.BaseDefendEvent;
 import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.structure.StructureModule;
+import com.snowgears.arathibasin.util.TitleMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Listener class for all custom events used in the Arathi Basin game.
@@ -34,20 +36,59 @@ public class GameListener implements Listener{
 
     @EventHandler
     public void onBaseAssault(BaseAssaultEvent event){
-        plugin.getServer().broadcastMessage("Base Assault Event.");
-        plugin.getServer().broadcastMessage("Players: "+event.getPlayers().toString());
+        BattleTeam team = plugin.getArathiGame().getTeamManager().getTeam(event.getTeamColor());
+        String message = event.getNotificationColor() + event.getBase().getName() + " assaulted.";
+        String subtitle = ChatColor.GRAY+"+1 Assault Point(s)";
+        for(Player player : event.getBase().getWorld().getPlayers()) {
+            if(containsPlayer(player, event.getPlayers())) {
+                TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
+                //TODO increment assult score for player
+            }
+            else{
+                TitleMessage.sendTitle(player, 20, 40, 20, message, null);
+            }
+        }
     }
 
     @EventHandler
     public void onBaseCapture(BaseCaptureEvent event){
-        plugin.getServer().broadcastMessage("Base Capture Event.");
-        plugin.getServer().broadcastMessage("Players: "+event.getPlayers().toString());
+        BattleTeam team = plugin.getArathiGame().getTeamManager().getTeam(event.getTeamColor());
+        String message = event.getNotificationColor() + event.getBase().getName() + " captured.";
+        String subtitle = ChatColor.GRAY+"+1 Capture Point(s)";
+        for(Player player : event.getBase().getWorld().getPlayers()) {
+            if(containsPlayer(player, event.getPlayers())) {
+                TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
+                //TODO increment capture score for player
+            }
+            else{
+                TitleMessage.sendTitle(player, 20, 40, 20, message, null);
+            }
+        }
+
     }
 
     @EventHandler
     public void onBaseDefend(BaseDefendEvent event){
-        plugin.getServer().broadcastMessage("Base Defend Event.");
-        plugin.getServer().broadcastMessage("Players: "+event.getPlayers().toString());
+        BattleTeam team = plugin.getArathiGame().getTeamManager().getTeam(event.getTeamColor());
+        String message = event.getNotificationColor() + event.getBase().getName() + " defended.";
+        String subtitle = ChatColor.GRAY+"+1 Defend Point(s)";
+        for(Player player : event.getBase().getWorld().getPlayers()) {
+            if(containsPlayer(player, event.getPlayers())) {
+                TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
+                //TODO increment defend score for player
+            }
+            else{
+                TitleMessage.sendTitle(player, 20, 40, 20, message, null);
+            }
+        }
+    }
+
+    private boolean containsPlayer(Player player, List<Player> players){
+        for(Player p : players){
+            if(p.getUniqueId().equals(player.getUniqueId()))
+                return true;
+        }
+        return false;
     }
 
     //allow players to teleport to their own colored bases by clicking the wall map
