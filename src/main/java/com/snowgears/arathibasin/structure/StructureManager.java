@@ -4,7 +4,6 @@ import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.util.FileUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -145,7 +144,10 @@ public class StructureManager {
                     config.set("structure.type", "base");
                 else
                     config.set("structure.type", "spawn");
-                config.set("structure.color", structure.getColor().toString());
+                if(structure instanceof Base)
+                    config.set("structure.color", DyeColor.WHITE.toString());
+                else
+                    config.set("structure.color", structure.getColor().toString());
                 for(StructureModule module : StructureModule.values()) {
                     ArrayList<Location> locs = structure.getLocations(module);
                    if(locs != null && !locs.isEmpty()){
@@ -175,7 +177,7 @@ public class StructureManager {
                         if (structureFile.getName().endsWith(".yml")) {
                             YamlConfiguration config = YamlConfiguration.loadConfiguration(structureFile);
 
-                            String name = structureFile.getName().substring(0, structureFile.getName().length()-4); //remove .yml
+                            String name = structureFile.getName().substring(0, structureFile.getName().length() - 4); //remove .yml
                             String world = worldDirectory.getName();
                             Structure structure = null;
                             String type = config.getString("structure.type");
@@ -185,12 +187,14 @@ public class StructureManager {
                                 structure = new Spawn(name, world);
                             }
                             String color = config.getString("structure.color");
+                            DyeColor c = null;
                             try {
-                                DyeColor c = DyeColor.valueOf(color);
-                                structure.setColor(c, null);
+                                c = DyeColor.valueOf(color);
                             } catch (Exception e) {
-                                structure.setColor(DyeColor.WHITE, null);
+                                c = DyeColor.WHITE;
                             }
+                            System.out.println("Loading: "+structureFile.getName());
+                            structure.setColor(c, null);
 
                             for (StructureModule module : StructureModule.values()) {
                                 List<String> stringLocs = config.getStringList("structure.locations." + module.toString());

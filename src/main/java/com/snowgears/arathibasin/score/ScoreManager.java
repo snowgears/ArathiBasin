@@ -14,8 +14,13 @@ import java.util.UUID;
 
 public class ScoreManager {
 
+    private ArathiBasin plugin;
+
     private int redScore;
     private int blueScore;
+
+    private boolean redWarning;
+    private boolean blueWarning;
 
     private ScoreTick redTick;
     private ScoreTick blueTick;
@@ -25,10 +30,11 @@ public class ScoreManager {
     private ScoreTick scoreTick;
     private int scoreTaskID;
 
-    public ScoreManager(){
+    public ScoreManager(ArathiBasin instance){
         playerScores = new HashMap<>();
         redTick = new ScoreTick(DyeColor.RED);
         blueTick = new ScoreTick(DyeColor.BLUE);
+        plugin = instance;
     }
 
     public void startScoreTask(){
@@ -64,10 +70,52 @@ public class ScoreManager {
         int bluepoints = blueTick.getPoints(blueBases);
         this.blueScore += bluepoints;
 
-        //TODO delete this
-        String scoreTitle = ChatColor.RED+""+redScore + "   "+ChatColor.BLUE+blueScore;
-        if(redpoints > 0 || bluepoints > 0){
-            TitleMessage.sendTitle(Bukkit.getPlayer("SnowGears"), 20, 40, 20, scoreTitle, null);
+        if (!redWarning && redScore >= plugin.getScoreWarning()) {
+            redWarning = true;
+            String message = ChatColor.RED + ""+ plugin.getScoreWarning() + " - " +plugin.getRedTeamName();
+            String warning = ChatColor.GRAY + "Score Warning";
+            for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
+            }
+        }
+        if (!blueWarning && blueScore >= plugin.getScoreWarning()) {
+            blueWarning = true;
+            String message = ChatColor.BLUE + ""+ plugin.getScoreWarning() + " - " +plugin.getBlueTeamName();
+            String warning = ChatColor.GRAY + "Score Warning";
+            for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
+            }
+        }
+
+        boolean over = false;
+        if(this.redScore >= plugin.getScoreWin()) {
+            this.redScore = plugin.getScoreWin();
+            over = true;
+            String message = ChatColor.RED + plugin.getRedTeamName() + " Wins!";
+            String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
+            for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                TitleMessage.sendTitle(player, 20, 40, 20, message, finalScore);
+            }
+        }
+        if(this.blueScore >= plugin.getScoreWin()) {
+            this.blueScore = plugin.getScoreWin();
+            over = true;
+            String message = ChatColor.BLUE + plugin.getBlueTeamName() + " Wins!";
+            String finalScore = ChatColor.BLUE + ""+ this.blueScore + "  " + ChatColor.RED + this.redScore;
+            for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                TitleMessage.sendTitle(player, 20, 40, 20, message, finalScore);
+            }
+        }
+
+        if(redpoints > 0 || bluepoints > 0) {
+            for (PlayerScore score : playerScores.values()) {
+                score.update();
+            }
+        }
+
+        if(over){
+            //TODO make more of an ending to the game than just stopping it abruptly
+            ArathiBasin.getPlugin().getArathiGame().endGame();
         }
     }
 

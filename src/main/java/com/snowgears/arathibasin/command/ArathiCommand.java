@@ -1,8 +1,6 @@
 package com.snowgears.arathibasin.command;
 
 import com.snowgears.arathibasin.ArathiBasin;
-import com.snowgears.arathibasin.structure.Structure;
-import org.bukkit.DyeColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -50,6 +48,10 @@ public class ArathiCommand implements CommandExecutor {
                 else if(args[0].equalsIgnoreCase("end")){
                     plugin.getArathiGame().endGame();
                     player.sendMessage("The arathi game has been ended..");
+                }
+                else if(args[0].equalsIgnoreCase("join")){
+                    plugin.getArathiGame().addPlayer(player);
+                    player.sendMessage("You have been added to the game on the "+plugin.getArathiGame().getTeamManager().getCurrentTeam(player).toString()+" team.");
                 }
             }
         }

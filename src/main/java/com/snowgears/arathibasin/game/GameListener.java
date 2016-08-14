@@ -4,8 +4,10 @@ import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.events.BaseAssaultEvent;
 import com.snowgears.arathibasin.events.BaseCaptureEvent;
 import com.snowgears.arathibasin.events.BaseDefendEvent;
+import com.snowgears.arathibasin.score.PlayerScore;
 import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.structure.StructureModule;
+import com.snowgears.arathibasin.util.PlayerData;
 import com.snowgears.arathibasin.util.TitleMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -15,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.ArrayList;
@@ -42,7 +45,12 @@ public class GameListener implements Listener{
         for(Player player : event.getBase().getWorld().getPlayers()) {
             if(containsPlayer(player, event.getPlayers())) {
                 TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
-                //TODO increment assult score for player
+                //increment assault score of player
+                PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(player);
+                if(score == null)
+                    score = new PlayerScore(player);
+                score.addAssaults(1);
+                plugin.getArathiGame().getScoreManager().savePlayerScore(score);
             }
             else{
                 TitleMessage.sendTitle(player, 20, 40, 20, message, null);
@@ -58,7 +66,12 @@ public class GameListener implements Listener{
         for(Player player : event.getBase().getWorld().getPlayers()) {
             if(containsPlayer(player, event.getPlayers())) {
                 TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
-                //TODO increment capture score for player
+                //increment capture score of player
+                PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(player);
+                if(score == null)
+                    score = new PlayerScore(player);
+                score.addCaptures(1);
+                plugin.getArathiGame().getScoreManager().savePlayerScore(score);
             }
             else{
                 TitleMessage.sendTitle(player, 20, 40, 20, message, null);
@@ -75,7 +88,12 @@ public class GameListener implements Listener{
         for(Player player : event.getBase().getWorld().getPlayers()) {
             if(containsPlayer(player, event.getPlayers())) {
                 TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
-                //TODO increment defend score for player
+                //increment defend score of player
+                PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(player);
+                if(score == null)
+                    score = new PlayerScore(player);
+                score.addDefends(1);
+                plugin.getArathiGame().getScoreManager().savePlayerScore(score);
             }
             else{
                 TitleMessage.sendTitle(player, 20, 40, 20, message, null);

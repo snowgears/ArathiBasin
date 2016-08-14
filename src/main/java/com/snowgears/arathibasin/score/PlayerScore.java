@@ -22,17 +22,24 @@ public class PlayerScore {
     private int kills;
     private int deaths;
     private int captures;
-    private int breaks;
+    private int assaults;
+    private int defends;
     private int points;
+    private boolean showFullScore;
 
     private Scoreboard scoreboard;
     private Team scoreboardTeam;
 
+    //TODO increment player score on each of the add methods (research this from WoW)
+
     public PlayerScore(Player player){
         this.playerUUID = player.getUniqueId();
+        showFullScore = true;
 
         BattleTeam team = ArathiBasin.getPlugin().getArathiGame().getTeamManager().getCurrentTeam(player);
-        setupScoreboard(team);
+        if(team != null) {
+            setupScoreboard(team);
+        }
     }
 
     public UUID getPlayerUUID(){
@@ -43,40 +50,69 @@ public class PlayerScore {
         return kills;
     }
 
-    public void setKills(int kills){
-        this.kills = kills;
+    public void addKills(int kills){
+        this.kills += kills;
+        if(showFullScore)
+            this.update();
     }
 
     public int getDeaths(){
         return deaths;
     }
 
-    public void setDeaths(int deaths){
-        this.deaths = deaths;
+    public void addDeaths(int deaths){
+        this.deaths += deaths;
+        if(showFullScore)
+            this.update();
     }
 
     public int getCaptures(){
         return captures;
     }
 
-    public void setCaptures(int captures){
-        this.captures = captures;
+    public void addCaptures(int captures){
+        this.captures += captures;
+        if(showFullScore)
+            this.update();
     }
 
-    public int getBreaks(){
-        return breaks;
+    public int getAssaults(){
+        return assaults;
     }
 
-    public void setBreaks(int breaks){
-        this.breaks = breaks;
+    public void addAssaults(int assaults){
+        this.assaults += assaults;
+        if(showFullScore)
+            this.update();
+    }
+
+    public int getDefends(){
+        return defends;
+    }
+
+    public void addDefends(int defends){
+        this.defends += defends;
+        if(showFullScore)
+            this.update();
     }
 
     public int getPoints(){
         return points;
     }
 
-    public void setPoints(int points){
-        this.points = points;
+    public void addPoints(int points){
+        this.points += points;
+        if(showFullScore)
+            this.update();
+    }
+
+    public boolean getShowFullScore(){
+        return showFullScore;
+    }
+
+    public void setShowFullScore(boolean showFullScore){
+        this.showFullScore = showFullScore;
+        this.update();
     }
 
     public void update(){
@@ -85,51 +121,89 @@ public class PlayerScore {
         if(player == null)
             return;
 
-        Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+        Objective buffer;
+        if(scoreboard.getObjective(DisplaySlot.SIDEBAR).getName().equals("score")){
+            buffer = scoreboard.getObjective("buffer");
+        }
+        else{
+            buffer = scoreboard.getObjective("score");
+        }
 
-        Score redScore = objective.getScore(ChatColor.RED +""+  ChatColor.BOLD + ArathiBasin.getPlugin().getRedTeamName());
-        redScore.setScore(14);
+        //unregister buffer objective
+        String name = buffer.getName();
+        buffer.unregister();
+        //register new buffer objective
+        buffer = scoreboard.registerNewObjective(name, "dummy");
+        buffer.setDisplayName(ChatColor.BOLD+"Score");
 
-        Score redScoreNum = objective.getScore("    "+ChatColor.RED +""+  ChatColor.BOLD + ArathiBasin.getPlugin().getArathiGame().getTeamManager().getRedTeam().getScore());
-        redScoreNum.setScore(13);
+        int redPoints = ArathiBasin.getPlugin().getArathiGame().getScoreManager().getRedScore();
+        int bluePoints = ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueScore();
+        //put all scores in new buffer objective
+        if(showFullScore) {
+            //make sure the higher score is shown above the other
+            int red = 14;
+            int redNum = 13;
+            int blue = 12;
+            int blueNum = 11;
+            if(redPoints < bluePoints){
+                red = 12;
+                redNum = 11;
+                blue = 14;
+                blueNum = 13;
+            }
+            Score redScore = buffer.getScore(ChatColor.RED + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getRedTeamName());
+            redScore.setScore(red);
 
-        Score blueScore = objective.getScore(ChatColor.BLUE +""+ ChatColor.BOLD + ArathiBasin.getPlugin().getBlueTeamName());
-        blueScore.setScore(12);
+            Score redScoreNum = buffer.getScore("    " + ChatColor.RED + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getArathiGame().getScoreManager().getRedScore());
+            redScoreNum.setScore(redNum);
 
-        Score blueScoreNum = objective.getScore("    "+ChatColor.BLUE +""+ ChatColor.BOLD + ArathiBasin.getPlugin().getArathiGame().getTeamManager().getBlueTeam().getScore());
-        blueScoreNum.setScore(11);
+            Score blueScore = buffer.getScore(ChatColor.BLUE + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getBlueTeamName());
+            blueScore.setScore(blue);
 
-        Score placeHolder = objective.getScore("");
-        placeHolder.setScore(10);
+            Score blueScoreNum = buffer.getScore("    " + ChatColor.BLUE + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueScore());
+            blueScoreNum.setScore(blueNum);
 
-        Score stats = objective.getScore(ChatColor.BOLD + "  Your Stats:");
-        stats.setScore(9);
+            Score points = buffer.getScore(ChatColor.GOLD + "Points:");
+            points.setScore(10);
 
-        Score points = objective.getScore(ChatColor.GOLD+"Points:");
-        points.setScore(8);
+            Score pointsNum = buffer.getScore("    " + ChatColor.GOLD + "" + this.points);
+            pointsNum.setScore(9);
 
-        Score pointsNum = objective.getScore("    "+ChatColor.GOLD+ ""+ this.points);
-        pointsNum.setScore(7);
+            Score assaults = buffer.getScore(ChatColor.RED+ "Assaults:");
+            assaults.setScore(8);
 
-        Score captures = objective.getScore(ChatColor.AQUA + "Captures:");
-        captures.setScore(6);
+            Score assaultsNum = buffer.getScore("    " + ChatColor.RED + "" + this.assaults);
+            assaultsNum.setScore(7);
 
-        Score capturesNum = objective.getScore("    "+ChatColor.AQUA + ""+ this.captures);
-        capturesNum.setScore(5);
+            Score captures = buffer.getScore(ChatColor.AQUA + "Captures:");
+            captures.setScore(6);
 
-        Score breaks = objective.getScore(ChatColor.DARK_RED + "Breaks:");
-        breaks.setScore(4);
+            Score capturesNum = buffer.getScore("    " + ChatColor.AQUA + "" + this.captures);
+            capturesNum.setScore(5);
 
-        Score breaksNum = objective.getScore("    "+ChatColor.DARK_RED + "" +this.breaks);
-        breaksNum.setScore(3);
+            Score defends = buffer.getScore(ChatColor.LIGHT_PURPLE + "Defends:");
+            defends.setScore(4);
 
-        Score kills = objective.getScore(ChatColor.GREEN+ "K/D");
-        kills.setScore(2);
+            Score defendsNum = buffer.getScore("    " + ChatColor.LIGHT_PURPLE + "" + this.defends);
+            defendsNum.setScore(3);
 
-        Score killsNum = objective.getScore("    "+ChatColor.GREEN + "" + this.kills + " / "+ this.deaths);
-        killsNum.setScore(1);
+            Score kills = buffer.getScore(ChatColor.GREEN + "K/D");
+            kills.setScore(2);
 
-        player.setScoreboard(scoreboard);
+            Score killsNum = buffer.getScore("    " + ChatColor.GREEN + "" + this.kills + " / " + this.deaths);
+            killsNum.setScore(1);
+        }
+        //only show partial score
+        else{
+            Score redScore = buffer.getScore(ChatColor.RED + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getRedTeamName());
+            redScore.setScore(ArathiBasin.getPlugin().getArathiGame().getScoreManager().getRedScore());
+
+            Score blueScore = buffer.getScore(ChatColor.BLUE + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getBlueTeamName());
+            blueScore.setScore(ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueScore());
+        }
+        //set the new buffer objective to active by assigning it to the display slot
+        //scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+        buffer.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
 
     private void setupScoreboard(BattleTeam team){
@@ -147,10 +221,17 @@ public class PlayerScore {
         scoreboardTeam.setCanSeeFriendlyInvisibles(true);
         scoreboardTeam.setAllowFriendlyFire(false);
 
-        Objective objective = scoreboard.registerNewObjective("main", "dummy");
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        Objective objective = scoreboard.registerNewObjective("score", "dummy");
         objective.setDisplayName(ChatColor.BOLD+"Score");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        Objective bufferObjective = scoreboard.registerNewObjective("buffer", "dummy");
+        bufferObjective.setDisplayName(ChatColor.BOLD+"Score");
+
+        Score bufferScore = bufferObjective.getScore("buffer");
+        bufferScore.setScore(1);
 
         update();
+        player.setScoreboard(scoreboard);
     }
 }

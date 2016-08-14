@@ -25,6 +25,7 @@ public class BattleTeam {
     }
 
     public boolean add(Player player){
+        //TODO transport player to battleground in correct spawn
         if(size() >= maxSize() || players.containsKey(player.getUniqueId()))
             return false;
         players.put(player.getUniqueId(), true);
@@ -52,7 +53,9 @@ public class BattleTeam {
     }
 
     public int getScore(){
-        return score;
+        if(color == DyeColor.RED)
+            return ArathiBasin.getPlugin().getArathiGame().getScoreManager().getRedScore();
+        return ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueScore();
     }
 
     public void setScore(int score){

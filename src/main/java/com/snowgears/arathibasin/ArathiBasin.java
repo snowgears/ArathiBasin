@@ -103,6 +103,14 @@ public class ArathiBasin extends JavaPlugin {
         return maxTeamSize;
     }
 
+    public int getScoreWarning(){
+        return scoreWarning;
+    }
+
+    public int getScoreWin(){
+        return scoreWin;
+    }
+
     private void generateWorld(){
 
         File world_arathi = new File(plugin.getServer().getWorldContainer(), "world_arathi");
