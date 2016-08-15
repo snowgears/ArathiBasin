@@ -27,14 +27,13 @@ public class ScoreManager {
 
     private HashMap<UUID, PlayerScore> playerScores;
 
-    private ScoreTick scoreTick;
     private int scoreTaskID;
 
     public ScoreManager(ArathiBasin instance){
+        plugin = instance;
         playerScores = new HashMap<>();
         redTick = new ScoreTick(DyeColor.RED);
         blueTick = new ScoreTick(DyeColor.BLUE);
-        plugin = instance;
     }
 
     public void startScoreTask(){
@@ -94,7 +93,7 @@ public class ScoreManager {
             String message = ChatColor.RED + plugin.getRedTeamName() + " Wins!";
             String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
             for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, finalScore);
+                TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
             }
         }
         if(this.blueScore >= plugin.getScoreWin()) {
@@ -103,7 +102,7 @@ public class ScoreManager {
             String message = ChatColor.BLUE + plugin.getBlueTeamName() + " Wins!";
             String finalScore = ChatColor.BLUE + ""+ this.blueScore + "  " + ChatColor.RED + this.redScore;
             for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, finalScore);
+                TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
             }
         }
 

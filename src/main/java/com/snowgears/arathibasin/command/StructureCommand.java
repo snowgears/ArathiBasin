@@ -7,6 +7,7 @@ import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.structure.StructureModule;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -46,7 +47,8 @@ public class StructureCommand implements CommandExecutor {
             player.sendMessage(ChatColor.AQUA+"/structure module <module>"+ChatColor.GRAY+" - switches to the module of the selected structure");
             player.sendMessage(ChatColor.AQUA+"/structure deselect"+ChatColor.GRAY+" - deselects current structure");
             player.sendMessage(ChatColor.AQUA+"/structure remove"+ChatColor.GRAY+" - removes selected structure entirely");
-            player.sendMessage(ChatColor.AQUA+"/structure setcolor <color>"+ChatColor.GRAY+" - sets the color of the selected structure");
+            player.sendMessage(ChatColor.AQUA+"/structure color <color>"+ChatColor.GRAY+" - sets the color of the selected structure");
+            player.sendMessage(ChatColor.AQUA+"/structure direction"+ChatColor.GRAY+" - sets the direction of the selected structure to your position");
         }
         else if(args.length == 1){
             if(args[0].equalsIgnoreCase("list")){
@@ -85,6 +87,16 @@ public class StructureCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.GRAY + "You have removed the structure <"+structure.getName()+">");
                     plugin.getStructureManager().deselectStructure(player);
                     plugin.getStructureManager().removeStructure(structure);
+                }
+            }
+            else if(args[0].equalsIgnoreCase("direction")) {
+                Structure structure = plugin.getStructureManager().getSelectedStructure(player);
+                if (structure == null)
+                    player.sendMessage(ChatColor.RED + "You do not have a structure selected.");
+                else {
+                    BlockFace direction = yawToFace(player.getLocation().getYaw());
+                    structure.setDirection(direction);
+                    player.sendMessage(ChatColor.GRAY + "The direction of <"+structure.getName()+"> has been set to "+direction.toString()+".");
                 }
             }
         }
@@ -137,8 +149,7 @@ public class StructureCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.GRAY + "To add blocks, right click them with a BLAZE_ROD.");
                 player.sendMessage(ChatColor.GRAY + "To remove blocks, left click them with a BLAZE_ROD.");
             }
-            //TODO delete this
-            else if(args[0].equalsIgnoreCase("setcolor")){
+            else if(args[0].equalsIgnoreCase("color")){
 
                 Structure structure = plugin.getStructureManager().getSelectedStructure(player);
                 if (structure == null) {
@@ -153,7 +164,7 @@ public class StructureCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.RED + "Unable to resolve color: "+args[1]);
                     return true;
                 }
-                //structure.setColor(color, null);
+                structure.setColor(color, null);
                 plugin.getStructureManager().addStructure(structure);
                 player.sendMessage(ChatColor.GRAY+"The color of the selected structure has been set to "+color.toString());
             }
@@ -188,5 +199,29 @@ public class StructureCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    protected BlockFace yawToFace(float yaw) {
+        double rotation = (yaw - 90) % 360;
+        if(rotation < 0)
+            rotation += 360;
+
+        if(0 <= rotation && rotation < 22.5)
+            return BlockFace.WEST;
+        else if(22.5 <= rotation && rotation < 67.5)
+            return BlockFace.NORTH_WEST;
+        else if(67.5 <= rotation && rotation < 112.5)
+            return BlockFace.NORTH;
+        else if(112.5 <= rotation && rotation < 157.5)
+            return BlockFace.NORTH_EAST;
+        else if(157.5 <= rotation && rotation < 202.5)
+            return BlockFace.EAST;
+        else if(202.5 <= rotation && rotation < 247.5)
+            return BlockFace.SOUTH_EAST;
+        else if(247.5 <= rotation && rotation < 292.5)
+            return BlockFace.SOUTH;
+        else if(292.5 <= rotation && rotation < 337.5)
+            return BlockFace.SOUTH_WEST;
+        return BlockFace.WEST;
     }
 }

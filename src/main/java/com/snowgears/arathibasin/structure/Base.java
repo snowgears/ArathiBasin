@@ -175,7 +175,7 @@ public class Base extends Structure{
     }
 
     @Override
-    protected void setColor(DyeColor color, List<Player> players){
+    public void setColor(DyeColor color, List<Player> players){
         this.previousColor = this.color;
         this.color = color;
 
@@ -274,9 +274,11 @@ public class Base extends Structure{
 
         switch(color){
             case RED:
+            case PINK:
                 block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
                 break;
             case BLUE:
+            case LIGHT_BLUE:
                 block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.LAPIS_BLOCK.getId());
                 break;
             case WHITE:

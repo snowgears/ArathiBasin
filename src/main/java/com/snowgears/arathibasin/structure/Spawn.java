@@ -3,12 +3,12 @@ package com.snowgears.arathibasin.structure;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 
 public class Spawn extends Structure {
 
     public Spawn(String name, String world){
         super(name, world);
-
     }
 
     public void removeGates(){

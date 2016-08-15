@@ -5,23 +5,28 @@ import com.snowgears.arathibasin.events.BaseAssaultEvent;
 import com.snowgears.arathibasin.events.BaseCaptureEvent;
 import com.snowgears.arathibasin.events.BaseDefendEvent;
 import com.snowgears.arathibasin.score.PlayerScore;
+import com.snowgears.arathibasin.structure.Spawn;
 import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.structure.StructureModule;
 import com.snowgears.arathibasin.util.PlayerData;
 import com.snowgears.arathibasin.util.TitleMessage;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Listener class for all custom events used in the Arathi Basin game.
@@ -32,81 +37,46 @@ import java.util.List;
 public class GameListener implements Listener{
 
     private ArathiBasin plugin;
+    private int timeTaskID;
 
     public GameListener(ArathiBasin instance){
         plugin = instance;
+        startDaytimeTask();
     }
 
-    @EventHandler
-    public void onBaseAssault(BaseAssaultEvent event){
-        BattleTeam team = plugin.getArathiGame().getTeamManager().getTeam(event.getTeamColor());
-        String message = event.getNotificationColor() + event.getBase().getName() + " assaulted.";
-        String subtitle = ChatColor.GRAY+"+1 Assault Point(s)";
-        for(Player player : event.getBase().getWorld().getPlayers()) {
-            if(containsPlayer(player, event.getPlayers())) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
-                //increment assault score of player
-                PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(player);
-                if(score == null)
-                    score = new PlayerScore(player);
-                score.addAssaults(1);
-                plugin.getArathiGame().getScoreManager().savePlayerScore(score);
-            }
-            else{
-                TitleMessage.sendTitle(player, 20, 40, 20, message, null);
-            }
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onWeatherChange(WeatherChangeEvent event){
+        if(event.getWorld().getName().equals("world_arathi")){
+            if(event.toWeatherState())
+                event.setCancelled(true);
         }
     }
 
-    @EventHandler
-    public void onBaseCapture(BaseCaptureEvent event){
-        BattleTeam team = plugin.getArathiGame().getTeamManager().getTeam(event.getTeamColor());
-        String message = event.getNotificationColor() + event.getBase().getName() + " captured.";
-        String subtitle = ChatColor.GRAY+"+1 Capture Point(s)";
-        for(Player player : event.getBase().getWorld().getPlayers()) {
-            if(containsPlayer(player, event.getPlayers())) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
-                //increment capture score of player
-                PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(player);
-                if(score == null)
-                    score = new PlayerScore(player);
-                score.addCaptures(1);
-                plugin.getArathiGame().getScoreManager().savePlayerScore(score);
-            }
-            else{
-                TitleMessage.sendTitle(player, 20, 40, 20, message, null);
-            }
-        }
-
-    }
-
-    @EventHandler
-    public void onBaseDefend(BaseDefendEvent event){
-        BattleTeam team = plugin.getArathiGame().getTeamManager().getTeam(event.getTeamColor());
-        String message = event.getNotificationColor() + event.getBase().getName() + " defended.";
-        String subtitle = ChatColor.GRAY+"+1 Defend Point(s)";
-        for(Player player : event.getBase().getWorld().getPlayers()) {
-            if(containsPlayer(player, event.getPlayers())) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
-                //increment defend score of player
-                PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(player);
-                if(score == null)
-                    score = new PlayerScore(player);
-                score.addDefends(1);
-                plugin.getArathiGame().getScoreManager().savePlayerScore(score);
-            }
-            else{
-                TitleMessage.sendTitle(player, 20, 40, 20, message, null);
-            }
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onHungerChange(FoodLevelChangeEvent event){
+        if(event.getEntity().getWorld().getName().equals("world_arathi")){
+            event.setFoodLevel(20);
+            event.setCancelled(true);
         }
     }
 
-    private boolean containsPlayer(Player player, List<Player> players){
-        for(Player p : players){
-            if(p.getUniqueId().equals(player.getUniqueId()))
-                return true;
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onGamemodeChange(PlayerGameModeChangeEvent event){
+        Player player = event.getPlayer();
+        BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
+        if(team != null){
+            player.setGameMode(GameMode.ADVENTURE);
+            event.setCancelled(true);
         }
-        return false;
+    }
+
+    private void startDaytimeTask(){
+        timeTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(ArathiBasin.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                Bukkit.getWorld("world_arathi").setTime(9000); //set time to noon
+            }
+        }, 2400L, 2400L); //every 2 minutes
     }
 
     //allow players to teleport to their own colored bases by clicking the wall map
@@ -129,6 +99,8 @@ public class GameListener implements Listener{
                         ArrayList<Location> beaconGlassLocations = s.getLocations(StructureModule.BASE_GLASS_BEACON);
                         if (beaconGlassLocations != null) {
                             Location tpLoc = beaconGlassLocations.get(0).clone().add(0, 1, 0);
+                            tpLoc.setYaw(s.getDirectionYaw());
+                            tpLoc.add(0.5,0,0.5);
                             player.teleport(tpLoc);
                         }
                     }
@@ -139,6 +111,24 @@ public class GameListener implements Listener{
                 else
                     player.sendMessage(ChatColor.RED + "You are not currently on a team.");
             }
+        }
+    }
+
+    //make sure player respawns in own spawn
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onRespawn(PlayerRespawnEvent event){
+        Player player = event.getPlayer();
+        BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
+        if(team != null){
+            Spawn spawn = plugin.getStructureManager().getSpawn(team.getColor());
+            ArrayList<Location> locations = spawn.getLocations(StructureModule.SPAWN);
+            if(locations == null && locations.isEmpty())
+                return;
+            int random = ThreadLocalRandom.current().nextInt(0, locations.size());
+            Location loc = locations.get(random);
+            loc.setYaw(spawn.getDirectionYaw());
+            loc.add(0.5,0,0.5);
+            event.setRespawnLocation(loc);
         }
     }
 }

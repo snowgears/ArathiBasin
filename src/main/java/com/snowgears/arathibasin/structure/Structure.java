@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -17,6 +18,7 @@ public abstract class Structure {
     protected String name;
     protected String world;
     protected DyeColor color;
+    protected BlockFace direction;
     protected HashMap<StructureModule, ArrayList<Location>> locations;
     protected StructureModule currentModule;
 
@@ -40,7 +42,7 @@ public abstract class Structure {
         return color;
     }
 
-    protected void setColor(DyeColor color, List<Player> players){
+    public void setColor(DyeColor color, List<Player> players){
         this.color = color;
     }
 
@@ -76,7 +78,7 @@ public abstract class Structure {
         if(locations.containsKey(currentModule))
             locs = locations.get(currentModule);
         else
-            locs = new ArrayList<Location>();
+            locs = new ArrayList<>();
 
         if(locs.contains(loc))
             return false;
@@ -104,5 +106,39 @@ public abstract class Structure {
 
     public void setCurrentModule(StructureModule module){
         this.currentModule = module;
+    }
+
+    public BlockFace getDirection(){
+        return direction;
+    }
+
+    public float getDirectionYaw(){
+        return faceToYaw(direction);
+    }
+
+    public void setDirection(BlockFace direction) {
+        this.direction = direction;
+    }
+
+    protected float faceToYaw(BlockFace bf) {
+        switch(bf){
+            case NORTH:
+                return 180;
+            case NORTH_EAST:
+                return 225;
+            case EAST:
+                return 270;
+            case SOUTH_EAST:
+                return 315;
+            case SOUTH:
+                return 0;
+            case SOUTH_WEST:
+                return 45;
+            case WEST:
+                return 90;
+            case NORTH_WEST:
+                return 135;
+        }
+        return 180;
     }
 }

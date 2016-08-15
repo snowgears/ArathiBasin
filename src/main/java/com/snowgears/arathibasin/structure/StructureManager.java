@@ -4,6 +4,7 @@ import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.util.FileUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -116,9 +117,20 @@ public class StructureManager {
     public void resetStructures(String world){
         for(Structure structure : structures.values()){
             if(structure.getWorld().getName().equals(world)){
-                structure.setColor(DyeColor.WHITE, null);
+                if(structure instanceof Base)
+                    structure.setColor(DyeColor.WHITE, null);
             }
         }
+    }
+
+    public Spawn getSpawn(DyeColor spawnColor){
+        for(Structure structure : structures.values()){
+            if(structure instanceof Spawn) {
+                if (structure.getColor() == spawnColor)
+                    return (Spawn)structure;
+            }
+        }
+        return null;
     }
 
     public void saveStructures() {
@@ -139,15 +151,16 @@ public class StructureManager {
 
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(structureFile);
 
-                //don't save shops that are not initialized with items
-                if(structure instanceof Base)
+                if(structure instanceof Base) {
                     config.set("structure.type", "base");
-                else
-                    config.set("structure.type", "spawn");
-                if(structure instanceof Base)
                     config.set("structure.color", DyeColor.WHITE.toString());
-                else
+                }
+                else {
+                    config.set("structure.type", "spawn");
                     config.set("structure.color", structure.getColor().toString());
+                }
+                config.set("structure.direction", structure.getDirection().toString());
+
                 for(StructureModule module : StructureModule.values()) {
                     ArrayList<Location> locs = structure.getLocations(module);
                    if(locs != null && !locs.isEmpty()){
@@ -179,13 +192,24 @@ public class StructureManager {
 
                             String name = structureFile.getName().substring(0, structureFile.getName().length() - 4); //remove .yml
                             String world = worldDirectory.getName();
+
+                            BlockFace direction;
+                            try {
+                                String dir = config.getString("structure.direction");
+                                direction = BlockFace.valueOf(dir);
+                            } catch(Exception e){
+                                direction = BlockFace.NORTH;
+                            }
+
                             Structure structure = null;
                             String type = config.getString("structure.type");
                             if (type.equalsIgnoreCase("base")) {
                                 structure = new Base(name, world);
                             } else {
                                 structure = new Spawn(name, world);
+
                             }
+
                             String color = config.getString("structure.color");
                             DyeColor c = null;
                             try {
@@ -193,7 +217,6 @@ public class StructureManager {
                             } catch (Exception e) {
                                 c = DyeColor.WHITE;
                             }
-                            System.out.println("Loading: "+structureFile.getName());
                             structure.setColor(c, null);
 
                             for (StructureModule module : StructureModule.values()) {
@@ -201,11 +224,13 @@ public class StructureManager {
                                 if (stringLocs != null) {
                                     ArrayList<Location> locs = new ArrayList<>(stringLocs.size());
                                     for (String stringLoc : stringLocs) {
-                                        locs.add(locationFromString(stringLoc));
+                                        Location loc = locationFromString(stringLoc);
+                                        locs.add(loc);
                                     }
                                     structure.setLocations(module, locs);
                                 }
                             }
+                            structure.setDirection(direction);
                             this.structures.put(structure.getName(), structure);
                         }
                     }

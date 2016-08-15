@@ -1,6 +1,7 @@
 package com.snowgears.arathibasin.command;
 
 import com.snowgears.arathibasin.ArathiBasin;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -52,6 +53,10 @@ public class ArathiCommand implements CommandExecutor {
                 else if(args[0].equalsIgnoreCase("join")){
                     plugin.getArathiGame().addPlayer(player);
                     player.sendMessage("You have been added to the game on the "+plugin.getArathiGame().getTeamManager().getCurrentTeam(player).toString()+" team.");
+                }
+                else if(args[0].equalsIgnoreCase("tp")){
+                    Location loc = plugin.getServer().getWorld("world_arathi").getSpawnLocation();
+                    player.teleport(loc);
                 }
             }
         }

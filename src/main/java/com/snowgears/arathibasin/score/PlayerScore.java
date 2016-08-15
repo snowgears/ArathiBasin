@@ -30,11 +30,9 @@ public class PlayerScore {
     private Scoreboard scoreboard;
     private Team scoreboardTeam;
 
-    //TODO increment player score on each of the add methods (research this from WoW)
-
     public PlayerScore(Player player){
         this.playerUUID = player.getUniqueId();
-        showFullScore = true;
+        showFullScore = false;
 
         BattleTeam team = ArathiBasin.getPlugin().getArathiGame().getTeamManager().getCurrentTeam(player);
         if(team != null) {
@@ -52,6 +50,7 @@ public class PlayerScore {
 
     public void addKills(int kills){
         this.kills += kills;
+        this.points += (kills * 20); //20 points per kill
         if(showFullScore)
             this.update();
     }
@@ -72,6 +71,7 @@ public class PlayerScore {
 
     public void addCaptures(int captures){
         this.captures += captures;
+        this.points += (captures * 100); //100 points per capture
         if(showFullScore)
             this.update();
     }
@@ -82,6 +82,7 @@ public class PlayerScore {
 
     public void addAssaults(int assaults){
         this.assaults += assaults;
+        this.points += (assaults * 50); //50 points per assault
         if(showFullScore)
             this.update();
     }
@@ -92,6 +93,7 @@ public class PlayerScore {
 
     public void addDefends(int defends){
         this.defends += defends;
+        this.points += (defends * 150); //150 points per defend
         if(showFullScore)
             this.update();
     }

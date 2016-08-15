@@ -14,8 +14,8 @@ public class TeamManager {
         this.blueTeam = new BattleTeam(DyeColor.BLUE);
     }
 
-    public void addPlayer(Player player){
-
+    public void addPlayer(Player player, DyeColor teamPreference){
+        //TODO
         removePlayer(player);
 
         if(redTeam.size() >= blueTeam.size())
