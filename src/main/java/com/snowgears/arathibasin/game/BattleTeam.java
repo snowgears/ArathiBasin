@@ -4,10 +4,7 @@ import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.structure.Spawn;
 import com.snowgears.arathibasin.structure.StructureModule;
 import com.snowgears.arathibasin.util.PlayerData;
-import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -38,6 +35,7 @@ public class BattleTeam {
 
         //save player data to file
         new PlayerData(player);
+        player.setDisplayName(ChatColor.valueOf(color.toString()) + player.getName());
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
         player.teleport(this.getSpawnLocation());

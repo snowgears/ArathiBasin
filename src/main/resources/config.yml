@@ -1,17 +1,24 @@
 # Thanks for downloading ArathiBasin! #
-#==============================#
+#=====================================#
 
 # If you want to use permissions with ArathiBasin, you must set this to true #
 usePermissions: false
 
+# These are the names of the two teams that will be displayed to players #
 blueTeamName: "Alliance"
 redTeamName: "Horde"
 
+# This is the minimum team size required to start the Arathi Basin game (automatically) #
 minTeamSize: 5
+# This is the maximum amount of players allowed on a team in the game #
 maxTeamSize: 15
 
+# This is the time (in seconds) that players will be given to prepare for the battle before it starts #
 startWait: 120
+# This is the time (in seconds) that players will be given to leave the battle world before it closes #
 endWait: 120
 
+# When this score is reached, players on both teams will get an alert that winning team is close to victory #
 scoreWarning: 1400
+# When this score is reached, the winner is announed and the game will end #
 scoreWin: 1600

@@ -76,11 +76,22 @@ public class GameListener implements Listener{
                 Iterator<Player> iterator = event.getRecipients().iterator();
                 while(iterator.hasNext()){
                     BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(iterator.next());
-                    //only send chat to own battle team
-                    if (team == null || (senderTeam.getColor() != team.getColor())) {
-                        try{
-                            iterator.remove();
-                        } catch (Exception e) {}
+                    if(plugin.getArathiGame().isEnding()){
+                        //send chats to both teams
+                        if (team == null) {
+                            try{
+                                iterator.remove();
+                            } catch (Exception e) {}
+                        }
+                    }
+                    else {
+                        //only send chat to own battle team
+                        if (team == null || (senderTeam.getColor() != team.getColor())) {
+                            try {
+                                iterator.remove();
+                            } catch (Exception e) {
+                            }
+                        }
                     }
                 }
             }

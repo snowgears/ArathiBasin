@@ -17,6 +17,7 @@ import java.util.UUID;
 public class PlayerData{
 
     private UUID playerUUID;
+    private String oldDisplayName;
     private ItemStack[] oldInventoryContents;
     private ItemStack[] oldArmorContents;
     private Collection<PotionEffect> oldPotionEffects;
@@ -31,6 +32,7 @@ public class PlayerData{
 
     public PlayerData(Player player) {
         this.playerUUID = player.getUniqueId();
+        this.oldDisplayName = player.getDisplayName();
         this.oldInventoryContents = player.getInventory().getContents();
         this.oldArmorContents = player.getInventory().getArmorContents();
         this.oldLocation = player.getLocation().clone();
@@ -46,6 +48,7 @@ public class PlayerData{
     }
 
     private PlayerData(UUID playerUUID,
+                       String oldDisplayName,
                        ItemStack[] oldInventoryContents,
                        ItemStack[] oldArmorContents,
                        Collection<PotionEffect> oldPotionEffects,
@@ -58,6 +61,7 @@ public class PlayerData{
                        int oldRemainingAir,
                        int oldFireTicks){
         this.playerUUID = playerUUID;
+        this.oldDisplayName = oldDisplayName;
         this.oldInventoryContents = oldInventoryContents;
         this.oldArmorContents = oldArmorContents;
         this.oldPotionEffects = oldPotionEffects;
@@ -102,6 +106,7 @@ public class PlayerData{
             YamlConfiguration config = YamlConfiguration.loadConfiguration(playerDataFile);
 
             config.set("player.UUID", this.playerUUID.toString());
+            config.set("player.displayName", this.oldDisplayName);
             config.set("player.inventory", this.oldInventoryContents);
             config.set("player.armor", this.oldArmorContents);
             config.set("player.location", locationToString(this.oldLocation));
@@ -137,6 +142,7 @@ public class PlayerData{
             YamlConfiguration config = YamlConfiguration.loadConfiguration(playerDataFile);
 
             UUID uuid = UUID.fromString(config.getString("player.UUID"));
+            String displayName = config.getString("player.displayName");
             List<ItemStack> inventory = (List<ItemStack>)config.getList("player.inventory");
             List<ItemStack> armor = (List<ItemStack>)config.getList("player.armor");
             List<PotionEffect> potionEffects = (List<PotionEffect>)config.getList("player.potionEffects");
@@ -150,7 +156,7 @@ public class PlayerData{
             int air = config.getInt("player.air");
             int fireTicks = config.getInt("player.fireTicks");
 
-            PlayerData data = new PlayerData(uuid, inventory.toArray(new ItemStack[inventory.size()]), armor.toArray(new ItemStack[armor.size()]), potionEffects, location, gameMode, maxHealth, health, hunger, experience, air, fireTicks);
+            PlayerData data = new PlayerData(uuid, displayName, inventory.toArray(new ItemStack[inventory.size()]), armor.toArray(new ItemStack[armor.size()]), potionEffects, location, gameMode, maxHealth, health, hunger, experience, air, fireTicks);
             return data;
         }
         return null;
@@ -161,6 +167,7 @@ public class PlayerData{
         Player player = Bukkit.getPlayer(this.playerUUID);
         if(player == null)
             return;
+        player.setDisplayName(oldDisplayName);
         player.getInventory().setContents(oldInventoryContents);
         player.getInventory().setArmorContents(oldArmorContents);
         player.setGameMode(oldGameMode);
