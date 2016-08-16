@@ -30,15 +30,16 @@ public class BattleTeam {
     public boolean add(Player player){
         if(size() >= maxSize() || players.containsKey(player.getUniqueId()))
             return false;
-        players.put(player.getUniqueId(), true);
         ArathiBasin.getPlugin().getArathiGame().getTeamManager().getScoreboard().getTeam(color.toString()).addEntry(player.getName());
 
         //save player data to file
         new PlayerData(player);
-        player.setDisplayName(ChatColor.valueOf(color.toString()) + player.getName());
+        player.setDisplayName(ChatColor.valueOf(color.toString()) + player.getName() + ChatColor.RESET);
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
         player.teleport(this.getSpawnLocation());
+
+        players.put(player.getUniqueId(), true);
 
         //create a new player score (and display scoreboard)
         ArathiBasin.getPlugin().getArathiGame().getScoreManager().addPlayerScore(player);

@@ -20,6 +20,8 @@ public class ArathiGame {
     private TeamManager teamManager;
     private ScoreManager scoreManager;
 
+    private ArathiStartTimer startTimer;
+
     public ArathiGame(){
         teamManager = new TeamManager();
         scoreManager = new ScoreManager(ArathiBasin.getPlugin());
@@ -31,8 +33,8 @@ public class ArathiGame {
         inProgress = true;
         isEnding = false;
 
-        ArathiStartTimer timer = new ArathiStartTimer(ArathiBasin.getPlugin());
-        timer.runTaskTimer(ArathiBasin.getPlugin(), 0, 20); //run timer every second
+        startTimer = new ArathiStartTimer(ArathiBasin.getPlugin());
+        startTimer.runTaskTimer(ArathiBasin.getPlugin(), 0, 20); //run timer every second
 
         return true;
     }
@@ -43,6 +45,8 @@ public class ArathiGame {
         isEnding = true;
         ArathiBasin.getPlugin().getStructureManager().stopStructureTasks();
         scoreManager.stopScoreTask();
+        if(startTimer != null)
+            startTimer.cancel();
 
         printFinalScores();
 

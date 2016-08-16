@@ -74,6 +74,8 @@ public class GameListener implements Listener{
             //sender of the chat is on a battle team
             else{
                 Iterator<Player> iterator = event.getRecipients().iterator();
+                event.setMessage(ChatColor.RESET + event.getMessage());
+                //TODO mess around with set format of chat to get rid of colored '>' bracket
                 while(iterator.hasNext()){
                     BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(iterator.next());
                     if(plugin.getArathiGame().isEnding()){
@@ -117,10 +119,11 @@ public class GameListener implements Listener{
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onGamemodeChange(PlayerGameModeChangeEvent event){
         Player player = event.getPlayer();
-        BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
-        if(team != null){
-            player.setGameMode(GameMode.ADVENTURE);
-            event.setCancelled(true);
+        if(plugin.getArathiGame().isInProgress()) {
+            BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
+            if (team != null) {
+                event.setCancelled(true);
+            }
         }
     }
 
