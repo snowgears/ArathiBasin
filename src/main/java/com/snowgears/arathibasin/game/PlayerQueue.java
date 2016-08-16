@@ -1,13 +1,13 @@
 package com.snowgears.arathibasin.game;
 
 import com.snowgears.arathibasin.ArathiBasin;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 /**
@@ -16,93 +16,116 @@ import java.util.UUID;
 public class PlayerQueue {
 
     private ArathiBasin plugin;
-    private HashMap<UUID, DyeColor> queue; //player UUID, color of Team they will be
-    private HashMap<UUID, DyeColor> playersWaiting; //player UUID, color of Team they have a preference for
+    private LinkedHashMap<UUID, DyeColor> queue; //player UUID, color of Team they will be
 
     public PlayerQueue(ArathiBasin instance){
         plugin = instance;
-        queue = new HashMap<>();
-        playersWaiting = new HashMap<>();
+        queue = new LinkedHashMap<>();
     }
 
     public boolean addPlayer(Player player, DyeColor teamPreference){
 
-        boolean added = tryAddPlayerToTeam(player, teamPreference);
-        if(!added){
-            player.sendMessage("You will be added to the queue when a space is available.");
+        if(queue.containsKey(player.getUniqueId())) {
             return false;
         }
-        else{
-            //take care of any waiting players
-            Iterator<Map.Entry<UUID, DyeColor>> iterator = playersWaiting.entrySet().iterator();
-            while(iterator.hasNext()){
-                Map.Entry<UUID, DyeColor> entry = iterator.next();
-                Player toAdd = Bukkit.getPlayer(entry.getKey());
-                if(toAdd != null) {
-                    boolean wasAdded = tryAddPlayerToTeam(toAdd, entry.getValue());
-                    if (wasAdded)
-                        iterator.remove();
-                }
-            }
-        }
+        queue.put(player.getUniqueId(), teamPreference);
+
+        tryToStartGame();
+
+        if(plugin.getArathiGame().isInProgress())
+            movePlayersToTeams();
+
         return true;
     }
 
-    private boolean tryAddPlayerToTeam(Player player, DyeColor team){
-
-        if(getTeamSize(DyeColor.RED) == plugin.getMaxTeamSize() && getTeamSize(DyeColor.BLUE) == plugin.getMaxTeamSize()){
-            player.sendMessage("All spaces are currently full to join the Arathi Basin game.");
-            return false;
+    public boolean removePlayer(Player player){
+        if(queue.containsKey(player.getUniqueId())){
+            queue.remove(player.getUniqueId());
+            return true;
         }
+        return false;
+    }
 
-        //if they have a preference, try to put them on that team
-        if(team != null) {
-            DyeColor opposite = getOppositeTeam(team);
-            if (getTeamSize(team) > getTeamSize(opposite)) {
-                playersWaiting.put(player.getUniqueId(), team);
-                return false;
-            } else {
-                queue.put(player.getUniqueId(), team);
-                player.sendMessage("You have been added to the Arathi Basin queue on the " + team.toString() + " team.");
-                //try to put them in the game if it is progress
-                putPlayerInGame(player);
+    private boolean tryToStartGame(){
+        if(!plugin.getArathiGame().isInProgress()) {
+            int redSize = 0, blueSize = 0;
+            for(DyeColor color : queue.values()) {
+                if(color == DyeColor.RED)
+                    redSize++;
+                else if(color == DyeColor.BLUE)
+                    blueSize++;
+                //has no preference
+                else{
+                    if(redSize < blueSize)
+                        redSize++;
+                    else
+                        blueSize++;
+                }
+            }
+            if (redSize >= plugin.getMinTeamSize() && blueSize >= plugin.getMinTeamSize()) {
+                plugin.getArathiGame().startGame();
                 return true;
             }
+            else{
+                messagePlayers(redSize, blueSize);
+            }
         }
-        else{
-            if(getTeamSize(DyeColor.RED) > getTeamSize(DyeColor.BLUE)){
-                tryAddPlayerToTeam(player, DyeColor.BLUE);
+        return false;
+    }
+
+    private void movePlayersToTeams(){
+        BattleTeam redTeam = plugin.getArathiGame().getTeamManager().getTeam(DyeColor.RED);
+        BattleTeam blueTeam = plugin.getArathiGame().getTeamManager().getTeam(DyeColor.BLUE);
+
+        Iterator<UUID> iterator = queue.keySet().iterator();
+        while(iterator.hasNext()){
+            UUID playerUUID = iterator.next();
+            DyeColor color = queue.get(playerUUID);
+
+            Player player = Bukkit.getPlayer(playerUUID);
+            if(player == null)
+                iterator.remove();
+
+            if(color == null){
+                if(blueTeam.size() > redTeam.size()) {
+                    redTeam.add(player);
+                    iterator.remove();
+                }
+                else{
+                    blueTeam.add(player);
+                    iterator.remove();
+                }
+            }
+            else if(color == DyeColor.RED){
+                if(redTeam.size() <= blueTeam.size()) {
+                    redTeam.add(player);
+                    iterator.remove();
+                }
             }
             else{
-                tryAddPlayerToTeam(player, DyeColor.RED);
-            }
-        }
-        return false;
-    }
-
-    private boolean putPlayerInGame(Player player){
-        if(plugin.getArathiGame().isInProgress()){
-            if(queue.containsKey(player.getUniqueId())) {
-                DyeColor team = queue.get(player.getUniqueId());
-                BattleTeam battleTeam = plugin.getArathiGame().getTeamManager().getTeam(team);
-                if(battleTeam.size() < plugin.getMaxTeamSize()) {
-                    battleTeam.add(player);
-                    return true;
+                if(blueTeam.size() <= redTeam.size()) {
+                    blueTeam.add(player);
+                    iterator.remove();
                 }
-                return false;
             }
         }
-        return false;
     }
 
-    private int getTeamSize(DyeColor color){
-        int size = 0;
-        for(DyeColor c : queue.values()){
-            if(c == color){
-                size++;
-            }
+    private void messagePlayers(int redSize, int blueSize){
+        int redNeeded = plugin.getMinTeamSize() - redSize;
+        if(redNeeded < 0)
+            redNeeded = 0;
+        int blueNeeded = plugin.getMinTeamSize() - blueSize;
+        if(blueNeeded < 0)
+            blueNeeded = 0;
+        int amountNeeded = redNeeded + blueNeeded;
+        String message = ChatColor.AQUA + "" +amountNeeded + ChatColor.GRAY + " more players needed to start the Arathi Basin game.";
+
+        for(UUID uuid : queue.keySet()){
+            Player player = Bukkit.getPlayer(uuid);
+            if(player != null)
+                player.sendMessage(message);
         }
-        return size;
     }
 
     private DyeColor getOppositeTeam(DyeColor team){

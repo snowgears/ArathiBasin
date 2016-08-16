@@ -5,8 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -159,7 +157,10 @@ public class PlayerData{
     }
 
     //this method is called when the player data is returned to the controlling player
-    public void apply(Player player) {
+    public void apply() {
+        Player player = Bukkit.getPlayer(this.playerUUID);
+        if(player == null)
+            return;
         player.getInventory().setContents(oldInventoryContents);
         player.getInventory().setArmorContents(oldArmorContents);
         player.setGameMode(oldGameMode);

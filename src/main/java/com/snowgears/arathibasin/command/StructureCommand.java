@@ -35,7 +35,7 @@ public class StructureCommand implements CommandExecutor {
         }
         Player player = (Player)sender;
 
-        if(!player.isOp() || (plugin.usePerms() && player.hasPermission("arathi.operator"))){
+        if(!player.isOp() || (plugin.usePerms() && !player.hasPermission("arathi.operator"))){
             player.sendMessage(ChatColor.RED+"You do not have access to that command.");
             return true;
         }

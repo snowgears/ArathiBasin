@@ -38,6 +38,7 @@ public class StructureManager {
     public void removeStructure(Structure structure){
         if(structures.containsKey(structure.getName())){
             structures.remove(structure.getName());
+            structure.remove();
         }
     }
 

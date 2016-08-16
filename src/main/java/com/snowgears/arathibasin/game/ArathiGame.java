@@ -3,8 +3,12 @@ package com.snowgears.arathibasin.game;
 import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.score.PlayerScore;
 import com.snowgears.arathibasin.score.ScoreManager;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 /**
  * This class stores information about the current game.
@@ -12,6 +16,7 @@ import org.bukkit.entity.Player;
 public class ArathiGame {
 
     private boolean inProgress;
+    private boolean isEnding;
     private TeamManager teamManager;
     private ScoreManager scoreManager;
 
@@ -20,32 +25,47 @@ public class ArathiGame {
         scoreManager = new ScoreManager(ArathiBasin.getPlugin());
     }
 
-    //TODO add some sort of PlayerHandler Queue class that disperses players to this class (ArathiGame)
-    //That class can save player data, implement timers + countdown Titles from 10,9....1, <Arathi Basin><Control bases to gather resources>
-
-    //TODO addPlayer method and in method crete new PlayerScore with it
-    //TODO also addPlayer method with 'DyeColor team'
-    public void addPlayer(Player player){
-        teamManager.addPlayer(player);
-        PlayerScore score = new PlayerScore(player);
-        scoreManager.savePlayerScore(score);
-    }
-
     public boolean startGame(){
-        ArathiBasin.getPlugin().getStructureManager().startStructureTasks();
-        scoreManager.startScoreTask();
+        if(inProgress)
+            return false;
         inProgress = true;
+        isEnding = false;
+
+        ArathiStartTimer timer = new ArathiStartTimer(ArathiBasin.getPlugin());
+        timer.runTaskTimer(ArathiBasin.getPlugin(), 0, 20); //run timer every second
+
         return true;
     }
 
     public boolean endGame(){
+        if(!inProgress)
+            return false;
+        isEnding = true;
         ArathiBasin.getPlugin().getStructureManager().stopStructureTasks();
-        ArathiBasin.getPlugin().getStructureManager().resetStructures("world_arathi");
         scoreManager.stopScoreTask();
-        inProgress = false;
 
-        //TODO send title with final score to all players and prompt them to leave
+        printFinalScores();
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                ArathiBasin.getPlugin().getStructureManager().resetStructures("world_arathi");
+                inProgress = false;
+                isEnding = false;
+                scoreManager.reset();
+                teamManager.clear();
+            }
+        }, 2400L); //after 2 minutes
+
         return true;
+    }
+
+    public boolean addPlayer(Player player, DyeColor team){
+        return teamManager.addPlayer(player, team);
+    }
+
+    public boolean removePlayer(Player player){
+        return teamManager.removePlayer(player);
     }
 
     public TeamManager getTeamManager(){
@@ -58,5 +78,52 @@ public class ArathiGame {
 
     public boolean isInProgress(){
         return inProgress;
+    }
+
+    public boolean isEnding(){
+        return isEnding;
+    }
+
+    private void printFinalScores(){
+        for(Player player : teamManager.getAllPlayers()){
+            int scores = 1;
+            if(player != null) {
+                player.sendMessage(ChatColor.BOLD+"Top:       "+ChatColor.GOLD+"Points   "+ChatColor.RED+"Assaults   "+ChatColor.AQUA+"Captures   "+ChatColor.LIGHT_PURPLE+"Defends   "+ChatColor.GREEN+"K/D");
+
+                int ownNum = 0;
+                for(PlayerScore score : scoreManager.getTopScores()){
+                    if(scores < 6){
+                        printScore(player, scores, score);
+                    }
+                    if(player.getUniqueId().equals(score.getPlayerUUID())){
+                        ownNum = scores;
+                    }
+                    scores++;
+                }
+                //score was not already in the top 5
+                if(ownNum > 5){
+                    printScore(player, ownNum, scoreManager.getPlayerScore(player));
+                }
+                player.sendMessage(ChatColor.GRAY + "To leave the game, type " + ChatColor.AQUA + "/arathi leave");
+            }
+        }
+    }
+
+    private void printScore(Player player, int num, PlayerScore score){
+        if(player == null)
+            return;
+        BattleTeam team = teamManager.getCurrentTeam(player);
+        ChatColor color = ChatColor.WHITE;
+        if(team != null)
+            color = ChatColor.valueOf(team.getColor().toString());
+
+        player.sendMessage(""+num+"."+color+player.getName()+" "
+                +ChatColor.GOLD+score.getPoints()    +     "          "
+                +ChatColor.RED+score.getAssaults()   +     "            "
+                +ChatColor.AQUA+score.getCaptures()  +     "             "
+                +ChatColor.LIGHT_PURPLE+score.getDefends()+"         "
+                +ChatColor.GREEN+score.getKills()+"/"+score.getDeaths()
+        );
+
     }
 }

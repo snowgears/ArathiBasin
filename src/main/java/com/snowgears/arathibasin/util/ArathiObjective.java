@@ -1,9 +1,10 @@
 package com.snowgears.arathibasin.util;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.*;
-
-import java.util.Set;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
 
 /**
  * Created by Tanner on 8/13/16.

@@ -9,8 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class ScoreManager {
 
@@ -118,7 +117,22 @@ public class ScoreManager {
         }
     }
 
-    //TODO addPlayerScore method
+    public PlayerScore addPlayerScore(Player player){
+        if(playerScores.containsKey(player.getUniqueId()))
+            return playerScores.get(player.getUniqueId());
+        PlayerScore score = new PlayerScore(player);
+        this.savePlayerScore(score);
+        return score;
+    }
+
+    public boolean removePlayerScore(Player player){
+        if(playerScores.containsKey(player.getUniqueId())) {
+            playerScores.remove(player.getUniqueId());
+            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            return true;
+        }
+        return false;
+    }
 
     public PlayerScore getPlayerScore(Player player){
         if(playerScores.containsKey(player.getUniqueId()))
@@ -129,6 +143,20 @@ public class ScoreManager {
     public void savePlayerScore(PlayerScore score){
         playerScores.put(score.getPlayerUUID(), score);
         score.update();
+    }
+
+    public void reset(){
+        redScore = 0;
+        blueScore = 0;
+        redWarning = false;
+        blueWarning = false;
+        playerScores.clear();
+    }
+
+    public List<PlayerScore> getTopScores(){
+        List<PlayerScore> scores = new ArrayList<PlayerScore>(playerScores.values());
+        Collections.sort(scores, new PlayerScoreComparator());
+        return scores;
     }
 
     public int getRedScore(){

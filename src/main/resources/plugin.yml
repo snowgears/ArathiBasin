@@ -11,8 +11,8 @@ commands:
       description: This command is used for setting up a world to be used for the Arathi game.
       usage: /<command>
 permissions:
-    arathi.join:
-        description: Allows player to join the arathi basin mini-game
+    arathi.play:
+        description: Allows player to play the arathi basin mini-game
         default: op
     arathi.operator:
         description: Allows player use all operator actions associated with plugin

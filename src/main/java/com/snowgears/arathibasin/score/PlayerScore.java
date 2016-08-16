@@ -18,6 +18,7 @@ import java.util.UUID;
 
 public class PlayerScore {
 
+    private String playerName;
     private UUID playerUUID;
     private int kills;
     private int deaths;
@@ -31,6 +32,7 @@ public class PlayerScore {
     private Team scoreboardTeam;
 
     public PlayerScore(Player player){
+        this.playerName = player.getName();
         this.playerUUID = player.getUniqueId();
         showFullScore = false;
 
@@ -38,6 +40,10 @@ public class PlayerScore {
         if(team != null) {
             setupScoreboard(team);
         }
+    }
+
+    public String getPlayerName(){
+        return playerName;
     }
 
     public UUID getPlayerUUID(){

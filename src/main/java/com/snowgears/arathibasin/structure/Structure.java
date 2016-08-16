@@ -1,5 +1,6 @@
 package com.snowgears.arathibasin.structure;
 
+import com.snowgears.arathibasin.ArathiBasin;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -8,6 +9,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,6 +100,26 @@ public abstract class Structure {
             }
         }
         return null;
+    }
+
+    public boolean remove(){
+        File fileDirectory = new File(ArathiBasin.getPlugin().getDataFolder(), "Data");
+        if (!fileDirectory.exists())
+            return false;
+
+        File worldDirectory = new File(fileDirectory, this.getWorld().getName());
+        if (!worldDirectory.exists())
+            return false;
+
+        File structureFile = new File(worldDirectory, this.getName()+".yml");
+        if (!structureFile.exists())
+            return false;
+        try {
+            structureFile.delete();
+        } catch(Exception e){
+            return false;
+        }
+        return true;
     }
 
     public StructureModule getCurrentModule(){

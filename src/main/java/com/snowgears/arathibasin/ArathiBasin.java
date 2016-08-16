@@ -20,9 +20,9 @@ public class ArathiBasin extends JavaPlugin {
 
     private static ArathiBasin plugin;
     private YamlConfiguration config;
-    private final PlayerScoreboardListener scoreListener = new PlayerScoreboardListener(this);
-    private final GameListener gameListener = new GameListener(this);
-    private final SetupStructureListener setupListener = new SetupStructureListener(this);
+    private PlayerScoreboardListener scoreListener;
+    private GameListener gameListener;
+    private SetupStructureListener setupListener;
     private StructureManager structureManager;
     private ArathiGame arathiGame;
 
@@ -40,6 +40,9 @@ public class ArathiBasin extends JavaPlugin {
 
     public void onEnable() {
         plugin = this;
+        gameListener = new GameListener(this);
+        scoreListener = new PlayerScoreboardListener(this);
+        setupListener = new SetupStructureListener(this);
         getServer().getPluginManager().registerEvents(scoreListener, this);
         getServer().getPluginManager().registerEvents(gameListener, this);
         getServer().getPluginManager().registerEvents(setupListener, this);

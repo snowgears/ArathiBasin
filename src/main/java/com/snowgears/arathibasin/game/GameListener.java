@@ -1,15 +1,9 @@
 package com.snowgears.arathibasin.game;
 
 import com.snowgears.arathibasin.ArathiBasin;
-import com.snowgears.arathibasin.events.BaseAssaultEvent;
-import com.snowgears.arathibasin.events.BaseCaptureEvent;
-import com.snowgears.arathibasin.events.BaseDefendEvent;
-import com.snowgears.arathibasin.score.PlayerScore;
-import com.snowgears.arathibasin.structure.Spawn;
 import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.structure.StructureModule;
 import com.snowgears.arathibasin.util.PlayerData;
-import com.snowgears.arathibasin.util.TitleMessage;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,16 +11,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Listener class for all custom events used in the Arathi Basin game.
@@ -42,6 +31,15 @@ public class GameListener implements Listener{
     public GameListener(ArathiBasin instance){
         plugin = instance;
         startDaytimeTask();
+    }
+
+    @EventHandler
+    public void freezePlayers(PlayerMoveEvent event){
+        if(event.getPlayer().getWorld().getName().equals("world_arathi")){
+            if(plugin.getArathiGame().isEnding()) {
+                event.getPlayer().teleport(event.getFrom());
+            }
+        }
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
@@ -74,9 +72,9 @@ public class GameListener implements Listener{
         timeTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(ArathiBasin.getPlugin(), new Runnable() {
             @Override
             public void run() {
-                Bukkit.getWorld("world_arathi").setTime(9000); //set time to noon
+                Bukkit.getWorld("world_arathi").setTime(6000); //set time to noon
             }
-        }, 2400L, 2400L); //every 2 minutes
+        }, 100L, 2000L); //every 1-2 minutes
     }
 
     //allow players to teleport to their own colored bases by clicking the wall map
@@ -120,15 +118,19 @@ public class GameListener implements Listener{
         Player player = event.getPlayer();
         BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
         if(team != null){
-            Spawn spawn = plugin.getStructureManager().getSpawn(team.getColor());
-            ArrayList<Location> locations = spawn.getLocations(StructureModule.SPAWN);
-            if(locations == null && locations.isEmpty())
-                return;
-            int random = ThreadLocalRandom.current().nextInt(0, locations.size());
-            Location loc = locations.get(random);
-            loc.setYaw(spawn.getDirectionYaw());
-            loc.add(0.5,0,0.5);
-            event.setRespawnLocation(loc);
+            Location respawn = team.getSpawnLocation();
+            if(respawn != null)
+                event.setRespawnLocation(respawn);
+        }
+    }
+
+    //make sure that if player somehow quit without getting their old data back, return it to them when they login next
+    @EventHandler
+    public void onLogin(PlayerLoginEvent event){
+        Player player = event.getPlayer();
+        PlayerData data = PlayerData.loadFromFile(player);
+        if(data != null){
+            data.apply();
         }
     }
 }

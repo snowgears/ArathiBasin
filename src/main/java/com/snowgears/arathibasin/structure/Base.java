@@ -239,6 +239,8 @@ public class Base extends Structure{
         delayedCaptureTaskID = Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
             @Override
             public void run() {
+                if(ArathiBasin.getPlugin().getArathiGame().isEnding())
+                    return;
                 if(color == DyeColor.PINK)
                     setColor(DyeColor.RED, players);
                 else if(color == DyeColor.LIGHT_BLUE)
