@@ -42,7 +42,8 @@ public class ArathiCommand implements CommandExecutor {
         if (args.length == 0) {
             player.sendMessage(ChatColor.AQUA + "/arathi join" + ChatColor.GRAY + " - join the queue to play the Arathi Basin game");
             player.sendMessage(ChatColor.AQUA + "/arathi join <team>" + ChatColor.GRAY + " - join the queue to play the Arathi Basin game (on a specific team)");
-            player.sendMessage(ChatColor.AQUA + "/arathi stats" + ChatColor.GRAY + " - show your stats from past games");
+            //TODO
+            //player.sendMessage(ChatColor.AQUA + "/arathi stats" + ChatColor.GRAY + " - show your stats from past games");
             player.sendMessage(ChatColor.AQUA + "/arathi leave" + ChatColor.GRAY + " - leave the queue (or game if in progress)");
             if (isOp) {
                 player.sendMessage(ChatColor.RED + "/arathi tp" + ChatColor.GRAY + " - (OP) teleport to the Arathi Basin world");
@@ -77,7 +78,7 @@ public class ArathiCommand implements CommandExecutor {
                 if (!isOp)
                     player.sendMessage(ChatColor.RED + "You do not have access to that command.");
                 else {
-                    boolean ended = plugin.getArathiGame().endGame();
+                    boolean ended = plugin.getArathiGame().endGame(true);
                     if(ended)
                         player.sendMessage(ChatColor.GRAY + "You have force ended the Arathi Basin game.");
                     else

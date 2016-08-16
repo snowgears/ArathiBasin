@@ -37,7 +37,7 @@ public class ArathiGame {
         return true;
     }
 
-    public boolean endGame(){
+    public boolean endGame(boolean forceEnd){
         if(!inProgress)
             return false;
         isEnding = true;
@@ -45,6 +45,10 @@ public class ArathiGame {
         scoreManager.stopScoreTask();
 
         printFinalScores();
+
+        int delayTicks = (ArathiBasin.getPlugin().getEndWait() * 20);
+        if(forceEnd)
+            delayTicks = 10;
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
             @Override
@@ -55,7 +59,7 @@ public class ArathiGame {
                 scoreManager.reset();
                 teamManager.clear();
             }
-        }, 2400L); //after 2 minutes
+        }, delayTicks);
 
         return true;
     }
@@ -85,13 +89,14 @@ public class ArathiGame {
     }
 
     private void printFinalScores(){
+        List<PlayerScore> topScores = scoreManager.getTopScores();
         for(Player player : teamManager.getAllPlayers()){
             int scores = 1;
             if(player != null) {
                 player.sendMessage(ChatColor.BOLD+"Top:       "+ChatColor.GOLD+"Points   "+ChatColor.RED+"Assaults   "+ChatColor.AQUA+"Captures   "+ChatColor.LIGHT_PURPLE+"Defends   "+ChatColor.GREEN+"K/D");
 
                 int ownNum = 0;
-                for(PlayerScore score : scoreManager.getTopScores()){
+                for(PlayerScore score : topScores){
                     if(scores < 6){
                         printScore(player, scores, score);
                     }

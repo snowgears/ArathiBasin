@@ -112,8 +112,7 @@ public class ScoreManager {
         }
 
         if(over){
-            //TODO make more of an ending to the game than just stopping it abruptly
-            ArathiBasin.getPlugin().getArathiGame().endGame();
+            ArathiBasin.getPlugin().getArathiGame().endGame(false);
         }
     }
 

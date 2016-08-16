@@ -16,6 +16,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Listener class for all custom events used in the Arathi Basin game.
@@ -34,10 +35,54 @@ public class GameListener implements Listener{
     }
 
     @EventHandler
-    public void freezePlayers(PlayerMoveEvent event){
+    public void freezePlayersOnEnd(PlayerMoveEvent event){
         if(event.getPlayer().getWorld().getName().equals("world_arathi")){
             if(plugin.getArathiGame().isEnding()) {
-                event.getPlayer().teleport(event.getFrom());
+                Location from=event.getFrom();
+                Location to=event.getTo();
+                double x=Math.floor(from.getX());
+                double z=Math.floor(from.getZ());
+                if(Math.floor(to.getX())!=x||Math.floor(to.getZ())!=z)
+                {
+                    x+=.5;
+                    z+=.5;
+                    event.getPlayer().teleport(new Location(from.getWorld(),x,from.getY(),z,from.getYaw(),from.getPitch()));
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent event){
+        Player player = event.getPlayer();
+
+        if(plugin.getArathiGame().isInProgress()) {
+            BattleTeam senderTeam = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
+            //if the chat sender is not on a battle team
+            if(senderTeam == null) {
+                Iterator<Player> iterator = event.getRecipients().iterator();
+                while(iterator.hasNext()){
+                    BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(iterator.next());
+                    //do not send their message to anyone on a battle team
+                    if (team != null) {
+                        try{
+                            iterator.remove();
+                        } catch (Exception e) {}
+                    }
+                }
+            }
+            //sender of the chat is on a battle team
+            else{
+                Iterator<Player> iterator = event.getRecipients().iterator();
+                while(iterator.hasNext()){
+                    BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(iterator.next());
+                    //only send chat to own battle team
+                    if (team == null || (senderTeam.getColor() != team.getColor())) {
+                        try{
+                            iterator.remove();
+                        } catch (Exception e) {}
+                    }
+                }
             }
         }
     }

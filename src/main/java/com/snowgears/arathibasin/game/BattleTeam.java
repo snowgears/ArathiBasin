@@ -21,9 +21,6 @@ public class BattleTeam {
     private DyeColor color;
     private HashMap<UUID, Boolean> players;
 
-    //TODO have a scoreboard that adds and removes players (never displayed, but used for game mechanics)
-
-
     public BattleTeam(DyeColor color){
         this.color = color;
         if(color == DyeColor.BLUE)
@@ -37,6 +34,7 @@ public class BattleTeam {
         if(size() >= maxSize() || players.containsKey(player.getUniqueId()))
             return false;
         players.put(player.getUniqueId(), true);
+        ArathiBasin.getPlugin().getArathiGame().getTeamManager().getScoreboard().getTeam(color.toString()).addEntry(player.getName());
 
         //save player data to file
         new PlayerData(player);
@@ -53,6 +51,7 @@ public class BattleTeam {
     public boolean remove(Player player){
         if(players.containsKey(player.getUniqueId())) {
             players.remove(player.getUniqueId());
+            ArathiBasin.getPlugin().getArathiGame().getTeamManager().getScoreboard().getTeam(color.toString()).removeEntry(player.getName());
 
             //remove scoreboard from player
             ArathiBasin.getPlugin().getArathiGame().getScoreManager().removePlayerScore(player);

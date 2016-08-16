@@ -10,5 +10,8 @@ redTeamName: "Horde"
 minTeamSize: 5
 maxTeamSize: 15
 
+startWait: 120
+endWait: 120
+
 scoreWarning: 1400
 scoreWin: 1600

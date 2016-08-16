@@ -14,7 +14,7 @@ public class ArathiStartTimer extends BukkitRunnable{
 
     public ArathiStartTimer(ArathiBasin instance){
         plugin = instance;
-        timeTilGatesOpen = 30; //TODO set this to 120 (2 minutes)
+        timeTilGatesOpen = plugin.getStartWait();
     }
     @Override
     public void run(){

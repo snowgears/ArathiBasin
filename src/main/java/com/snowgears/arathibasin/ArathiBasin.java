@@ -33,6 +33,8 @@ public class ArathiBasin extends JavaPlugin {
     private int maxTeamSize;
     private int scoreWarning;
     private int scoreWin;
+    private int startWait;
+    private int endWait;
 
     public static ArathiBasin getPlugin() {
         return plugin;
@@ -66,6 +68,8 @@ public class ArathiBasin extends JavaPlugin {
         maxTeamSize = config.getInt("maxTeamSize");
         scoreWarning = config.getInt("scoreWarning");
         scoreWin = config.getInt("scoreWin");
+        startWait = config.getInt("startWait");
+        endWait = config.getInt("endWait");
 
         generateWorld();
 
@@ -112,6 +116,14 @@ public class ArathiBasin extends JavaPlugin {
 
     public int getScoreWin(){
         return scoreWin;
+    }
+
+    public int getStartWait(){
+        return startWait;
+    }
+
+    public int getEndWait(){
+        return endWait;
     }
 
     private void generateWorld(){
