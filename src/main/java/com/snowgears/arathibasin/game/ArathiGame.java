@@ -30,6 +30,7 @@ public class ArathiGame {
     public boolean startGame(){
         if(inProgress)
             return false;
+        ArathiBasin.getPlugin().getStructureManager().resetStructures("world_arathi");
         inProgress = true;
         isEnding = false;
 
@@ -121,12 +122,15 @@ public class ArathiGame {
     private void printScore(Player player, int num, PlayerScore score){
         if(player == null)
             return;
-        BattleTeam team = teamManager.getCurrentTeam(player);
+        Player scorePlayer = Bukkit.getPlayer(score.getPlayerUUID());
+        if(scorePlayer == null)
+            return;
+        BattleTeam team = teamManager.getCurrentTeam(scorePlayer);
         ChatColor color = ChatColor.WHITE;
         if(team != null)
             color = ChatColor.valueOf(team.getColor().toString());
 
-        player.sendMessage(""+num+"."+color+player.getName()+" "
+        player.sendMessage(""+num+"."+color+scorePlayer.getName()+" "
                 +ChatColor.GOLD+score.getPoints()    +     "          "
                 +ChatColor.RED+score.getAssaults()   +     "            "
                 +ChatColor.AQUA+score.getCaptures()  +     "             "

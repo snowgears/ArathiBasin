@@ -1,6 +1,7 @@
 package com.snowgears.arathibasin.game;
 
 import com.snowgears.arathibasin.ArathiBasin;
+import com.snowgears.arathibasin.score.PlayerScore;
 import com.snowgears.arathibasin.structure.Spawn;
 import com.snowgears.arathibasin.structure.StructureModule;
 import com.snowgears.arathibasin.util.PlayerData;
@@ -30,36 +31,50 @@ public class BattleTeam {
     public boolean add(Player player){
         if(size() >= maxSize() || players.containsKey(player.getUniqueId()))
             return false;
-        ArathiBasin.getPlugin().getArathiGame().getTeamManager().getScoreboard().getTeam(color.toString()).addEntry(player.getName());
 
         //save player data to file
         new PlayerData(player);
+        player.setMaxHealth(20);
+        player.setHealth(20);
+        player.setFoodLevel(20);
         player.setDisplayName(ChatColor.valueOf(color.toString()) + player.getName() + ChatColor.RESET);
+        //player.setPlayerListName(player.getDisplayName()); //might not need this once scoreboards work correctly
         player.getInventory().clear();
         player.setGameMode(GameMode.ADVENTURE);
         player.teleport(this.getSpawnLocation());
 
         players.put(player.getUniqueId(), true);
 
+        for(Player p : ArathiBasin.getPlugin().getArathiGame().getTeamManager().getAllPlayers()){
+            if(p != null)
+                p.sendMessage(player.getDisplayName()+ChatColor.YELLOW+" has joined the battle!");
+        }
+
         //create a new player score (and display scoreboard)
-        ArathiBasin.getPlugin().getArathiGame().getScoreManager().addPlayerScore(player);
+        PlayerScore s = ArathiBasin.getPlugin().getArathiGame().getScoreManager().addPlayerScore(player);
 
         return true;
     }
 
     public boolean remove(Player player){
         if(players.containsKey(player.getUniqueId())) {
-            players.remove(player.getUniqueId());
-            ArathiBasin.getPlugin().getArathiGame().getTeamManager().getScoreboard().getTeam(color.toString()).removeEntry(player.getName());
 
             //remove scoreboard from player
             ArathiBasin.getPlugin().getArathiGame().getScoreManager().removePlayerScore(player);
+
+            for(Player p : ArathiBasin.getPlugin().getArathiGame().getTeamManager().getAllPlayers()){
+                if(p != null)
+                    p.sendMessage(player.getDisplayName()+ChatColor.YELLOW+" has left the battle.");
+            }
 
             PlayerData data = PlayerData.loadFromFile(player);
             if(data != null) {
                 //return all player data to player
                 data.apply();
             }
+            players.remove(player.getUniqueId());
+
+            ArathiBasin.getPlugin().getArathiGame().getTeamManager().moveQueue();
             return true;
         }
         return false;

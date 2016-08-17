@@ -46,6 +46,10 @@ public class PlayerQueue {
         return false;
     }
 
+    public boolean contains(Player player){
+        return queue.containsKey(player.getUniqueId());
+    }
+
     private boolean tryToStartGame(){
         if(!plugin.getArathiGame().isInProgress()) {
             int redSize = 0, blueSize = 0;
@@ -73,7 +77,8 @@ public class PlayerQueue {
         return false;
     }
 
-    private void movePlayersToTeams(){
+    public void movePlayersToTeams(){
+        System.out.println("Moving players from queue to game.");
         BattleTeam redTeam = plugin.getArathiGame().getTeamManager().getTeam(DyeColor.RED);
         BattleTeam blueTeam = plugin.getArathiGame().getTeamManager().getTeam(DyeColor.BLUE);
 
@@ -90,23 +95,36 @@ public class PlayerQueue {
                 if(blueTeam.size() > redTeam.size()) {
                     redTeam.add(player);
                     iterator.remove();
+                    movePlayersToTeams();
+                    return;
                 }
                 else{
                     blueTeam.add(player);
                     iterator.remove();
+                    movePlayersToTeams();
+                    return;
                 }
             }
             else if(color == DyeColor.RED){
                 if(redTeam.size() <= blueTeam.size()) {
                     redTeam.add(player);
                     iterator.remove();
+                    movePlayersToTeams();
+                    return;
                 }
             }
             else{
+                System.out.println("Wanted blue team.");
+                System.out.println("Blue Size: "+blueTeam.size());
+                System.out.println("Red Size: "+redTeam.size());
                 if(blueTeam.size() <= redTeam.size()) {
+                    System.out.println("Got onto blue team.");
                     blueTeam.add(player);
                     iterator.remove();
+                    movePlayersToTeams();
+                    return;
                 }
+                System.out.println("Done with adding players.");
             }
         }
     }

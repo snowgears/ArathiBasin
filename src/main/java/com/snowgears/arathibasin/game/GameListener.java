@@ -4,7 +4,10 @@ import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.structure.StructureModule;
 import com.snowgears.arathibasin.util.PlayerData;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -50,6 +53,11 @@ public class GameListener implements Listener{
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onDisconnect(PlayerQuitEvent event){
+        plugin.getArathiGame().removePlayer(event.getPlayer());
     }
 
     @EventHandler
@@ -186,10 +194,15 @@ public class GameListener implements Listener{
     //make sure that if player somehow quit without getting their old data back, return it to them when they login next
     @EventHandler
     public void onLogin(PlayerLoginEvent event){
-        Player player = event.getPlayer();
-        PlayerData data = PlayerData.loadFromFile(player);
-        if(data != null){
-            data.apply();
-        }
+        final Player player = event.getPlayer();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                PlayerData data = PlayerData.loadFromFile(player);
+                if(data != null){
+                    data.apply();
+                }
+            }
+        }, 10);
     }
 }

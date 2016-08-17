@@ -1,6 +1,7 @@
 package com.snowgears.arathibasin.score;
 
 import com.snowgears.arathibasin.ArathiBasin;
+import com.snowgears.arathibasin.game.BattleTeam;
 import com.snowgears.arathibasin.structure.Base;
 import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.util.TitleMessage;
@@ -121,6 +122,14 @@ public class ScoreManager {
             return playerScores.get(player.getUniqueId());
         PlayerScore score = new PlayerScore(player);
         this.savePlayerScore(score);
+
+        BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
+        if(team != null) {
+            for (PlayerScore s : this.playerScores.values()) {
+                s.addPlayerToTeam(player, team.getColor());
+            }
+        }
+
         return score;
     }
 
@@ -128,6 +137,13 @@ public class ScoreManager {
         if(playerScores.containsKey(player.getUniqueId())) {
             playerScores.remove(player.getUniqueId());
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+
+            BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
+            if(team != null) {
+                for (PlayerScore s : this.playerScores.values()) {
+                    s.removePlayerFromTeam(player, team.getColor());
+                }
+            }
             return true;
         }
         return false;

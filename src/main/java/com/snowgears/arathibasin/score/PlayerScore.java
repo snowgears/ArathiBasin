@@ -4,6 +4,7 @@ import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.game.BattleTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
@@ -29,7 +30,6 @@ public class PlayerScore {
     private boolean showFullScore;
 
     private Scoreboard scoreboard;
-    private Team scoreboardTeam;
 
     public PlayerScore(Player player){
         this.playerName = player.getName();
@@ -214,6 +214,14 @@ public class PlayerScore {
         buffer.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
 
+    public void addPlayerToTeam(Player player, DyeColor color){
+        scoreboard.getTeam(color.toString()).addEntry(player.getName());
+    }
+
+    public void removePlayerFromTeam(Player player, DyeColor color){
+        scoreboard.getTeam(color.toString()).removeEntry(player.getName());
+    }
+
     private void setupScoreboard(BattleTeam team){
         if(team == null)
             return;
@@ -223,11 +231,17 @@ public class PlayerScore {
             return;
 
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        scoreboardTeam = scoreboard.registerNewTeam(team.getName());
-        scoreboardTeam.setPrefix(ChatColor.valueOf(team.getColor().toString())+"");
-        scoreboardTeam.setDisplayName(team.getName());
-        scoreboardTeam.setCanSeeFriendlyInvisibles(true);
-        scoreboardTeam.setAllowFriendlyFire(false);
+        Team redTeam = scoreboard.registerNewTeam("RED");
+        setupScoreboardTeam(redTeam, ChatColor.RED);
+        Team blueTeam = scoreboard.registerNewTeam("BLUE");
+        setupScoreboardTeam(blueTeam, ChatColor.BLUE);
+
+        //add yourself to your own team
+        //this.addPlayerToTeam(player, team.getColor()); //TODO covered under loop below?
+        //also add everyone who is already in the game to their respective teams
+        for(Player p : ArathiBasin.getPlugin().getArathiGame().getTeamManager().getAllPlayers()){
+            this.addPlayerToTeam(p, ArathiBasin.getPlugin().getArathiGame().getTeamManager().getCurrentTeam(p).getColor());
+        }
 
         Objective objective = scoreboard.registerNewObjective("score", "dummy");
         objective.setDisplayName(ChatColor.BOLD+"Score");
@@ -241,5 +255,14 @@ public class PlayerScore {
 
         update();
         player.setScoreboard(scoreboard);
+    }
+
+    private void setupScoreboardTeam(Team team, ChatColor color) {
+        team.setPrefix(color+"");
+        team.setAllowFriendlyFire(false);
+        team.setCanSeeFriendlyInvisibles(true);
+        team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
+        team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
+        team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
     }
 }

@@ -27,6 +27,7 @@ public class PlayerData{
     private double oldMaxHealth;
     private int oldHunger;
     private int oldExperience;
+    private int oldLevel;
     private int oldRemainingAir;
     private int oldFireTicks;
 
@@ -41,6 +42,7 @@ public class PlayerData{
         this.oldMaxHealth = player.getMaxHealth();
         this.oldHunger = player.getFoodLevel();
         this.oldExperience = player.getTotalExperience();
+        this.oldLevel = player.getLevel();
         this.oldRemainingAir = player.getRemainingAir();
         this.oldFireTicks = player.getFireTicks();
         this.oldPotionEffects = player.getActivePotionEffects();
@@ -58,6 +60,7 @@ public class PlayerData{
                        double oldHealth,
                        int oldHunger,
                        int oldExperience,
+                       int oldLevel,
                        int oldRemainingAir,
                        int oldFireTicks){
         this.playerUUID = playerUUID;
@@ -71,6 +74,7 @@ public class PlayerData{
         this.oldMaxHealth = oldMaxHealth;
         this.oldHunger = oldHunger;
         this.oldExperience = oldExperience;
+        this.oldLevel = oldLevel;
         this.oldRemainingAir = oldRemainingAir;
         this.oldFireTicks = oldFireTicks;
     }
@@ -115,6 +119,7 @@ public class PlayerData{
             config.set("player.gamemode", this.oldGameMode.toString());
             config.set("player.hunger", this.oldHunger);
             config.set("player.experience", this.oldExperience);
+            config.set("player.level", this.oldLevel);
             config.set("player.air", this.oldRemainingAir);
             config.set("player.fireTicks", this.oldFireTicks);
             config.set("player.potionEffects", this.oldPotionEffects);
@@ -126,6 +131,8 @@ public class PlayerData{
     }
 
     public static PlayerData loadFromFile(Player player){
+        if(player == null)
+            return null;
         File fileDirectory = new File(ArathiBasin.getPlugin().getDataFolder(), "Data");
 
         File worldDirectory = new File(fileDirectory, "world_arathi");
@@ -153,10 +160,11 @@ public class PlayerData{
             int health = config.getInt("player.health");
             int hunger = config.getInt("player.hunger");
             int experience = config.getInt("player.experience");
+            int level = config.getInt("player.level");
             int air = config.getInt("player.air");
             int fireTicks = config.getInt("player.fireTicks");
 
-            PlayerData data = new PlayerData(uuid, displayName, inventory.toArray(new ItemStack[inventory.size()]), armor.toArray(new ItemStack[armor.size()]), potionEffects, location, gameMode, maxHealth, health, hunger, experience, air, fireTicks);
+            PlayerData data = new PlayerData(uuid, displayName, inventory.toArray(new ItemStack[inventory.size()]), armor.toArray(new ItemStack[armor.size()]), potionEffects, location, gameMode, maxHealth, health, hunger, experience, level, air, fireTicks);
             return data;
         }
         return null;
@@ -168,11 +176,13 @@ public class PlayerData{
         if(player == null)
             return;
         player.setDisplayName(oldDisplayName);
+        player.setPlayerListName(player.getName());
         player.getInventory().setContents(oldInventoryContents);
         player.getInventory().setArmorContents(oldArmorContents);
         player.setGameMode(oldGameMode);
         player.setFoodLevel(this.oldHunger);
         player.setTotalExperience(this.oldExperience);
+        player.setLevel(this.oldLevel);
         player.teleport(oldLocation);
 
         player.setMaxHealth(this.oldMaxHealth);

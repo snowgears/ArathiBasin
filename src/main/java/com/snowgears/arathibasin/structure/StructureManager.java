@@ -68,10 +68,6 @@ public class StructureManager {
                 Base base = (Base)structure;
                 base.stopScanTask();
             }
-            else{
-                Spawn spawn = (Spawn)structure;
-                spawn.resetGates();
-            }
         }
     }
 
@@ -120,6 +116,8 @@ public class StructureManager {
             if(structure.getWorld().getName().equals(world)){
                 if(structure instanceof Base)
                     structure.setColor(DyeColor.WHITE, null);
+                else
+                    ((Spawn)structure).resetGates();
             }
         }
     }
