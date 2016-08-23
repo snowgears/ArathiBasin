@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -133,6 +134,12 @@ public class GameListener implements Listener{
                 event.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler (priority = EventPriority.HIGHEST)
+    public void onSoilChange(BlockFadeEvent event){
+        if(event.getBlock().getWorld().getName().equals("world_arathi"))
+            event.setCancelled(true);
     }
 
     private void startDaytimeTask(){
