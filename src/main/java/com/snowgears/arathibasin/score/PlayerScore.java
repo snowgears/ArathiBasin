@@ -258,11 +258,17 @@ public class PlayerScore {
     }
 
     private void setupScoreboardTeam(Team team, ChatColor color) {
-        team.setPrefix(color+"");
-        team.setAllowFriendlyFire(false);
-        team.setCanSeeFriendlyInvisibles(true);
-        team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
-        team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
-        team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
+        try {
+            team.setPrefix(color + "");
+            team.setAllowFriendlyFire(false);
+            team.setCanSeeFriendlyInvisibles(true);
+            team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
+            team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
+            team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
+        } catch (NoClassDefFoundError e) {
+            team.setPrefix(color + "");
+            team.setAllowFriendlyFire(false);
+            team.setCanSeeFriendlyInvisibles(true);
+        }
     }
 }

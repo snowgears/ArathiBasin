@@ -157,9 +157,12 @@ public class GameListener implements Listener{
         if (event.isCancelled()) {
             return;
         }
-        if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            return; // off hand packet, ignore.
-        }
+        try {
+            if (event.getHand() == EquipmentSlot.OFF_HAND) {
+                return; // off hand packet, ignore.
+            }
+        } catch (NoSuchMethodError error) {}
+
         Player player = event.getPlayer();
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.WOOL){
             Structure s = plugin.getStructureManager().getStructure(StructureModule.BASE_MAP, event.getClickedBlock().getLocation());
