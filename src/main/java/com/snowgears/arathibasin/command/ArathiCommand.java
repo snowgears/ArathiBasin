@@ -29,14 +29,16 @@ public class ArathiCommand implements CommandExecutor {
         }
         Player player = (Player) sender;
 
-        if (plugin.usePerms() && !player.hasPermission("arathi.play")) {
-            player.sendMessage(ChatColor.RED + "You do not have access to that command.");
-            return true;
-        }
-
         boolean isOp = true;
         if (!player.isOp() || (plugin.usePerms() && !player.hasPermission("arathi.operator"))) {
             isOp = false;
+        }
+
+        if (plugin.usePerms() && !player.hasPermission("arathi.play")) {
+            if(!isOp) {
+                player.sendMessage(ChatColor.RED + "You do not have access to that command.");
+                return true;
+            }
         }
 
         if (args.length == 0) {

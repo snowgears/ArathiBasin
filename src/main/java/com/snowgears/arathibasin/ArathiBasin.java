@@ -35,6 +35,8 @@ public class ArathiBasin extends JavaPlugin {
     private int scoreWin;
     private int startWait;
     private int endWait;
+    private int baseAssaultInterval;
+    private int baseCaptureInterval;
 
     public static ArathiBasin getPlugin() {
         return plugin;
@@ -70,6 +72,9 @@ public class ArathiBasin extends JavaPlugin {
         scoreWin = config.getInt("scoreWin");
         startWait = config.getInt("startWait");
         endWait = config.getInt("endWait");
+
+        baseAssaultInterval = config.getInt("baseAssaultInterval");
+        baseCaptureInterval = config.getInt("baseCaptureInterval");
 
         generateWorld();
 
@@ -124,6 +129,14 @@ public class ArathiBasin extends JavaPlugin {
 
     public int getEndWait(){
         return endWait;
+    }
+
+    public int getBaseAssaultInterval(){
+        return baseAssaultInterval;
+    }
+
+    public int getBaseCaptureInterval(){
+        return baseCaptureInterval;
     }
 
     private void generateWorld(){

@@ -22,3 +22,9 @@ endWait: 120
 scoreWarning: 1400
 # When this score is reached, the winner is announed and the game will end #
 scoreWin: 1600
+
+# This is the amount of time (in ticks) that bases will scan for nearby players #
+# Setting this to a lower number will decrease base assault time but may put more stress on server #
+baseAssaultInterval: 40
+# This is the amount of time (in seconds) that bases need to remain controlled until they are captured #
+baseCaptureInterval: 60

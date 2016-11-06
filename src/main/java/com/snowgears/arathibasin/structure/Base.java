@@ -34,7 +34,7 @@ public class Base extends Structure{
             public void run() {
                 scanTask();
             }
-        }, 40L, 40L);
+        }, 40L, ArathiBasin.getPlugin().getBaseAssaultInterval());
     }
 
     public void stopScanTask(){
@@ -246,7 +246,7 @@ public class Base extends Structure{
                 else if(color == DyeColor.LIGHT_BLUE)
                     setColor(DyeColor.BLUE, players);
             }
-        }, 1200L); //1 minute
+        }, (ArathiBasin.getPlugin().getBaseCaptureInterval() * 20)); //1 minute
     }
 
     private void setBlock(Location location, Material type, DyeColor color){
