@@ -122,7 +122,7 @@ public class BattleTeam {
         if(locations == null && locations.isEmpty())
             return null;
         int random = ThreadLocalRandom.current().nextInt(0, locations.size());
-        Location loc = locations.get(random);
+        Location loc = locations.get(random).clone();
         loc.setYaw(spawn.getDirectionYaw());
         loc.add(0.5,0,0.5);
         return loc;

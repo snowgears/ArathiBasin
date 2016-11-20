@@ -120,7 +120,7 @@ public class Base extends Structure{
                 for (Location location : floor) {
                     //grab any blocks that are not the capturing color of the base
                     Block block = location.getBlock();
-                    if (block.getData() != captureColor.getData() && block.getData() != DyeColor.WHITE.getData())
+                    if (block.getData() != captureColor.getWoolData() && block.getData() != DyeColor.WHITE.getWoolData())
                         floorToChange.add(block);
                 }
                 if(!floorToChange.isEmpty())
@@ -130,7 +130,7 @@ public class Base extends Structure{
                     for (Location location : floor) {
                         //grab any blocks that are not the capturing color of the base
                         Block block = location.getBlock();
-                        if (block.getData() != captureColor.getData())
+                        if (block.getData() != captureColor.getWoolData())
                             floorToChange.add(block);
                     }
                 }
@@ -139,7 +139,7 @@ public class Base extends Structure{
                 for (Location location : floor) {
                     //grab any blocks that are not the capturing color of the base
                     Block block = location.getBlock();
-                    if (block.getData() != captureColor.getData())
+                    if (block.getData() != captureColor.getWoolData())
                         floorToChange.add(block);
                 }
             }
@@ -251,7 +251,7 @@ public class Base extends Structure{
 
     private void setBlock(Location location, Material type, DyeColor color){
         if(type == Material.STAINED_GLASS)
-            location.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), color.getData(), true);
+            location.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), color.getWoolData(), true);
         else
             location.getBlock().setTypeIdAndData(Material.WOOL.getId(), color.getWoolData(), true);
 
@@ -270,7 +270,7 @@ public class Base extends Structure{
 
     private void setBlock(Block block, Material type, DyeColor color){
         if(type == Material.STAINED_GLASS)
-            block.setTypeIdAndData(Material.STAINED_GLASS.getId(), color.getData(), true);
+            block.setTypeIdAndData(Material.STAINED_GLASS.getId(), color.getWoolData(), true);
         else
             block.setTypeIdAndData(Material.WOOL.getId(), color.getWoolData(), true);
 
