@@ -16,10 +16,10 @@ public class Spawn extends Structure {
                 location.getBlock().setType(Material.AIR);
                 switch(color){
                     case RED:
-                        location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
+                        location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
                         break;
                     case BLUE:
-                        location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.LAPIS_BLOCK.getId());
+                        location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.LAPIS_BLOCK);
                         break;
                 }
             }
@@ -32,10 +32,10 @@ public class Spawn extends Structure {
                 location.getBlock().setType(Material.IRON_FENCE);
                 switch(color){
                     case RED:
-                        location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
+                        location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
                         break;
                     case BLUE:
-                        location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.LAPIS_BLOCK.getId());
+                        location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.LAPIS_BLOCK);
                         break;
                 }
             }

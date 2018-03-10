@@ -8,6 +8,7 @@ import com.snowgears.arathibasin.game.BattleTeam;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Colorable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -120,7 +121,8 @@ public class Base extends Structure{
                 for (Location location : floor) {
                     //grab any blocks that are not the capturing color of the base
                     Block block = location.getBlock();
-                    if (block.getData() != captureColor.getWoolData() && block.getData() != DyeColor.WHITE.getWoolData())
+                    Colorable coloredBlock = ((Colorable) block.getState().getData());
+                    if (coloredBlock.getColor() != captureColor && coloredBlock.getColor() != DyeColor.WHITE)
                         floorToChange.add(block);
                 }
                 if(!floorToChange.isEmpty())
@@ -130,7 +132,8 @@ public class Base extends Structure{
                     for (Location location : floor) {
                         //grab any blocks that are not the capturing color of the base
                         Block block = location.getBlock();
-                        if (block.getData() != captureColor.getWoolData())
+                        Colorable coloredBlock = ((Colorable) block.getState().getData());
+                        if (coloredBlock.getColor() != captureColor)
                             floorToChange.add(block);
                     }
                 }
@@ -139,7 +142,8 @@ public class Base extends Structure{
                 for (Location location : floor) {
                     //grab any blocks that are not the capturing color of the base
                     Block block = location.getBlock();
-                    if (block.getData() != captureColor.getWoolData())
+                    Colorable coloredBlock = ((Colorable) block.getState().getData());
+                    if (coloredBlock.getColor() != captureColor)
                         floorToChange.add(block);
                 }
             }
@@ -158,7 +162,7 @@ public class Base extends Structure{
                         randomIndex.add(i);
                 }
                 for(int i : randomIndex) {
-                    setBlock(floorToChange.get(i), Material.STAINED_GLASS, captureColor);
+                    setBlock(floorToChange.get(i), captureColor);
                 }
                 if(floorToChange.size() == 5) { //these 5 were just filled in above
                     transitionComplete = true;
@@ -187,12 +191,12 @@ public class Base extends Structure{
             Iterator<Location> iterator = entry.getValue().iterator();
             if(entry.getKey().toString().contains("GLASS")){
                 while(iterator.hasNext()){
-                    setBlock(iterator.next(), Material.STAINED_GLASS, color);
+                    setBlock(iterator.next(), color);
                 }
             }
             else{
                 while(iterator.hasNext()){
-                    setBlock(iterator.next(), Material.WOOL, color);
+                    setBlock(iterator.next(), color);
                 }
             }
         }
@@ -249,42 +253,28 @@ public class Base extends Structure{
         }, (ArathiBasin.getPlugin().getBaseCaptureInterval() * 20)); //1 minute
     }
 
-    private void setBlock(Location location, Material type, DyeColor color){
-        if(type == Material.STAINED_GLASS)
-            location.getBlock().setTypeIdAndData(Material.STAINED_GLASS.getId(), color.getWoolData(), true);
-        else
-            location.getBlock().setTypeIdAndData(Material.WOOL.getId(), color.getWoolData(), true);
-
-        switch(color){
-            case RED:
-                location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
-                break;
-            case BLUE:
-                location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.LAPIS_BLOCK.getId());
-                break;
-            case WHITE:
-                location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.WOOL.getId());
-                break;
-        }
+    private void setBlock(Location location, DyeColor color){
+        Block block = location.getBlock();
+        setBlock(block, color);
     }
 
-    private void setBlock(Block block, Material type, DyeColor color){
-        if(type == Material.STAINED_GLASS)
-            block.setTypeIdAndData(Material.STAINED_GLASS.getId(), color.getWoolData(), true);
-        else
-            block.setTypeIdAndData(Material.WOOL.getId(), color.getWoolData(), true);
+    private void setBlock(Block block, DyeColor color){
+
+        Colorable coloredBlock = ((Colorable) block.getState().getData());
+        coloredBlock.setColor(color);
+
 
         switch(color){
             case RED:
             case PINK:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
+                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
                 break;
             case BLUE:
             case LIGHT_BLUE:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.LAPIS_BLOCK.getId());
+                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.LAPIS_BLOCK);
                 break;
             case WHITE:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.WOOL.getId());
+                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.WOOL);
                 break;
         }
     }
