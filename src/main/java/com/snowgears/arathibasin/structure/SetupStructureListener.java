@@ -4,6 +4,7 @@ import com.snowgears.arathibasin.ArathiBasin;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -24,7 +25,7 @@ public class SetupStructureListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onClick(PlayerInteractEvent event){
-        if (event.isCancelled()) {
+        if (event.useInteractedBlock() == Event.Result.DENY) {
             return;
         }
         try {
@@ -40,7 +41,7 @@ public class SetupStructureListener implements Listener {
         if(structure.getCurrentModule() == null)
             return;
 
-        if(player.getItemInHand().getType() == Material.BLAZE_ROD) {
+        if(player.getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD) {
             if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 boolean added = structure.addLocation(event.getClickedBlock().getLocation());
                 if(added) {

@@ -141,8 +141,7 @@ public class PlayerScore {
         String name = buffer.getName();
         buffer.unregister();
         //register new buffer objective
-        buffer = scoreboard.registerNewObjective(name, "dummy");
-        buffer.setDisplayName(ChatColor.BOLD+"Score");
+        buffer = scoreboard.registerNewObjective(name, "dummy", ChatColor.BOLD+"Score");
 
         int redPoints = ArathiBasin.getPlugin().getArathiGame().getScoreManager().getRedScore();
         int bluePoints = ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueScore();
@@ -243,12 +242,10 @@ public class PlayerScore {
             this.addPlayerToTeam(p, ArathiBasin.getPlugin().getArathiGame().getTeamManager().getCurrentTeam(p).getColor());
         }
 
-        Objective objective = scoreboard.registerNewObjective("score", "dummy");
-        objective.setDisplayName(ChatColor.BOLD+"Score");
+        Objective objective = scoreboard.registerNewObjective("score", "dummy", ChatColor.BOLD+"Score");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        Objective bufferObjective = scoreboard.registerNewObjective("buffer", "dummy");
-        bufferObjective.setDisplayName(ChatColor.BOLD+"Score");
+        Objective bufferObjective = scoreboard.registerNewObjective("buffer", "dummy", ChatColor.BOLD+"Score");
 
         Score bufferScore = bufferObjective.getScore("buffer");
         bufferScore.setScore(1);

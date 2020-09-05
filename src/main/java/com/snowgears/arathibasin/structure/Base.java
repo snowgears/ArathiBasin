@@ -274,7 +274,7 @@ public class Base extends Structure{
                 block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.LAPIS_BLOCK);
                 break;
             case WHITE:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.WOOL);
+                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.WHITE_WOOL);
                 break;
         }
     }

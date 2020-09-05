@@ -4,6 +4,8 @@ import com.snowgears.arathibasin.ArathiBasin;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +41,7 @@ public class PlayerData{
         this.oldLocation = player.getLocation().clone();
         this.oldGameMode = player.getGameMode();
         this.oldHealth = player.getHealth();
-        this.oldMaxHealth = player.getMaxHealth();
+        this.oldMaxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         this.oldHunger = player.getFoodLevel();
         this.oldExperience = player.getTotalExperience();
         this.oldLevel = player.getLevel();
@@ -185,7 +187,10 @@ public class PlayerData{
         player.setLevel(this.oldLevel);
         player.teleport(oldLocation);
 
-        player.setMaxHealth(this.oldMaxHealth);
+        //set player to max health
+        AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        attribute.setBaseValue(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
+
         player.setHealth(this.oldHealth);
         player.setRemainingAir(this.oldRemainingAir);
         player.setFireTicks(this.oldFireTicks);

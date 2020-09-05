@@ -29,7 +29,7 @@ public class Spawn extends Structure {
     public void resetGates(){
         if(locations.containsKey(StructureModule.SPAWN_GATE)) {
             for (Location location : locations.get(StructureModule.SPAWN_GATE)) {
-                location.getBlock().setType(Material.IRON_FENCE);
+                location.getBlock().setType(Material.IRON_BARS);
                 switch(color){
                     case RED:
                         location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.REDSTONE_BLOCK);

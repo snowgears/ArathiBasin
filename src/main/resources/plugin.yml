@@ -1,7 +1,8 @@
 name: ArathiBasin
 author: Tanner Embry (SnowGears)
 description: Domination mini-game based on Arathi Basin from World of Warcraft!
-version: 1.0.7
+version: 1.0.8
+api-version: 1.16
 main: com.snowgears.arathibasin.ArathiBasin
 commands:
    arathi:

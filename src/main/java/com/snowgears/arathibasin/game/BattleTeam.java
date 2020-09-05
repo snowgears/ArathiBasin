@@ -6,6 +6,9 @@ import com.snowgears.arathibasin.structure.Spawn;
 import com.snowgears.arathibasin.structure.StructureModule;
 import com.snowgears.arathibasin.util.PlayerData;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -34,8 +37,11 @@ public class BattleTeam {
 
         //save player data to file
         new PlayerData(player);
-        player.setMaxHealth(20);
-        player.setHealth(20);
+        //set player max health to default
+        AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        attribute.setBaseValue(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
+        //heal the player to their max health
+        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
         player.setFoodLevel(20);
         player.setDisplayName(ChatColor.valueOf(color.toString()) + player.getName() + ChatColor.RESET);
         //player.setPlayerListName(player.getDisplayName()); //might not need this once scoreboards work correctly

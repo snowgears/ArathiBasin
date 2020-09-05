@@ -1,10 +1,7 @@
 package com.snowgears.arathibasin.util;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
-import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.*;
 
 /**
  * Created by Tanner on 8/13/16.
@@ -52,7 +49,17 @@ public class ArathiObjective implements Objective {
     }
 
     @Override
+    public void setRenderType(RenderType renderType) throws IllegalStateException {
+
+    }
+
+    @Override
     public DisplaySlot getDisplaySlot() throws IllegalStateException {
+        return null;
+    }
+
+    @Override
+    public RenderType getRenderType() throws IllegalStateException {
         return null;
     }
 
