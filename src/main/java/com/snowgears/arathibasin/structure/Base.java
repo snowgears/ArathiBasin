@@ -5,10 +5,10 @@ import com.snowgears.arathibasin.events.BaseAssaultEvent;
 import com.snowgears.arathibasin.events.BaseCaptureEvent;
 import com.snowgears.arathibasin.events.BaseDefendEvent;
 import com.snowgears.arathibasin.game.BattleTeam;
+import com.snowgears.arathibasin.util.UtilMethods;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.material.Colorable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -121,8 +121,7 @@ public class Base extends Structure{
                 for (Location location : floor) {
                     //grab any blocks that are not the capturing color of the base
                     Block block = location.getBlock();
-                    Colorable coloredBlock = ((Colorable) block.getState().getData());
-                    if (coloredBlock.getColor() != captureColor && coloredBlock.getColor() != DyeColor.WHITE)
+                    if (UtilMethods.getBlockColor(block) != captureColor && UtilMethods.getBlockColor(block) != DyeColor.WHITE)
                         floorToChange.add(block);
                 }
                 if(!floorToChange.isEmpty())
@@ -132,8 +131,7 @@ public class Base extends Structure{
                     for (Location location : floor) {
                         //grab any blocks that are not the capturing color of the base
                         Block block = location.getBlock();
-                        Colorable coloredBlock = ((Colorable) block.getState().getData());
-                        if (coloredBlock.getColor() != captureColor)
+                        if (UtilMethods.getBlockColor(block) != captureColor)
                             floorToChange.add(block);
                     }
                 }
@@ -142,8 +140,7 @@ public class Base extends Structure{
                 for (Location location : floor) {
                     //grab any blocks that are not the capturing color of the base
                     Block block = location.getBlock();
-                    Colorable coloredBlock = ((Colorable) block.getState().getData());
-                    if (coloredBlock.getColor() != captureColor)
+                    if (UtilMethods.getBlockColor(block) != captureColor)
                         floorToChange.add(block);
                 }
             }
@@ -260,22 +257,21 @@ public class Base extends Structure{
 
     private void setBlock(Block block, DyeColor color){
 
-        Colorable coloredBlock = ((Colorable) block.getState().getData());
-        coloredBlock.setColor(color);
-
-
-        switch(color){
-            case RED:
-            case PINK:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.REDSTONE_BLOCK);
-                break;
-            case BLUE:
-            case LIGHT_BLUE:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.LAPIS_BLOCK);
-                break;
-            case WHITE:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.WHITE_WOOL);
-                break;
+        String matString = "";
+        if(Tag.WOOL.isTagged(block.getType())){
+            matString = "_WOOL";
         }
+        else if(block.getType().toString().contains("STAINED_GLASS_PANE")){
+            matString = "_STAINED_GLASS_PANE";
+        }
+        else if(block.getType().toString().contains("GLASS")){ //account for regular glass too
+            matString = "_STAINED_GLASS";
+        }
+        Material material = Material.getMaterial(color.toString() + matString);
+        if(material == null)
+            return;
+
+        block.setType(material);
+        block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, material);
     }
 }
