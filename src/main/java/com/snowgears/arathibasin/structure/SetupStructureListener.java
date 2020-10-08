@@ -27,11 +27,6 @@ public class SetupStructureListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        try {
-            if (event.getHand() == EquipmentSlot.OFF_HAND) {
-                return; // off hand packet, ignore.
-            }
-        } catch (NoSuchMethodError error) {}
 
         Player player = event.getPlayer();
         Structure structure = plugin.getStructureManager().getSelectedStructure(player);

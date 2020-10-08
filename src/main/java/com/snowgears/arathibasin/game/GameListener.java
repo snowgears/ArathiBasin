@@ -157,11 +157,6 @@ public class GameListener implements Listener{
         if (event.isCancelled()) {
             return;
         }
-        try {
-            if (event.getHand() == EquipmentSlot.OFF_HAND) {
-                return; // off hand packet, ignore.
-            }
-        } catch (NoSuchMethodError error) {}
 
         Player player = event.getPlayer();
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.WOOL){
