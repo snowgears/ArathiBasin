@@ -123,7 +123,7 @@ public class ArathiCommand implements CommandExecutor {
                     else
                         player.sendMessage(ChatColor.RED + "You are already in the queue for the Arathi Basin game.");
                 }
-            } else if (args.length == 2) {
+            } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("add")) {
                     if (!isOp) {
                         player.sendMessage(ChatColor.RED + "You do not have access to that command.");
@@ -155,7 +155,7 @@ public class ArathiCommand implements CommandExecutor {
             return true;
         }
         else{
-            if (args.length == 2) {
+            if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("add")) {
 
                     Player playerArg = plugin.getServer().getPlayer(args[1]);
