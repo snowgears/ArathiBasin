@@ -20,8 +20,12 @@ endWait: 120
 
 # When this score is reached, players on both teams will get an alert that winning team is close to victory #
 scoreWarning: 1400
-# When this score is reached, the winner is announed and the game will end #
+# When this score is reached, the winner is announced and the game will end #
 scoreWin: 1600
+# This is the max time limit (in minutes) of the game. Game will end if this limit is reached. Set to 0 for no limit #
+gameMaxTime: 0
+# When this time (in minutes) is reached, the remaining time is announced. Set to 0 for no announcement #
+gameTimeWarning: 0
 
 # This is the amount of time (in ticks) that bases will scan for nearby players #
 # Setting this to a lower number will decrease base assault time but may put more stress on server #

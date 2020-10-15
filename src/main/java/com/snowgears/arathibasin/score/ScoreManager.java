@@ -11,6 +11,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class ScoreManager {
 
@@ -21,6 +22,7 @@ public class ScoreManager {
 
     private boolean redWarning;
     private boolean blueWarning;
+    private boolean timeWarning;
 
     private ScoreTick redTick;
     private ScoreTick blueTick;
@@ -28,6 +30,7 @@ public class ScoreManager {
     private HashMap<UUID, PlayerScore> playerScores;
 
     private int scoreTaskID;
+    private long startTimeMillis;
 
     public ScoreManager(ArathiBasin instance){
         plugin = instance;
@@ -43,6 +46,7 @@ public class ScoreManager {
                 scoreTask();
             }
         }, 20L, 20L);
+        this.startTimeMillis = System.currentTimeMillis();
     }
 
     public void stopScoreTask(){
@@ -112,6 +116,51 @@ public class ScoreManager {
             }
         }
 
+        //if the game has a max time limit
+        if(plugin.getGameMaxTime() > 0){
+            long elapsedTimeMillis = System.currentTimeMillis() - startTimeMillis;
+            long elapsedMinutes = TimeUnit.MILLISECONDS.toMinutes(elapsedTimeMillis);
+            int remainingMinutes = plugin.getGameMaxTime() - (int)elapsedMinutes;
+
+            if(!timeWarning && elapsedMinutes >= plugin.getGameTimeWarning()){
+                timeWarning = true;
+                String message = ChatColor.GRAY + ""+ remainingMinutes + " minutes remaining";
+                String warning = ChatColor.GRAY + "Time Warning";
+                for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                    TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
+                }
+            }
+
+            if(elapsedMinutes >= plugin.getGameMaxTime()){
+                over = true;
+
+                if(this.blueScore > this.redScore) {
+                    String message = ChatColor.BLUE + plugin.getBlueTeamName() + " Wins!";
+                    String finalScore = ChatColor.BLUE + "" + this.blueScore + "  " + ChatColor.RED + this.redScore;
+                    for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                        TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                    }
+                }
+                else if(this.redScore > this.blueScore){
+                    if(this.blueScore > this.redScore) {
+                        String message = ChatColor.RED + plugin.getRedTeamName() + " Wins!";
+                        String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
+                        for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                            TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                        }
+                    }
+                }
+                else {
+                    String message = ChatColor.GRAY + "Tie Game!";
+                    String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
+                    for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                        TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                    }
+                }
+            }
+        }
+
+
         if(over){
             ArathiBasin.getPlugin().getArathiGame().endGame(false);
         }
@@ -166,6 +215,7 @@ public class ScoreManager {
         redWarning = false;
         blueWarning = false;
         playerScores.clear();
+        this.startTimeMillis = 0;
     }
 
     public List<PlayerScore> getTopScores(){
