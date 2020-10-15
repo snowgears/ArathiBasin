@@ -143,13 +143,11 @@ public class ScoreManager {
                     }
                 }
                 else if(this.redScore > this.blueScore){
-                    if(this.blueScore > this.redScore) {
-                        over = true;
-                        String message = ChatColor.RED + plugin.getRedTeamName() + " Wins!";
-                        String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
-                        for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
-                            TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
-                        }
+                    over = true;
+                    String message = ChatColor.RED + plugin.getRedTeamName() + " Wins!";
+                    String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
+                    for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                        TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
                     }
                 }
                 //if scores are tied, keep going. Next point wins from here
