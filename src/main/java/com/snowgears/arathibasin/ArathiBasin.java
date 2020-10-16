@@ -37,6 +37,7 @@ public class ArathiBasin extends JavaPlugin {
     private int gameTimeWarning;
     private int startWait;
     private int endWait;
+    private int respawnWait;
     private int baseAssaultInterval;
     private int baseCaptureInterval;
 
@@ -76,6 +77,7 @@ public class ArathiBasin extends JavaPlugin {
         gameTimeWarning = config.getInt("gameTimeWarning");
         startWait = config.getInt("startWait");
         endWait = config.getInt("endWait");
+        respawnWait = config.getInt("respawnWait");
 
         baseAssaultInterval = config.getInt("baseAssaultInterval");
         baseCaptureInterval = config.getInt("baseCaptureInterval");
@@ -141,6 +143,10 @@ public class ArathiBasin extends JavaPlugin {
 
     public int getEndWait(){
         return endWait;
+    }
+
+    public int getRespawnWait(){
+        return respawnWait;
     }
 
     public int getBaseAssaultInterval(){

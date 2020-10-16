@@ -1,6 +1,7 @@
 package com.snowgears.arathibasin.game;
 
 import com.snowgears.arathibasin.ArathiBasin;
+import com.snowgears.arathibasin.score.PlayerScore;
 import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.structure.StructureModule;
 import com.snowgears.arathibasin.util.PlayerData;
@@ -15,11 +16,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -32,6 +35,7 @@ public class GameListener implements Listener{
 
     private ArathiBasin plugin;
     private int timeTaskID;
+    private HashMap<String, Boolean> playerRespawnMap = new HashMap<>();
 
     public GameListener(ArathiBasin instance){
         plugin = instance;
@@ -166,6 +170,12 @@ public class GameListener implements Listener{
                 if(team != null) {
                     //only allow player to teleport to own color structure
                     if (s.getColor() == team.getColor()) {
+                        //check if the player is on a respawn cooldown first
+                        if(playerRespawnMap.containsKey(player.getName())){
+                            player.sendMessage(ChatColor.RED + "You need to wait "+plugin.getRespawnWait()+" seconds after respawn before using this.");
+                            return;
+                        }
+
                         ArrayList<Location> beaconGlassLocations = s.getLocations(StructureModule.BASE_GLASS_BEACON);
                         if (beaconGlassLocations != null) {
                             Location tpLoc = beaconGlassLocations.get(0).clone().add(0, 1, 0);
@@ -188,11 +198,25 @@ public class GameListener implements Listener{
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
+        final String playerName = player.getName();
         BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
         if(team != null){
             Location respawn = team.getSpawnLocation();
             if(respawn != null)
                 event.setRespawnLocation(respawn);
+
+            if(plugin.getRespawnWait() > 0) {
+                playerRespawnMap.put(player.getName(), true);
+
+                Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
+                    @Override
+                    public void run() {
+                        if(playerRespawnMap.containsKey(playerName)){
+                            playerRespawnMap.remove(playerName);
+                        }
+                    }
+                }, plugin.getRespawnWait()*20);
+            }
         }
     }
 
