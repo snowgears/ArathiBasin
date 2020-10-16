@@ -78,7 +78,7 @@ public class PlayerQueue {
     }
 
     public void movePlayersToTeams(){
-        System.out.println("Moving players from queue to game.");
+//        System.out.println("Moving players from queue to game.");
         BattleTeam redTeam = plugin.getArathiGame().getTeamManager().getTeam(DyeColor.RED);
         BattleTeam blueTeam = plugin.getArathiGame().getTeamManager().getTeam(DyeColor.BLUE);
 
@@ -114,17 +114,17 @@ public class PlayerQueue {
                 }
             }
             else{
-                System.out.println("Wanted blue team.");
-                System.out.println("Blue Size: "+blueTeam.size());
-                System.out.println("Red Size: "+redTeam.size());
+//                System.out.println("Wanted blue team.");
+//                System.out.println("Blue Size: "+blueTeam.size());
+//                System.out.println("Red Size: "+redTeam.size());
                 if(blueTeam.size() <= redTeam.size()) {
-                    System.out.println("Got onto blue team.");
+//                    System.out.println("Got onto blue team.");
                     blueTeam.add(player);
                     iterator.remove();
                     movePlayersToTeams();
                     return;
                 }
-                System.out.println("Done with adding players.");
+ //               System.out.println("Done with adding players.");
             }
         }
     }

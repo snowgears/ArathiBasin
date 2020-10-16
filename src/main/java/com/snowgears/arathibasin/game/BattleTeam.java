@@ -53,6 +53,9 @@ public class BattleTeam {
         //create a new player score (and display scoreboard)
         PlayerScore s = ArathiBasin.getPlugin().getArathiGame().getScoreManager().addPlayerScore(player);
 
+        //TODO REMOVE THIS when porting new changes back over to non Twitch event specific plugin
+        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set "+color.name().toLowerCase());
+
         return true;
     }
 
@@ -61,6 +64,9 @@ public class BattleTeam {
 
             //remove scoreboard from player
             ArathiBasin.getPlugin().getArathiGame().getScoreManager().removePlayerScore(player);
+
+            //TODO REMOVE THIS when porting new changes back over to non Twitch event specific plugin
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set spectator");
 
             for(Player p : ArathiBasin.getPlugin().getArathiGame().getTeamManager().getAllPlayers()){
                 if(p != null)
@@ -132,6 +138,10 @@ public class BattleTeam {
         for(UUID uuid : players.keySet()){
             Player player = Bukkit.getPlayer(uuid);
             if(player != null){
+
+                //TODO REMOVE THIS when porting new changes back over to non Twitch event specific plugin
+                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set spectator");
+
                 PlayerData data = PlayerData.loadFromFile(player);
                 if(data != null)
                     data.apply();
