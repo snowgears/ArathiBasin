@@ -11,6 +11,7 @@ public class TeamManager {
     private PlayerQueue queue;
     private BattleTeam redTeam;
     private BattleTeam blueTeam;
+    private ArrayList<String> spectators = new ArrayList<>();
 
     public TeamManager(){
         queue = new PlayerQueue(ArathiBasin.getPlugin());
@@ -38,6 +39,40 @@ public class TeamManager {
         if(redTeam.size() == 0  && blueTeam.size() == 0)
             ArathiBasin.getPlugin().getArathiGame().endGame(true);
         return removed;
+    }
+
+    public boolean addSpectator(Player player){
+        //don't let current players in game on a team spectate
+        if(getCurrentTeam(player) != null)
+            return false;
+
+        if(!spectators.contains(player.getName())) {
+            spectators.add(player.getName());
+
+            //add a playerscore for this spectator
+            ArathiBasin.getPlugin().getArathiGame().getScoreManager().addPlayerScore(player);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean removeSpectator(Player player){
+        if(spectators.contains(player.getName())) {
+            spectators.remove(player.getName());
+
+            //add a playerscore for this spectator
+            ArathiBasin.getPlugin().getArathiGame().getScoreManager().removePlayerScore(player);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isSpectator(Player player){
+        if(spectators.contains(player.getName())) {
+            return true;
+        }
+        return false;
     }
 
     public BattleTeam getCurrentTeam(Player player){

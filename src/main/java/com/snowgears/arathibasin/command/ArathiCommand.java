@@ -55,6 +55,7 @@ public class ArathiCommand implements CommandExecutor {
                 //TODO
                 //player.sendMessage(ChatColor.AQUA + "/arathi stats" + ChatColor.GRAY + " - show your stats from past games");
                 player.sendMessage(ChatColor.AQUA + "/arathi leave" + ChatColor.GRAY + " - leave the queue (or game if in progress)");
+                player.sendMessage(ChatColor.AQUA + "/arathi spectate" + ChatColor.GRAY + " - toggles on and off spectating the Arathi Basin game");
                 if (isOp) {
                     player.sendMessage(ChatColor.RED + "/arathi tp" + ChatColor.GRAY + " - (OP) teleport to the Arathi Basin world");
                     player.sendMessage(ChatColor.RED + "/arathi start" + ChatColor.GRAY + " - (OP) force start the Arathi Basin game");
@@ -74,6 +75,15 @@ public class ArathiCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.GRAY + "You have been removed from the Arathi Basin game.");
                     } else {
                         player.sendMessage(ChatColor.RED + "You are not currently queued for the Arathi Basin game.");
+                    }
+                } else if (args[0].equalsIgnoreCase("spectate")) {
+                    boolean currentlySpectating = plugin.getArathiGame().getTeamManager().isSpectator(player);
+                    if (currentlySpectating) {
+                        plugin.getArathiGame().removeSpectator(player);
+                        player.sendMessage(ChatColor.GRAY + "You are no longer spectating the Arathi Basin game.");
+                    } else {
+                        plugin.getArathiGame().addSpectator(player);
+                        player.sendMessage(ChatColor.GRAY + "You are now spectating the Arathi Basin game.");
                     }
                 } else if (args[0].equalsIgnoreCase("stats")) {
                     //TODO display stats to player

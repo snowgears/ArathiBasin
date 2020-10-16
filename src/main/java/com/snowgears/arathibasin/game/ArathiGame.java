@@ -77,6 +77,14 @@ public class ArathiGame {
         return teamManager.removePlayer(player);
     }
 
+    public boolean addSpectator(Player player){
+        return teamManager.addSpectator(player);
+    }
+
+    public boolean removeSpectator(Player player){
+        return teamManager.removeSpectator(player);
+    }
+
     public TeamManager getTeamManager(){
         return teamManager;
     }

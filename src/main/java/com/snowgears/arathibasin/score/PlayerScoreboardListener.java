@@ -136,6 +136,11 @@ public class PlayerScoreboardListener implements Listener {
         final Player player = event.getPlayer();
         PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(player);
         if (score != null) {
+
+            //dont expand scoreboard to show full stats (since there are none) if player is spectating
+            if(score.isSpectator())
+                return;
+
             if (event.isSneaking()) {
                 int times = 0;
                 if (timesSneaked.containsKey(player.getUniqueId())) {

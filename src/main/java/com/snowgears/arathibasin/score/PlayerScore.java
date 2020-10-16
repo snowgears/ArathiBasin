@@ -28,6 +28,7 @@ public class PlayerScore {
     private int defends;
     private int points;
     private boolean showFullScore;
+    private boolean isSpectator;
 
     private Scoreboard scoreboard;
 
@@ -39,6 +40,9 @@ public class PlayerScore {
         BattleTeam team = ArathiBasin.getPlugin().getArathiGame().getTeamManager().getCurrentTeam(player);
         if(team != null) {
             setupScoreboard(team);
+        }
+        else{
+            setupScoreboardSpectator();
         }
     }
 
@@ -106,6 +110,10 @@ public class PlayerScore {
 
     public int getPoints(){
         return points;
+    }
+
+    public boolean isSpectator(){
+        return isSpectator;
     }
 
     public void addPoints(int points){
@@ -255,6 +263,34 @@ public class PlayerScore {
 
         update();
         player.setScoreboard(scoreboard);
+    }
+
+    private void setupScoreboardSpectator(){
+
+        Player player = Bukkit.getPlayer(playerUUID);
+        if(player == null)
+            return;
+
+        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        Team redTeam = scoreboard.registerNewTeam("RED");
+        setupScoreboardTeam(redTeam, ChatColor.RED);
+        Team blueTeam = scoreboard.registerNewTeam("BLUE");
+        setupScoreboardTeam(blueTeam, ChatColor.BLUE);
+
+        Objective objective = scoreboard.registerNewObjective("score", "dummy");
+        objective.setDisplayName(ChatColor.BOLD+"Score");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        Objective bufferObjective = scoreboard.registerNewObjective("buffer", "dummy");
+        bufferObjective.setDisplayName(ChatColor.BOLD+"Score");
+
+        Score bufferScore = bufferObjective.getScore("buffer");
+        bufferScore.setScore(1);
+
+        update();
+        player.setScoreboard(scoreboard);
+
+        isSpectator = true;
     }
 
     private void setupScoreboardTeam(Team team, ChatColor color) {
