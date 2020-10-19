@@ -30,6 +30,9 @@ public class ArathiGame {
     public boolean startGame(){
         if(inProgress)
             return false;
+        if(ArathiBasin.getPlugin().isDebug()) {
+            System.out.println("[Arathi] Starting game and resetting structures.");
+        }
         ArathiBasin.getPlugin().getStructureManager().resetStructures("world_arathi");
         inProgress = true;
         isEnding = false;
@@ -102,7 +105,7 @@ public class ArathiGame {
     }
 
     private void printFinalScores(){
-        List<PlayerScore> topScores = scoreManager.getTopScores();
+        List<PlayerScore> topScores = scoreManager.getOrderedPlayerScores();
         for(Player player : teamManager.getAllPlayers()){
             int scores = 1;
             if(player != null) {

@@ -15,6 +15,9 @@ public class ArathiStartTimer extends BukkitRunnable{
     public ArathiStartTimer(ArathiBasin instance){
         plugin = instance;
         timeTilGatesOpen = plugin.getStartWait();
+        if(ArathiBasin.getPlugin().isDebug()) {
+            System.out.println("[Arathi] Initializing new game start timer.");
+        }
     }
     @Override
     public void run(){

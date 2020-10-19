@@ -155,6 +155,8 @@ public class ArathiCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.RED + "Could not resolve <" + args[2] + "> as a team.");
                         return true;
                     }
+                    if(plugin.isDebug())
+                        System.out.println("[Arathi] Adding player to game: "+playerArg.getName()+". Adding on team "+color.name());
                     boolean added = plugin.getArathiGame().addPlayer(playerArg, color);
                     if (added)
                         player.sendMessage(ChatColor.GREEN + playerArg.getName()+" has been added to the " + color.toString() + " team queue for the Arathi Basin game.");

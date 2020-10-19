@@ -32,29 +32,37 @@ public class BattleTeam {
         if(size() >= maxSize() || players.containsKey(player.getUniqueId()))
             return false;
 
-        //save player data to file
-        new PlayerData(player);
-        player.setMaxHealth(20);
-        player.setHealth(20);
-        player.setFoodLevel(20);
-        player.setDisplayName(ChatColor.valueOf(color.toString()) + player.getName() + ChatColor.RESET);
-        //player.setPlayerListName(player.getDisplayName()); //might not need this once scoreboards work correctly
-        player.getInventory().clear();
-        player.setGameMode(GameMode.ADVENTURE);
-        player.teleport(this.getSpawnLocation());
-
-        players.put(player.getUniqueId(), true);
-
-        for(Player p : ArathiBasin.getPlugin().getArathiGame().getTeamManager().getAllPlayers()){
-            if(p != null)
-                p.sendMessage(player.getDisplayName()+ChatColor.YELLOW+" has joined the battle!");
-        }
-
-        //create a new player score (and display scoreboard)
-        PlayerScore s = ArathiBasin.getPlugin().getArathiGame().getScoreManager().addPlayerScore(player);
-
         //TODO REMOVE THIS when porting new changes back over to non Twitch event specific plugin
         Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set "+color.name().toLowerCase());
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                //save player data to file
+                new PlayerData(player);
+                player.setMaxHealth(20);
+                player.setHealth(20);
+                player.setFoodLevel(20);
+                player.setDisplayName(ChatColor.valueOf(color.toString()) + player.getName() + ChatColor.RESET);
+                //player.setPlayerListName(player.getDisplayName()); //might not need this once scoreboards work correctly
+                player.getInventory().clear();
+                player.setGameMode(GameMode.ADVENTURE);
+                player.teleport(getSpawnLocation());
+
+                //players.put(player.getUniqueId(), true);
+
+                for(Player p : ArathiBasin.getPlugin().getArathiGame().getTeamManager().getAllPlayers()){
+                    if(p != null)
+                        p.sendMessage(player.getDisplayName()+ChatColor.YELLOW+" has joined the battle!");
+                }
+
+                //create a new player score (and display scoreboard)
+                PlayerScore s = ArathiBasin.getPlugin().getArathiGame().getScoreManager().addPlayerScore(player);
+
+            }
+        }, 5);
+
+        players.put(player.getUniqueId(), true);
 
         return true;
     }

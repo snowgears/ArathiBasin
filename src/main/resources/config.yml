@@ -35,3 +35,6 @@ gameTimeWarning: 0
 baseAssaultInterval: 40
 # This is the amount of time (in seconds) that bases need to remain controlled until they are captured #
 baseCaptureInterval: 60
+
+# Set this to true to turn on debug logging in console #
+debug: false

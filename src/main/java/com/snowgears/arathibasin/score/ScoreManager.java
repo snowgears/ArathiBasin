@@ -28,6 +28,7 @@ public class ScoreManager {
     private ScoreTick blueTick;
 
     private HashMap<UUID, PlayerScore> playerScores;
+    private List<PlayerScore> orderedPlayerScores;
 
     private int scoreTaskID;
     private long startTimeMillis;
@@ -35,6 +36,7 @@ public class ScoreManager {
     public ScoreManager(ArathiBasin instance){
         plugin = instance;
         playerScores = new HashMap<>();
+        orderedPlayerScores = new ArrayList<>();
         redTick = new ScoreTick(DyeColor.RED);
         blueTick = new ScoreTick(DyeColor.BLUE);
     }
@@ -72,6 +74,8 @@ public class ScoreManager {
         this.redScore += redpoints;
         int bluepoints = blueTick.getPoints(blueBases);
         this.blueScore += bluepoints;
+
+        Collections.sort(orderedPlayerScores, new PlayerScoreComparator());
 
         if (!redWarning && redScore >= plugin.getScoreWarning()) {
             redWarning = true;
@@ -170,6 +174,8 @@ public class ScoreManager {
         if(team != null) {
             for (PlayerScore s : this.playerScores.values()) {
                 s.addPlayerToTeam(player, team.getColor());
+                if(!orderedPlayerScores.contains(score))
+                    orderedPlayerScores.add(score);
             }
         }
 
@@ -183,13 +189,42 @@ public class ScoreManager {
 
             BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);
             if(team != null) {
-                for (PlayerScore s : this.playerScores.values()) {
-                    s.removePlayerFromTeam(player, team.getColor());
-                }
+                PlayerScore score = getPlayerScore(player);
+                if(score == null)
+                    return false;
+
+                score.removePlayerFromTeam(player, team.getColor());
+                if (orderedPlayerScores.contains(score))
+                    orderedPlayerScores.remove(score);
+
             }
             return true;
         }
         return false;
+    }
+
+    public int getCurrentRanking(Player player){
+        PlayerScore score = getPlayerScore(player);
+        if(score == null)
+            return -1;
+        try {
+            return orderedPlayerScores.indexOf(score)+1;
+        } catch(IndexOutOfBoundsException e){
+            return -1;
+        }
+    }
+
+    public List<PlayerScore> getOrderedPlayerScores(){
+        return this.orderedPlayerScores;
+    }
+
+    //note that rankIndex is +1 more than index. Getting rank 1 will search at index 0
+    public PlayerScore getScoreAtRank(int rankIndex){
+        try {
+            return orderedPlayerScores.get(rankIndex - 1);
+        } catch (IndexOutOfBoundsException e){
+            return null;
+        }
     }
 
     public PlayerScore getPlayerScore(Player player){
@@ -200,6 +235,8 @@ public class ScoreManager {
 
     public void savePlayerScore(PlayerScore score){
         playerScores.put(score.getPlayerUUID(), score);
+        if(!orderedPlayerScores.contains(score))
+            orderedPlayerScores.add(score);
         score.update();
     }
 
@@ -209,14 +246,22 @@ public class ScoreManager {
         redWarning = false;
         blueWarning = false;
         playerScores.clear();
+        orderedPlayerScores.clear();
         this.startTimeMillis = 0;
     }
 
-    public List<PlayerScore> getTopScores(){
-        List<PlayerScore> scores = new ArrayList<PlayerScore>(playerScores.values());
-        Collections.sort(scores, new PlayerScoreComparator());
-        return scores;
-    }
+//    public List<PlayerScore> getTopScores(){
+//        List<PlayerScore> scores = new ArrayList<PlayerScore>(playerScores.values());
+//        Iterator<PlayerScore> itr = scores.iterator();
+//        PlayerScore score;
+//        while (itr.hasNext()) {
+//            score = itr.next();
+//            if(score.isSpectator()) //only include playerscores who are actually on a team
+//                itr.remove();
+//        }
+//        Collections.sort(scores, new PlayerScoreComparator());
+//        return scores;
+//    }
 
     public int getRedScore(){
         return redScore;

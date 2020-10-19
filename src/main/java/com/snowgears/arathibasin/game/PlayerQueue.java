@@ -25,6 +25,15 @@ public class PlayerQueue {
 
     public boolean addPlayer(Player player, DyeColor teamPreference){
 
+        if(plugin.isDebug()) {
+            String pref;
+            if(teamPreference == null)
+                pref = "none";
+            else
+                pref = teamPreference.name();
+            System.out.println("[Arathi] Adding " + player.getName() + " to queue with team preference " + pref);
+        }
+
         if(queue.containsKey(player.getUniqueId())) {
             return false;
         }
@@ -93,12 +102,18 @@ public class PlayerQueue {
 
             if(color == null){
                 if(blueTeam.size() > redTeam.size()) {
+                    if(plugin.isDebug()) {
+                        System.out.println("[Arathi] Current team sizes - BLUE: "+blueTeam.size()+", RED: "+redTeam.size()+".Adding player to team RED.");
+                    }
                     redTeam.add(player);
                     iterator.remove();
                     movePlayersToTeams();
                     return;
                 }
                 else{
+                    if(plugin.isDebug()) {
+                        System.out.println("[Arathi] Current team sizes - BLUE: "+blueTeam.size()+", RED: "+redTeam.size()+".Adding player to team BLUE.");
+                    }
                     blueTeam.add(player);
                     iterator.remove();
                     movePlayersToTeams();

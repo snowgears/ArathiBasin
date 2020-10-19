@@ -296,14 +296,14 @@ public class PlayerScore {
     private void setupScoreboardTeam(Team team, ChatColor color) {
         try {
             team.setPrefix(color + "");
-            team.setAllowFriendlyFire(false);
+            //team.setAllowFriendlyFire(false); //TODO put this back after event
             team.setCanSeeFriendlyInvisibles(true);
             //team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
             //team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, Team.OptionStatus.NEVER);
             //team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.ALWAYS);
         } catch (NoClassDefFoundError e) {
             team.setPrefix(color + "");
-            team.setAllowFriendlyFire(false);
+            //team.setAllowFriendlyFire(false); //TODO put this back after event
             team.setCanSeeFriendlyInvisibles(true);
         }
     }

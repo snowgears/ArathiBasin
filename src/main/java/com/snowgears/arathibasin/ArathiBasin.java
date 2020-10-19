@@ -7,8 +7,10 @@ import com.snowgears.arathibasin.game.GameListener;
 import com.snowgears.arathibasin.score.PlayerScoreboardListener;
 import com.snowgears.arathibasin.structure.SetupStructureListener;
 import com.snowgears.arathibasin.structure.StructureManager;
+import com.snowgears.arathibasin.util.ArathiPlaceholderExpansion;
 import com.snowgears.arathibasin.util.FileUtils;
 import com.snowgears.arathibasin.util.UnzipUtility;
+import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,6 +42,7 @@ public class ArathiBasin extends JavaPlugin {
     private int respawnWait;
     private int baseAssaultInterval;
     private int baseCaptureInterval;
+    private boolean debug;
 
     public static ArathiBasin getPlugin() {
         return plugin;
@@ -54,6 +57,10 @@ public class ArathiBasin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(gameListener, this);
         getServer().getPluginManager().registerEvents(setupListener, this);
 
+        // Small check to make sure that PlaceholderAPI is installed (used for tab scoreboards in game as an option)
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+            new ArathiPlaceholderExpansion(this).register();
+        }
 
         this.getCommand("arathi").setExecutor(new ArathiCommand(this));
         this.getCommand("structure").setExecutor(new StructureCommand(this));
@@ -81,6 +88,8 @@ public class ArathiBasin extends JavaPlugin {
 
         baseAssaultInterval = config.getInt("baseAssaultInterval");
         baseCaptureInterval = config.getInt("baseCaptureInterval");
+
+        debug = config.getBoolean("debug");
 
         generateWorld();
 
@@ -155,6 +164,10 @@ public class ArathiBasin extends JavaPlugin {
 
     public int getBaseCaptureInterval(){
         return baseCaptureInterval;
+    }
+
+    public boolean isDebug(){
+        return debug;
     }
 
     private void generateWorld(){

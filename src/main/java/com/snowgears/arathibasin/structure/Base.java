@@ -255,6 +255,9 @@ public class Base extends Structure{
         else
             location.getBlock().setTypeIdAndData(Material.WOOL.getId(), color.getWoolData(), true);
 
+//        if(ArathiBasin.getPlugin().isDebug()) {
+//            System.out.println("[Arathi] Setting block at location ("+location.getBlockX()+", "+location.getBlockY()+", "+location.getBlockZ()+") to color "+color.name());
+//        }
         switch(color){
             case RED:
                 location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.REDSTONE_BLOCK.getId());
