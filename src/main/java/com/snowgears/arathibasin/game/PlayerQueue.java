@@ -41,6 +41,7 @@ public class PlayerQueue {
 
         tryToStartGame();
 
+        //TODO may need to check if try to start game returned false (game is already in progress) as to not spam players (TEST THIS)
         if(plugin.getArathiGame().isInProgress())
             movePlayersToTeams();
 

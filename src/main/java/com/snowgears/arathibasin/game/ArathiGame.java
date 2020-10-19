@@ -40,6 +40,8 @@ public class ArathiGame {
         startTimer = new ArathiStartTimer(ArathiBasin.getPlugin());
         startTimer.runTaskTimer(ArathiBasin.getPlugin(), 0, 20); //run timer every second
 
+        ArathiBasin.getPlugin().getArathiGame().getTeamManager().moveQueue();
+
         return true;
     }
 
