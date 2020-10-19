@@ -157,15 +157,15 @@ public class PlayerScore {
         //put all scores in new buffer objective
         if(showFullScore) {
             //make sure the higher score is shown above the other
-            int red = 14;
-            int redNum = 13;
-            int blue = 12;
-            int blueNum = 11;
+            int red = 12;
+            int redNum = 11;
+            int blue = 10;
+            int blueNum = 9;
             if(redPoints < bluePoints){
-                red = 12;
-                redNum = 11;
-                blue = 14;
-                blueNum = 13;
+                red = 10;
+                redNum = 9;
+                blue = 12;
+                blueNum = 11;
             }
             Score redScore = buffer.getScore(ChatColor.RED + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getRedTeamName());
             redScore.setScore(red);
@@ -179,29 +179,45 @@ public class PlayerScore {
             Score blueScoreNum = buffer.getScore("    " + ChatColor.BLUE + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueScore());
             blueScoreNum.setScore(blueNum);
 
+            Score bases = buffer.getScore(ChatColor.BOLD + "Bases:");
+            bases.setScore(8);
+
+            //if blue score is being shown above redscore
+            if(redPoints < bluePoints) {
+                Score basesNum = buffer.getScore("    " + ChatColor.BLUE+ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueBases()+ChatColor.GRAY+" - "+ChatColor.RED + "" + ArathiBasin.getPlugin().getArathiGame().getScoreManager().getRedBases());
+                basesNum.setScore(7);
+            }
+            else{
+                Score basesNum = buffer.getScore("    " +ChatColor.RED+ArathiBasin.getPlugin().getArathiGame().getScoreManager().getRedBases()+ChatColor.GRAY+" - "+ ChatColor.BLUE+ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueBases());
+                basesNum.setScore(7);
+            }
+
             Score points = buffer.getScore(ChatColor.GOLD + "Points:");
-            points.setScore(10);
+            points.setScore(6);
 
             Score pointsNum = buffer.getScore("    " + ChatColor.GOLD + "" + this.points);
-            pointsNum.setScore(9);
+            pointsNum.setScore(5);
 
-            Score assaults = buffer.getScore(ChatColor.RED+ "Assaults:");
-            assaults.setScore(8);
 
-            Score assaultsNum = buffer.getScore("    " + ChatColor.RED + "" + this.assaults);
-            assaultsNum.setScore(7);
+//            Score assaults = buffer.getScore(ChatColor.RED+ "Assaults:");
+//            assaults.setScore(8);
+//
+//            Score assaultsNum = buffer.getScore("    " + ChatColor.RED + "" + this.assaults);
+//            assaultsNum.setScore(7);
+//
+//            Score captures = buffer.getScore(ChatColor.AQUA + "Captures:");
+//            captures.setScore(6);
+//
+//            Score capturesNum = buffer.getScore("    " + ChatColor.AQUA + "" + this.captures);
+//            capturesNum.setScore(5);
 
-            Score captures = buffer.getScore(ChatColor.AQUA + "Captures:");
-            captures.setScore(6);
+            //assaults, captures, and defends
+            //TODO maybe make each letter in here a different chat color separated by GRAY '/' chars
+            Score acd = buffer.getScore(ChatColor.LIGHT_PURPLE + "A / C / D:");
+            acd.setScore(4);
 
-            Score capturesNum = buffer.getScore("    " + ChatColor.AQUA + "" + this.captures);
-            capturesNum.setScore(5);
-
-            Score defends = buffer.getScore(ChatColor.LIGHT_PURPLE + "Defends:");
-            defends.setScore(4);
-
-            Score defendsNum = buffer.getScore("    " + ChatColor.LIGHT_PURPLE + "" + this.defends);
-            defendsNum.setScore(3);
+            Score acdNum = buffer.getScore("    " + ChatColor.LIGHT_PURPLE + "" + this.assaults+" / "+this.captures+" / "+this.defends);
+            acdNum.setScore(3);
 
             Score kills = buffer.getScore(ChatColor.GREEN + "K/D");
             kills.setScore(2);
@@ -214,8 +230,15 @@ public class PlayerScore {
             Score redScore = buffer.getScore(ChatColor.RED + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getRedTeamName());
             redScore.setScore(ArathiBasin.getPlugin().getArathiGame().getScoreManager().getRedScore());
 
+            Score redBasesCount = buffer.getScore(ChatColor.RED + "" + "Bases");
+            redBasesCount.setScore(ArathiBasin.getPlugin().getArathiGame().getScoreManager().getRedBases());
+
             Score blueScore = buffer.getScore(ChatColor.BLUE + "" + ChatColor.BOLD + ArathiBasin.getPlugin().getBlueTeamName());
             blueScore.setScore(ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueScore());
+
+            Score blueBasesCount = buffer.getScore(ChatColor.BLUE + "" + "Bases");
+            blueBasesCount.setScore(ArathiBasin.getPlugin().getArathiGame().getScoreManager().getBlueBases());
+
         }
         //set the new buffer objective to active by assigning it to the display slot
         //scoreboard.clearSlot(DisplaySlot.SIDEBAR);
@@ -243,6 +266,7 @@ public class PlayerScore {
         setupScoreboardTeam(redTeam, ChatColor.RED);
         Team blueTeam = scoreboard.registerNewTeam("BLUE");
         setupScoreboardTeam(blueTeam, ChatColor.BLUE);
+
 
         //add yourself to your own team
         //this.addPlayerToTeam(player, team.getColor()); //TODO covered under loop below?

@@ -7,10 +7,12 @@ import com.snowgears.arathibasin.events.BaseDefendEvent;
 import com.snowgears.arathibasin.game.BattleTeam;
 import com.snowgears.arathibasin.util.TitleMessage;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
@@ -123,8 +125,20 @@ public class PlayerScoreboardListener implements Listener {
                 Player damager = (Player)event.getDamager();
                 PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(damager);
                 if(score != null){
-                    if(player.getHealth() - event.getDamage() <= 0){
+                    if(player.getHealth() - event.getFinalDamage() <= 0){
                         score.addKills(1);
+                    }
+                }
+            }
+            else if(event.getDamager() instanceof Arrow){
+                Arrow damager = (Arrow)event.getDamager();
+                if(damager.getShooter() instanceof Player) {
+                    Player shooter = (Player)damager.getShooter();
+                    PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(shooter);
+                    if (score != null) {
+                        if (player.getHealth() - event.getFinalDamage() <= 0) {
+                            score.addKills(1);
+                        }
                     }
                 }
             }

@@ -19,6 +19,8 @@ public class ScoreManager {
 
     private int redScore;
     private int blueScore;
+    private int redBases;
+    private int blueBases;
 
     private boolean redWarning;
     private boolean blueWarning;
@@ -69,6 +71,9 @@ public class ScoreManager {
                 }
             }
         }
+
+        this.redBases = redBases;
+        this.blueBases = blueBases;
 
         int redpoints = redTick.getPoints(redBases);
         this.redScore += redpoints;
@@ -243,6 +248,8 @@ public class ScoreManager {
     public void reset(){
         redScore = 0;
         blueScore = 0;
+        redBases = 0;
+        blueBases = 0;
         redWarning = false;
         blueWarning = false;
         playerScores.clear();
@@ -277,5 +284,13 @@ public class ScoreManager {
 
     public void setBlueScore(int blueScore){
         this.blueScore = blueScore;
+    }
+
+    public int getRedBases(){
+        return redBases;
+    }
+
+    public int getBlueBases(){
+        return blueBases;
     }
 }
