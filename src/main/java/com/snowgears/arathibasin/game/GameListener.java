@@ -1,7 +1,6 @@
 package com.snowgears.arathibasin.game;
 
 import com.snowgears.arathibasin.ArathiBasin;
-import com.snowgears.arathibasin.score.PlayerScore;
 import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.structure.StructureModule;
 import com.snowgears.arathibasin.util.PlayerData;
@@ -16,14 +15,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Listener class for all custom events used in the Arathi Basin game.
@@ -35,7 +33,7 @@ public class GameListener implements Listener{
 
     private ArathiBasin plugin;
     private int timeTaskID;
-    private HashMap<String, Boolean> playerRespawnMap = new HashMap<>();
+    private HashMap<String, Long> playerRespawnMap = new HashMap<>();
 
     public GameListener(ArathiBasin instance){
         plugin = instance;
@@ -172,7 +170,10 @@ public class GameListener implements Listener{
                     if (s.getColor() == team.getColor()) {
                         //check if the player is on a respawn cooldown first
                         if(playerRespawnMap.containsKey(player.getName())){
-                            player.sendMessage(ChatColor.RED + "You need to wait "+plugin.getRespawnWait()+" seconds after respawn before using this.");
+                            long timeElapsed = System.currentTimeMillis() - playerRespawnMap.get(player.getName());
+                            long elapsedSeconds = TimeUnit.MILLISECONDS.toSeconds(timeElapsed);
+                            int timeLeft = plugin.getRespawnWait() - (int)elapsedSeconds;
+                            player.sendMessage(ChatColor.RED + "You need to wait "+timeLeft+" more seconds before using this.");
                             return;
                         }
 
@@ -206,7 +207,7 @@ public class GameListener implements Listener{
                 event.setRespawnLocation(respawn);
 
             if(plugin.getRespawnWait() > 0) {
-                playerRespawnMap.put(player.getName(), true);
+                playerRespawnMap.put(player.getName(), System.currentTimeMillis());
 
                 Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
                     @Override

@@ -3,7 +3,6 @@ package com.snowgears.arathibasin.command;
 import com.snowgears.arathibasin.ArathiBasin;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

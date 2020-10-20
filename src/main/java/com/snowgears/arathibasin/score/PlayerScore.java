@@ -1,10 +1,7 @@
 package com.snowgears.arathibasin.score;
 
-import com.keenant.tabbed.item.PlayerTabItem;
-import com.keenant.tabbed.item.TabItem;
 import com.keenant.tabbed.item.TextTabItem;
 import com.keenant.tabbed.tablist.TableTabList;
-import com.keenant.tabbed.util.Skins;
 import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.game.BattleTeam;
 import org.bukkit.Bukkit;
@@ -13,8 +10,6 @@ import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**

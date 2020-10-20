@@ -6,8 +6,10 @@ import com.snowgears.arathibasin.score.ScoreManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -55,6 +57,7 @@ public class ArathiGame {
             startTimer.cancel();
 
         printFinalScores();
+        saveFinalScoresToFile();
 
         int delayTicks = (ArathiBasin.getPlugin().getEndWait() * 20);
         if(forceEnd)
@@ -129,6 +132,41 @@ public class ArathiGame {
                 }
                 player.sendMessage(ChatColor.GRAY + "To leave the game, type " + ChatColor.AQUA + "/arathi leave");
             }
+        }
+    }
+
+    private void saveFinalScoresToFile(){
+        try {
+
+            File fileDirectory = new File(ArathiBasin.getPlugin().getDataFolder(), "Data");
+            if (!fileDirectory.exists())
+                fileDirectory.mkdir();
+
+            File currentFile = new File(fileDirectory + "/scores_"+System.currentTimeMillis()+".yml");
+
+            if (!currentFile.exists()) // file doesn't exist
+                currentFile.createNewFile();
+
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(currentFile);
+
+            List<PlayerScore> topScores = scoreManager.getOrderedPlayerScores();
+            if(topScores == null || topScores.isEmpty())
+                return;
+
+            int scoreNumber = 1;
+            for (PlayerScore score : topScores) {
+                config.set("scores." + scoreNumber + ".name", score.getPlayerName());
+                config.set("scores." + scoreNumber + ".points", score.getPoints());
+                config.set("scores." + scoreNumber + ".assaults", score.getAssaults());
+                config.set("scores." + scoreNumber + ".captures", score.getCaptures());
+                config.set("scores." + scoreNumber + ".defends", score.getDefends());
+                config.set("scores." + scoreNumber + ".kills", score.getKills());
+                config.set("scores." + scoreNumber + ".deaths", score.getDeaths());
+                scoreNumber++;
+            }
+            config.save(currentFile);
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
