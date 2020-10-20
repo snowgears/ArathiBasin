@@ -108,7 +108,7 @@ public class ArathiGame {
 
     private void printFinalScores(){
         List<PlayerScore> topScores = scoreManager.getOrderedPlayerScores();
-        for(Player player : teamManager.getAllPlayers()){
+        for(Player player : Bukkit.getWorld("world_arathi").getPlayers()){
             int scores = 1;
             if(player != null) {
                 player.sendMessage(ChatColor.BOLD+"Top:       "+ChatColor.GOLD+"Points   "+ChatColor.RED+"Assaults   "+ChatColor.AQUA+"Captures   "+ChatColor.LIGHT_PURPLE+"Defends   "+ChatColor.GREEN+"K/D");
@@ -134,6 +134,8 @@ public class ArathiGame {
 
     private void printScore(Player player, int num, PlayerScore score){
         if(player == null)
+            return;
+        if(score == null)
             return;
         Player scorePlayer = Bukkit.getPlayer(score.getPlayerUUID());
         if(scorePlayer == null)

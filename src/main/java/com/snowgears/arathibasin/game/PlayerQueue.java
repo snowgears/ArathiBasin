@@ -1,6 +1,7 @@
 package com.snowgears.arathibasin.game;
 
 import com.snowgears.arathibasin.ArathiBasin;
+import com.snowgears.arathibasin.score.PlayerScore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -44,6 +45,13 @@ public class PlayerQueue {
         //TODO may need to check if try to start game returned false (game is already in progress) as to not spam players (TEST THIS)
         if(plugin.getArathiGame().isInProgress())
             movePlayersToTeams();
+
+        for(Player worldPlayer : Bukkit.getWorld("world_arathi").getPlayers()){
+            PlayerScore score = plugin.getArathiGame().getScoreManager().getPlayerScore(worldPlayer);
+            if(score != null){
+                score.update();
+            }
+        }
 
         return true;
     }

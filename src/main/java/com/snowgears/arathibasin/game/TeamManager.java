@@ -51,6 +51,9 @@ public class TeamManager {
 
             //add a playerscore for this spectator
             ArathiBasin.getPlugin().getArathiGame().getScoreManager().addPlayerScore(player);
+
+            //add a tab entry for this spectator
+
             return true;
         }
 

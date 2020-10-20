@@ -1,5 +1,10 @@
 package com.snowgears.arathibasin.score;
 
+import com.keenant.tabbed.item.PlayerTabItem;
+import com.keenant.tabbed.item.TabItem;
+import com.keenant.tabbed.item.TextTabItem;
+import com.keenant.tabbed.tablist.TableTabList;
+import com.keenant.tabbed.util.Skins;
 import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.game.BattleTeam;
 import org.bukkit.Bukkit;
@@ -8,6 +13,8 @@ import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,6 +38,7 @@ public class PlayerScore {
     private boolean isSpectator;
 
     private Scoreboard scoreboard;
+    private TableTabList tabList;
 
     public PlayerScore(Player player){
         this.playerName = player.getName();
@@ -44,6 +52,7 @@ public class PlayerScore {
         else{
             setupScoreboardSpectator();
         }
+        initTabList();
     }
 
     public String getPlayerName(){
@@ -243,6 +252,8 @@ public class PlayerScore {
         //set the new buffer objective to active by assigning it to the display slot
         //scoreboard.clearSlot(DisplaySlot.SIDEBAR);
         buffer.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        refreshTabList();
     }
 
     public void addPlayerToTeam(Player player, DyeColor color){
@@ -329,6 +340,91 @@ public class PlayerScore {
             team.setPrefix(color + "");
             //team.setAllowFriendlyFire(false); //TODO put this back after event
             team.setCanSeeFriendlyInvisibles(true);
+        }
+    }
+
+    private void initTabList(){
+        if(ArathiBasin.getPlugin().getTabbed() != null) {
+            Player player = Bukkit.getPlayer(playerUUID);
+            if(player == null)
+                return;
+
+            if(this.tabList != null)
+                return;
+
+            ArathiBasin.getPlugin().getTabbed().destroyTabList(player);
+            this.tabList = ArathiBasin.getPlugin().getTabbed().newTableTabList(player);
+
+            refreshTabList();
+        }
+    }
+
+    private void refreshTabList(){
+        if(ArathiBasin.getPlugin().getTabbed() != null) {
+
+            if(tabList == null)
+                return;
+
+            Player player = Bukkit.getPlayer(playerUUID);
+            if(player == null)
+                return;
+
+            //tabList = ArathiBasin.getPlugin().getTabbed().getTabList(player); //TODO might need to try this
+
+            //TODO you may need to loop batch update in tabbed in ScoreTask to not get blinking tabs for players
+
+            //this.tabList = ArathiBasin.getPlugin().getTabbed().newTableTabList(player);
+
+            //List<TabItem> items = new ArrayList<TabItem>();
+
+            tabList.setBatchEnabled(true);
+
+            //initialize row headers first
+            tabList.set(0, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"Name"));
+            tabList.set(20, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"Points"));
+            tabList.set(40, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"A / C / D"));
+            tabList.set(60, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"Kills / Deaths"));
+
+            BattleTeam currentTeam;
+            Player scorePlayer;
+            ChatColor chatColor;
+            int tabIndex = 1;
+            int i=0;
+            for(PlayerScore score : ArathiBasin.getPlugin().getArathiGame().getScoreManager().getOrderedPlayerScores()){
+                //tablist only has room for 20 rows
+                if(i > 17)
+                    break;
+
+                scorePlayer = Bukkit.getPlayer(score.getPlayerName());
+
+                if(scorePlayer != null){
+                    currentTeam = ArathiBasin.getPlugin().getArathiGame().getTeamManager().getCurrentTeam(scorePlayer);
+                    if(currentTeam != null) {
+                        chatColor = currentTeam.getChatColor();
+                        //tabList.set(tabIndex, new PlayerTabItem(scorePlayer)); // this works (without chatcolor on player) but does not pull down skin
+                        //tabList.set(tabIndex, new TextTabItem(chatColor+scorePlayer.getName(), 1000, Skins.getPlayer(score.getPlayerName())));
+                        tabList.set(tabIndex, new TextTabItem(chatColor+scorePlayer.getName())); //this works but does not pull in skin
+                        tabList.set(tabIndex+20, new TextTabItem(chatColor+""+score.getPoints()));
+                        tabList.set(tabIndex+40, new TextTabItem(chatColor+""+score.getAssaults()+" / "+score.getCaptures()+" / "+score.getDefends()));
+                        tabList.set(tabIndex+60, new TextTabItem(chatColor+""+score.getKills()+" / "+score.getDeaths()));
+                        tabIndex++;
+                    }
+                }
+
+                i++;
+            }
+            //tabList.fill(0, 0, 1, 1, items, TableTabList.TableCorner.TOP_LEFT, TableTabList.FillDirection.HORIZONTAL);
+
+            //tabList.setHeader(ChatColor.GOLD + ""+ChatColor.BOLD+"Mizkif"+ChatColor.RESET+ChatColor.GRAY+" x "+ChatColor.DARK_PURPLE+ChatColor.BOLD+"Twitch Rivals "+ChatColor.RED+ChatColor.BOLD+"Domination");
+
+            //tabList.setFooter(ChatColor.LIGHT_PURPLE + ""+ChatColor.BOLD+"To download this mini-game, visit: "+ChatColor.RESET+ChatColor.AQUA+ChatColor.BOLD+"smarturl.it/arathi");
+
+            tabList.setHeader(ChatColor.GOLD + ""+ChatColor.BOLD+"Mizkif"+ChatColor.RESET+ChatColor.GRAY+" x "+ChatColor.DARK_PURPLE+ChatColor.BOLD+"Twitch Rivals "+ChatColor.RED+ChatColor.BOLD+"Domination");
+
+            tabList.setFooter(ChatColor.LIGHT_PURPLE + ""+ChatColor.BOLD+"To download this mini-game, visit: "+ChatColor.RESET+ChatColor.AQUA+ChatColor.BOLD+"smarturl.it/arathi");
+
+            tabList.batchUpdate();
+            tabList.setBatchEnabled(false);
         }
     }
 }

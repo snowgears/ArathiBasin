@@ -102,6 +102,17 @@ public class BattleTeam {
         return color;
     }
 
+    public ChatColor getChatColor(){
+        switch (color){
+            case RED:
+                return ChatColor.RED;
+            case BLUE:
+                return ChatColor.BLUE;
+            default:
+                return ChatColor.WHITE;
+        }
+    }
+
     public String getName(){
         return name;
     }
