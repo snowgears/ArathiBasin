@@ -4,10 +4,7 @@ import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.structure.Structure;
 import com.snowgears.arathibasin.structure.StructureModule;
 import com.snowgears.arathibasin.util.PlayerData;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -161,7 +158,7 @@ public class GameListener implements Listener{
         }
 
         Player player = event.getPlayer();
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.WOOL){
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK && Tag.WOOL.isTagged(event.getClickedBlock().getType())){
             Structure s = plugin.getStructureManager().getStructure(StructureModule.BASE_MAP, event.getClickedBlock().getLocation());
             if(s != null){
                 BattleTeam team = plugin.getArathiGame().getTeamManager().getCurrentTeam(player);

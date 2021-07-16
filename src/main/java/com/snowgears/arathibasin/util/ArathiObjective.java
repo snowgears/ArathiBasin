@@ -9,7 +9,7 @@ import org.bukkit.scoreboard.Scoreboard;
 /**
  * Created by Tanner on 8/13/16.
  */
-public class ArathiObjective implements Objective {
+public abstract class ArathiObjective implements Objective {
 
     @Override
     public String getName() throws IllegalStateException {

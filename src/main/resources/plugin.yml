@@ -1,9 +1,10 @@
 name: ArathiBasin
-author: Tanner Embry (SnowGears)
-description: Domination mini-game based on Arathi Basin from World of Warcraft!
-version: 1.0.4
+author: SnowGears
+description: Capture the point mini-game based on Arathi Basin from World of Warcraft!
+version: 1.0.9
+api-version: 1.13
 main: com.snowgears.arathibasin.ArathiBasin
-softdepend: [PlaceholderAPI, ProtocolLib]
+softdepend: [PlaceholderAPI]
 commands:
    arathi:
       description: Different commands pertaining to plugin

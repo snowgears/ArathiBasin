@@ -3,6 +3,7 @@ package com.snowgears.arathibasin.game;
 import com.snowgears.arathibasin.ArathiBasin;
 import com.snowgears.arathibasin.score.PlayerScore;
 import com.snowgears.arathibasin.score.ScoreManager;
+import com.snowgears.arathibasin.util.TitleMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -39,6 +40,11 @@ public class ArathiGame {
         inProgress = true;
         isEnding = false;
 
+        for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+            if(player != null)
+                TitleMessage.clearTitle(player);
+        }
+
         startTimer = new ArathiStartTimer(ArathiBasin.getPlugin());
         startTimer.runTaskTimer(ArathiBasin.getPlugin(), 0, 20); //run timer every second
 
@@ -58,6 +64,21 @@ public class ArathiGame {
 
         printFinalScores();
         saveFinalScoresToFile();
+
+        //TODO remove this after event specific plugin
+//        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "ctf reset");
+//        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "nte reload");
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+                String subMessage2 = ChatColor.LIGHT_PURPLE + "To download the minigame ->"+ChatColor.AQUA+" smarturl.it/arathi";
+                for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                    if(player != null)
+                        TitleMessage.sendTitle(player, 20, 250, 20, "", subMessage2);
+                }
+            }
+        }, 100);
 
         int delayTicks = (ArathiBasin.getPlugin().getEndWait() * 20);
         if(forceEnd)

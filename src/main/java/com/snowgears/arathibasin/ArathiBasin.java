@@ -1,6 +1,5 @@
 package com.snowgears.arathibasin;
 
-import com.keenant.tabbed.Tabbed;
 import com.snowgears.arathibasin.command.ArathiCommand;
 import com.snowgears.arathibasin.command.StructureCommand;
 import com.snowgears.arathibasin.game.ArathiGame;
@@ -28,9 +27,6 @@ public class ArathiBasin extends JavaPlugin {
     private SetupStructureListener setupListener;
     private StructureManager structureManager;
     private ArathiGame arathiGame;
-
-    //used for 1.8 tabbed API for showing custom tabbed scoreboard
-    private Tabbed tabbed;
 
     private boolean usePerms;
     private String blueTeamName;
@@ -64,10 +60,6 @@ public class ArathiBasin extends JavaPlugin {
         // Small check to make sure that PlaceholderAPI is installed (used for tab scoreboards in game as an option)
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
             new ArathiPlaceholderExpansion(this).register();
-        }
-
-        if(Bukkit.getPluginManager().getPlugin("ProtocolLib") != null){
-            this.tabbed = new Tabbed(this);
         }
 
         this.getCommand("arathi").setExecutor(new ArathiCommand(this));
@@ -120,10 +112,6 @@ public class ArathiBasin extends JavaPlugin {
 
     public ArathiGame getArathiGame(){
         return arathiGame;
-    }
-
-    public Tabbed getTabbed(){
-        return tabbed;
     }
 
     public String getBlueTeamName(){

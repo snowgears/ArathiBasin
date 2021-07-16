@@ -33,7 +33,7 @@ public class BattleTeam {
             return false;
 
         //TODO REMOVE THIS when porting new changes back over to non Twitch event specific plugin
-        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set "+color.name().toLowerCase());
+        //Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set "+color.name().toLowerCase());
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(ArathiBasin.getPlugin(), new Runnable() {
             @Override
@@ -74,7 +74,7 @@ public class BattleTeam {
             ArathiBasin.getPlugin().getArathiGame().getScoreManager().removePlayerScore(player);
 
             //TODO REMOVE THIS when porting new changes back over to non Twitch event specific plugin
-            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set spectator");
+            //Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set spectator");
 
             for(Player p : ArathiBasin.getPlugin().getArathiGame().getTeamManager().getAllPlayers()){
                 if(p != null)
@@ -159,7 +159,7 @@ public class BattleTeam {
             if(player != null){
 
                 //TODO REMOVE THIS when porting new changes back over to non Twitch event specific plugin
-                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set spectator");
+                //Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "lp user "+player.getName()+" parent set spectator");
 
                 PlayerData data = PlayerData.loadFromFile(player);
                 if(data != null)
