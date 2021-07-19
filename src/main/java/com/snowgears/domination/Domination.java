@@ -33,6 +33,7 @@ public class Domination extends JavaPlugin {
     private boolean usePerms;
     private String dominationCommand;
     private String structureCommand;
+    private String worldName;
     private String blueTeamName;
     private String redTeamName;
     private int minTeamSize;
@@ -82,6 +83,7 @@ public class Domination extends JavaPlugin {
 
         dominationCommand = config.getString("dominationCommand");
         structureCommand = config.getString("structureCommand");
+        worldName = config.getString("worldName");
         blueTeamName = config.getString("blueTeamName");
         redTeamName = config.getString("redTeamName");
         minTeamSize = config.getInt("minTeamSize");
@@ -124,6 +126,10 @@ public class Domination extends JavaPlugin {
 
     public String getStructureCommand(){
         return structureCommand;
+    }
+
+    public String getWorldName(){
+        return worldName;
     }
 
     public StructureManager getStructureManager(){
@@ -192,26 +198,26 @@ public class Domination extends JavaPlugin {
 
     private void generateWorld(){
 
-        File world_arathi = new File(plugin.getServer().getWorldContainer(), "world_arathi");
-        if(world_arathi.exists()) {
-            getServer().createWorld(new WorldCreator("world_arathi"));
+        File world_domination = new File(plugin.getServer().getWorldContainer(), plugin.getWorldName());
+        if(world_domination.exists()) {
+            getServer().createWorld(new WorldCreator(plugin.getWorldName()));
             return;
         }
         else
-            world_arathi.mkdir();
+            world_domination.mkdir();
 
-        File dest = new File(world_arathi, "world_arathi.zip");
-        FileUtils.copy(getResource("world_arathi.zip"), dest); //copy zip file into world folder
+        File dest = new File(world_domination, "world_domination.zip");
+        FileUtils.copy(getResource("world_domination.zip"), dest); //copy zip file into world folder
 
         UnzipUtility uu = new UnzipUtility();
         //try to unzip the file into the battleground world folder
         try {
-            uu.unzip(dest.getAbsolutePath(), world_arathi.getAbsolutePath());
+            uu.unzip(dest.getAbsolutePath(), world_domination.getAbsolutePath());
             dest.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        getServer().createWorld(new WorldCreator("world_arathi"));
+        getServer().createWorld(new WorldCreator(plugin.getWorldName()));
     }
 }

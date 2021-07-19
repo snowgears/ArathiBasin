@@ -95,7 +95,7 @@ public class PlayerData{
         try {
             File fileDirectory = new File(Domination.getPlugin().getDataFolder(), "Data");
 
-            File worldDirectory = new File(fileDirectory, "world_arathi");
+            File worldDirectory = new File(fileDirectory, Domination.getPlugin().getWorldName());
             if (!worldDirectory.exists())
                 worldDirectory.mkdir();
 
@@ -135,7 +135,7 @@ public class PlayerData{
             return null;
         File fileDirectory = new File(Domination.getPlugin().getDataFolder(), "Data");
 
-        File worldDirectory = new File(fileDirectory, "world_arathi");
+        File worldDirectory = new File(fileDirectory, Domination.getPlugin().getWorldName());
         if (!worldDirectory.exists())
             worldDirectory.mkdir();
 
@@ -199,7 +199,7 @@ public class PlayerData{
     private boolean removeFile(){
         File fileDirectory = new File(Domination.getPlugin().getDataFolder(), "Data");
 
-        File worldDirectory = new File(fileDirectory, "world_arathi");
+        File worldDirectory = new File(fileDirectory, Domination.getPlugin().getWorldName());
         if (!worldDirectory.exists())
             worldDirectory.mkdir();
 

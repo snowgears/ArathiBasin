@@ -242,16 +242,16 @@ public class StructureManager {
 
     private void loadDefaultStructures(){
         try {
-            File world_arathi = new File(plugin.getServer().getWorldContainer(), "world_arathi");
-            if (!world_arathi.exists())
+            File world_domination = new File(plugin.getServer().getWorldContainer(), plugin.getWorldName());
+            if (!world_domination.exists())
                 return;
 
             File fileDirectory = new File(plugin.getDataFolder(), "Data");
             if (!fileDirectory.exists())
                 fileDirectory.mkdir();
 
-            File dataFolder = new File(world_arathi, "world_arathi_data");
-            File dest = new File(fileDirectory, "world_arathi");
+            File dataFolder = new File(world_domination, "world_structure_data");
+            File dest = new File(fileDirectory, plugin.getWorldName());
             if (!dest.exists())
                 dest.mkdir();
 

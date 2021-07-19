@@ -42,7 +42,7 @@ public class GameListener implements Listener{
 
     @EventHandler
     public void freezePlayersOnEnd(PlayerMoveEvent event){
-        if(event.getPlayer().getWorld().getName().equals("world_arathi")){
+        if(event.getPlayer().getWorld().getName().equals(plugin.getWorldName())){
             if(plugin.getDominationGame().isEnding()) {
                 Location from=event.getFrom();
                 Location to=event.getTo();
@@ -113,7 +113,7 @@ public class GameListener implements Listener{
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onWeatherChange(WeatherChangeEvent event){
-        if(event.getWorld().getName().equals("world_arathi")){
+        if(event.getWorld().getName().equals(plugin.getWorldName())){
             if(event.toWeatherState())
                 event.setCancelled(true);
         }
@@ -121,7 +121,7 @@ public class GameListener implements Listener{
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onHungerChange(FoodLevelChangeEvent event){
-        if(event.getEntity().getWorld().getName().equals("world_arathi")){
+        if(event.getEntity().getWorld().getName().equals(plugin.getWorldName())){
             event.setFoodLevel(20);
             event.setCancelled(true);
         }
@@ -140,7 +140,7 @@ public class GameListener implements Listener{
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onSoilChange(BlockFadeEvent event){
-        if(event.getBlock().getWorld().getName().equals("world_arathi"))
+        if(event.getBlock().getWorld().getName().equals(plugin.getWorldName()))
             event.setCancelled(true);
     }
 
@@ -148,7 +148,7 @@ public class GameListener implements Listener{
         timeTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Domination.getPlugin(), new Runnable() {
             @Override
             public void run() {
-                Bukkit.getWorld("world_arathi").setTime(6000); //set time to noon
+                Bukkit.getWorld(plugin.getWorldName()).setTime(6000); //set time to noon
             }
         }, 100L, 2000L); //every 1-2 minutes
     }

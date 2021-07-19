@@ -86,7 +86,7 @@ public class ScoreManager {
             redWarning = true;
             String message = ChatColor.RED + ""+ plugin.getScoreWarning() + " - " +plugin.getRedTeamName();
             String warning = ChatColor.GRAY + "Score Warning";
-            for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+            for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
                 TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
             }
         }
@@ -94,7 +94,7 @@ public class ScoreManager {
             blueWarning = true;
             String message = ChatColor.BLUE + ""+ plugin.getScoreWarning() + " - " +plugin.getBlueTeamName();
             String warning = ChatColor.GRAY + "Score Warning";
-            for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+            for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
                 TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
             }
         }
@@ -105,7 +105,7 @@ public class ScoreManager {
             over = true;
             String message = ChatColor.RED + plugin.getRedTeamName() + " Wins!";
             String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
-            for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+            for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
                 TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
             }
         }
@@ -114,7 +114,7 @@ public class ScoreManager {
             over = true;
             String message = ChatColor.BLUE + plugin.getBlueTeamName() + " Wins!";
             String finalScore = ChatColor.BLUE + ""+ this.blueScore + "  " + ChatColor.RED + this.redScore;
-            for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+            for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
                 TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
             }
         }
@@ -135,7 +135,7 @@ public class ScoreManager {
                 timeWarning = true;
                 String message = ChatColor.GRAY + ""+ remainingMinutes + " minutes remaining";
                 String warning = ChatColor.GRAY + "Time Warning";
-                for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
                     TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
                 }
             }
@@ -147,7 +147,7 @@ public class ScoreManager {
                     over = true;
                     String message = ChatColor.BLUE + plugin.getBlueTeamName() + " Wins!";
                     String finalScore = ChatColor.BLUE + "" + this.blueScore + "  " + ChatColor.RED + this.redScore;
-                    for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                    for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
                         TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
                     }
                 }
@@ -155,7 +155,7 @@ public class ScoreManager {
                     over = true;
                     String message = ChatColor.RED + plugin.getRedTeamName() + " Wins!";
                     String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
-                    for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+                    for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
                         TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
                     }
                 }

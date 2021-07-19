@@ -93,7 +93,7 @@ public class DominationCommand implements CommandExecutor {
                     if (!isOp)
                         player.sendMessage(ChatColor.RED + "You do not have access to that command.");
                     else {
-                        player.teleport(plugin.getServer().getWorld("world_arathi").getSpawnLocation());
+                        player.teleport(plugin.getServer().getWorld(plugin.getWorldName()).getSpawnLocation());
                         player.sendMessage(ChatColor.GRAY + "You have been teleported to the domination world.");
                     }
                 } else if (args[0].equalsIgnoreCase("end")) {

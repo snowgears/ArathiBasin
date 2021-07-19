@@ -46,7 +46,7 @@ public class PlayerQueue {
         if(plugin.getDominationGame().isInProgress())
             movePlayersToTeams();
 
-        for(Player worldPlayer : Bukkit.getWorld("world_arathi").getPlayers()){
+        for(Player worldPlayer : Bukkit.getWorld(plugin.getWorldName()).getPlayers()){
             PlayerScore score = plugin.getDominationGame().getScoreManager().getPlayerScore(worldPlayer);
             if(score != null){
                 score.update();

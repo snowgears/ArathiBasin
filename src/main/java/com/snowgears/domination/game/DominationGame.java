@@ -38,11 +38,11 @@ public class DominationGame {
         if(Domination.getPlugin().isDebug()) {
             System.out.println("[Domination] Starting game and resetting structures.");
         }
-        Domination.getPlugin().getStructureManager().resetStructures("world_arathi");
+        Domination.getPlugin().getStructureManager().resetStructures(Domination.getPlugin().getWorldName());
         inProgress = true;
         isEnding = false;
 
-        for (Player player : Bukkit.getWorld("world_arathi").getPlayers()) {
+        for (Player player : Bukkit.getWorld(Domination.getPlugin().getWorldName()).getPlayers()) {
             if(player != null)
                 TitleMessage.clearTitle(player);
         }
@@ -84,7 +84,7 @@ public class DominationGame {
         Bukkit.getScheduler().scheduleSyncDelayedTask(Domination.getPlugin(), new Runnable() {
             @Override
             public void run() {
-                Domination.getPlugin().getStructureManager().resetStructures("world_arathi");
+                Domination.getPlugin().getStructureManager().resetStructures(Domination.getPlugin().getWorldName());
                 inProgress = false;
                 isEnding = false;
                 scoreManager.reset();
@@ -129,7 +129,7 @@ public class DominationGame {
 
     private void printFinalScores(){
         List<PlayerScore> topScores = scoreManager.getOrderedPlayerScores();
-        for(Player player : Bukkit.getWorld("world_arathi").getPlayers()){
+        for(Player player : Bukkit.getWorld(Domination.getPlugin().getWorldName()).getPlayers()){
             int scores = 1;
             if(player != null) {
                 player.sendMessage(ChatColor.BOLD+"Top:       "+ChatColor.GOLD+"Points   "+ChatColor.RED+"Assaults   "+ChatColor.AQUA+"Captures   "+ChatColor.LIGHT_PURPLE+"Defends   "+ChatColor.GREEN+"K/D");
