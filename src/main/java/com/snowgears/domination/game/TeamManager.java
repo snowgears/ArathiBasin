@@ -1,6 +1,8 @@
 package com.snowgears.domination.game;
 
 import com.snowgears.domination.Domination;
+import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 

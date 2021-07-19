@@ -2,6 +2,10 @@
 # IF YOU HAVE A QUESTION COME HOP IN MY DISCORD: https://discord.gg/GpSwEWS #
 #=====================================#
 
+# =================================================================== #
+#                         GENERAL SETTINGS                            #
+# =================================================================== #
+
 # If you want to use permissions with Domination, you must set this to true #
 usePermissions: false
 
@@ -13,6 +17,13 @@ structureCommand: "structure"
 
 # This is the name of the world folder that will be used for the domination game
 worldName: "world_domination"
+
+# Set this to true to turn on debug logging in console #
+debug: false
+
+# =================================================================== #
+#                           GAME SETTINGS                             #
+# =================================================================== #
 
 # These are the names of the two teams that will be displayed to players #
 blueTeamName: "Alliance"
@@ -45,5 +56,18 @@ baseAssaultInterval: 40
 # This is the amount of time (in seconds) that bases need to remain controlled until they are captured #
 baseCaptureInterval: 60
 
-# Set this to true to turn on debug logging in console #
-debug: false
+# =================================================================== #
+#                   ECONOMY AND REWARD SETTINGS                       #
+# =================================================================== #
+
+# this is how much a player must pay to enter the game (requires Vault) #
+vaultEntryCost: 0
+
+# this is an optional list of commands that will be run if a player wins or loses in domination
+     # EXAMPLES:
+     # - "give [player] diamond"
+     # - "eco give [player] 1000"
+winnerCommands:
+  - ""
+loserCommands:
+  - ""

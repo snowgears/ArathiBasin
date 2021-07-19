@@ -11,14 +11,18 @@ import com.snowgears.domination.util.ConfigUpdater;
 import com.snowgears.domination.util.DominationPlaceholderExpansion;
 import com.snowgears.domination.util.FileUtils;
 import com.snowgears.domination.util.UnzipUtility;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Domination extends JavaPlugin {
 
@@ -48,6 +52,11 @@ public class Domination extends JavaPlugin {
     private int baseAssaultInterval;
     private int baseCaptureInterval;
     private boolean debug;
+
+    private Economy econ = null;
+    private double vaultEntryCost;
+    private List<String> winnerCommands;
+    private List<String> loserCommands;
 
     public static Domination getPlugin() {
         return plugin;
@@ -101,6 +110,10 @@ public class Domination extends JavaPlugin {
 
         debug = config.getBoolean("debug");
 
+        vaultEntryCost = config.getDouble("vaultEntryCost");
+        winnerCommands = config.getStringList("winnerCommands");
+        loserCommands = config.getStringList("loserCommands");
+
         this.getCommand(dominationCommand).setExecutor(new DominationCommand(this));
         this.getCommand(structureCommand).setExecutor(new StructureCommand(this));
 
@@ -109,6 +122,12 @@ public class Domination extends JavaPlugin {
 
         structureManager = new StructureManager(this);
         dominationGame = new DominationGame();
+
+        if (vaultEntryCost > 0 && !setupEconomy()) {
+            System.out.println("[Domination] [ERROR] Vault hook not detected!");
+        } else {
+            System.out.println("[Domination] Vault hook success.");
+        }
     }
 
     public void onDisable() {
@@ -196,6 +215,36 @@ public class Domination extends JavaPlugin {
         return debug;
     }
 
+    public double getVaultEntryCost(){
+        return vaultEntryCost;
+    }
+
+    public List<String> getWinnerCommands(){
+        return winnerCommands;
+    }
+
+    public void runWinnerCommands(Player player){
+        for(String command: winnerCommands){
+            if(command != null && !command.isEmpty()){
+                command = command.replace("[player]", player.getName());
+                Bukkit.dispatchCommand(plugin.getServer().getConsoleSender(), command);
+            }
+        }
+    }
+
+    public List<String> getLoserCommands(){
+        return loserCommands;
+    }
+
+    public void runLoserCommands(Player player){
+        for(String command: loserCommands){
+            if(command != null && !command.isEmpty()){
+                command = command.replace("[player]", player.getName());
+                Bukkit.dispatchCommand(plugin.getServer().getConsoleSender(), command);
+            }
+        }
+    }
+
     private void generateWorld(){
 
         File world_domination = new File(plugin.getServer().getWorldContainer(), plugin.getWorldName());
@@ -219,5 +268,24 @@ public class Domination extends JavaPlugin {
         }
 
         getServer().createWorld(new WorldCreator(plugin.getWorldName()));
+    }
+
+    public Economy getEconomy() {
+        if (econ == null) {
+            setupEconomy();
+        }
+        return econ;
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
     }
 }

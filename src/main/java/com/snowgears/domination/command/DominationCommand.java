@@ -68,8 +68,8 @@ public class DominationCommand implements CommandExecutor {
                     boolean added = plugin.getDominationGame().addPlayer(player, null);
                     if (added)
                         player.sendMessage(ChatColor.GREEN + "You have been added to the queue for the domination game.");
-                    else
-                        player.sendMessage(ChatColor.RED + "You are already in the queue for the domination game.");
+                    //else
+                    //    player.sendMessage(ChatColor.RED + "You are already in the queue for the domination game.");
                 } else if (args[0].equalsIgnoreCase("leave")) {
                     boolean removed = plugin.getDominationGame().removePlayer(player);
                     if (removed) {
@@ -131,8 +131,8 @@ public class DominationCommand implements CommandExecutor {
                     boolean added = plugin.getDominationGame().addPlayer(player, color);
                     if (added)
                         player.sendMessage(ChatColor.GREEN + "You have been added to the " + color.toString() + " team queue for the domination game.");
-                    else
-                        player.sendMessage(ChatColor.RED + "You are already in the queue for the domination game.");
+                   // else
+                    //    player.sendMessage(ChatColor.RED + "You are already in the queue for the domination game.");
                 }
             } else if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("add")) {
@@ -161,8 +161,8 @@ public class DominationCommand implements CommandExecutor {
                     boolean added = plugin.getDominationGame().addPlayer(playerArg, color);
                     if (added)
                         player.sendMessage(ChatColor.GREEN + playerArg.getName()+" has been added to the " + color.toString() + " team queue for the domination game.");
-                    else
-                        player.sendMessage(ChatColor.RED + playerArg.getName()+"is already in the queue for the domination game.");
+                    //else
+                   //     player.sendMessage(ChatColor.RED + playerArg.getName()+"is already in the queue for the domination game.");
                 }
             }
             return true;
@@ -189,8 +189,8 @@ public class DominationCommand implements CommandExecutor {
                     boolean added = plugin.getDominationGame().addPlayer(playerArg, color);
                     if (added)
                         sender.sendMessage(ChatColor.GREEN + playerArg.getName()+" has been added to the " + color.toString() + " team queue for the domination game.");
-                    else
-                        sender.sendMessage(ChatColor.RED + playerArg.getName()+"is already in the queue for the domination game.");
+                    //else
+                    //    sender.sendMessage(ChatColor.RED + playerArg.getName()+"is already in the queue for the domination game.");
                 }
             }
             return true;

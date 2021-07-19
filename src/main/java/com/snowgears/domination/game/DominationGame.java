@@ -6,6 +6,7 @@ import com.snowgears.domination.events.GameStartEvent;
 import com.snowgears.domination.score.PlayerScore;
 import com.snowgears.domination.score.ScoreManager;
 import com.snowgears.domination.util.TitleMessage;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -13,7 +14,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class stores information about the current game.
@@ -73,6 +76,25 @@ public class DominationGame {
         printFinalScores();
         saveFinalScoresToFile();
 
+        ArrayList<UUID> winners = new ArrayList<>();
+        ArrayList<UUID> losers = new ArrayList<>();
+        if(scoreManager.getBlueScore() > scoreManager.getRedScore()){
+            for(Player player : teamManager.getTeam(DyeColor.BLUE).getPlayers()){
+                winners.add(player.getUniqueId());
+            }
+            for(Player player : teamManager.getTeam(DyeColor.RED).getPlayers()){
+                losers.add(player.getUniqueId());
+            }
+        }
+        else{
+            for(Player player : teamManager.getTeam(DyeColor.RED).getPlayers()){
+                winners.add(player.getUniqueId());
+            }
+            for(Player player : teamManager.getTeam(DyeColor.BLUE).getPlayers()){
+                losers.add(player.getUniqueId());
+            }
+        }
+
         //TODO remove this after event specific plugin
 //        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "ctf reset");
 //        Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "nte reload");
@@ -89,6 +111,19 @@ public class DominationGame {
                 isEnding = false;
                 scoreManager.reset();
                 teamManager.clear();
+
+                for(UUID winner : winners){
+                    Player player = Bukkit.getPlayer(winner);
+                    if(player != null){
+                        Domination.getPlugin().runWinnerCommands(player);
+                    }
+                }
+                for(UUID loser : losers){
+                    Player player = Bukkit.getPlayer(loser);
+                    if(player != null){
+                        Domination.getPlugin().runLoserCommands(player);
+                    }
+                }
             }
         }, delayTicks);
 
@@ -96,6 +131,23 @@ public class DominationGame {
     }
 
     public boolean addPlayer(Player player, DyeColor team){
+
+        //only do entry check if its cost is above 0
+        if(Domination.getPlugin().getVaultEntryCost() > 0) {
+            //first check that the player has enough money
+            double balance = Domination.getPlugin().getEconomy().getBalance(player);
+            if(balance < Domination.getPlugin().getVaultEntryCost()) {
+                player.sendMessage(ChatColor.RED+"You do not have sufficient funds that meet the required entry fee ("+Domination.getPlugin().getVaultEntryCost()+")");
+                return false;
+            }
+
+            EconomyResponse response = Domination.getPlugin().getEconomy().withdrawPlayer(player, Domination.getPlugin().getVaultEntryCost());
+            if(!response.transactionSuccess()){
+                player.sendMessage(ChatColor.RED+"Could not withdraw required entry fee ("+Domination.getPlugin().getVaultEntryCost()+")");
+                return false;
+            }
+        }
+
         return teamManager.addPlayer(player, team);
     }
 
