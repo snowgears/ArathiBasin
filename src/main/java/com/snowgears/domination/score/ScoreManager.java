@@ -4,7 +4,6 @@ import com.snowgears.domination.Domination;
 import com.snowgears.domination.game.BattleTeam;
 import com.snowgears.domination.structure.Base;
 import com.snowgears.domination.structure.Structure;
-import com.snowgears.domination.util.TitleMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -87,7 +86,8 @@ public class ScoreManager {
             String message = ChatColor.RED + ""+ plugin.getScoreWarning() + " - " +plugin.getRedTeamName();
             String warning = ChatColor.GRAY + "Score Warning";
             for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
+                //TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
+                player.sendTitle(message, warning, 20,40,20);
             }
         }
         if (!blueWarning && blueScore >= plugin.getScoreWarning()) {
@@ -95,7 +95,8 @@ public class ScoreManager {
             String message = ChatColor.BLUE + ""+ plugin.getScoreWarning() + " - " +plugin.getBlueTeamName();
             String warning = ChatColor.GRAY + "Score Warning";
             for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
+                //TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
+                player.sendTitle(message, warning, 20,40,20);
             }
         }
 
@@ -106,7 +107,8 @@ public class ScoreManager {
             String message = ChatColor.RED + plugin.getRedTeamName() + " Wins!";
             String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
             for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
-                TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                //TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                player.sendTitle(message, finalScore, 20,200,20);
             }
         }
         if(this.blueScore >= plugin.getScoreWin()) {
@@ -115,7 +117,8 @@ public class ScoreManager {
             String message = ChatColor.BLUE + plugin.getBlueTeamName() + " Wins!";
             String finalScore = ChatColor.BLUE + ""+ this.blueScore + "  " + ChatColor.RED + this.redScore;
             for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
-                TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                //TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                player.sendTitle(message, finalScore, 20,200,20);
             }
         }
 
@@ -136,7 +139,8 @@ public class ScoreManager {
                 String message = ChatColor.GRAY + ""+ remainingMinutes + " minutes remaining";
                 String warning = ChatColor.GRAY + "Time Warning";
                 for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
-                    TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
+                    //TitleMessage.sendTitle(player, 20, 40, 20, message, warning);
+                    player.sendTitle(message, warning, 20,40,20);
                 }
             }
 
@@ -148,7 +152,8 @@ public class ScoreManager {
                     String message = ChatColor.BLUE + plugin.getBlueTeamName() + " Wins!";
                     String finalScore = ChatColor.BLUE + "" + this.blueScore + "  " + ChatColor.RED + this.redScore;
                     for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
-                        TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                        //TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                        player.sendTitle(message, finalScore, 20,200,20);
                     }
                 }
                 else if(this.redScore > this.blueScore){
@@ -156,7 +161,8 @@ public class ScoreManager {
                     String message = ChatColor.RED + plugin.getRedTeamName() + " Wins!";
                     String finalScore = ChatColor.RED + ""+ this.redScore + "  " + ChatColor.BLUE + this.blueScore;
                     for (Player player : Bukkit.getWorld(plugin.getWorldName()).getPlayers()) {
-                        TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                        //TitleMessage.sendTitle(player, 20, 200, 20, message, finalScore);
+                        player.sendTitle(message, finalScore, 20,200,20);
                     }
                 }
                 //if scores are tied, keep going. Next point wins from here

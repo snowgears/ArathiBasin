@@ -5,7 +5,6 @@ import com.snowgears.domination.events.BaseAssaultEvent;
 import com.snowgears.domination.events.BaseCaptureEvent;
 import com.snowgears.domination.events.BaseDefendEvent;
 import com.snowgears.domination.game.BattleTeam;
-import com.snowgears.domination.util.TitleMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -42,7 +41,8 @@ public class PlayerScoreboardListener implements Listener {
         String subtitle = ChatColor.GRAY+"+1 Assault Point(s)";
         for(Player player : event.getBase().getWorld().getPlayers()) {
             if(containsPlayer(player, event.getPlayers())) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
+                //TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
+                player.sendTitle(message, subtitle, 20, 40, 20);
                 //increment assault score of player
                 PlayerScore score = plugin.getDominationGame().getScoreManager().getPlayerScore(player);
                 if(score == null)
@@ -51,7 +51,8 @@ public class PlayerScoreboardListener implements Listener {
                 plugin.getDominationGame().getScoreManager().savePlayerScore(score);
             }
             else{
-                TitleMessage.sendTitle(player, 20, 40, 20, message, null);
+                //TitleMessage.sendTitle(player, 20, 40, 20, message, null);
+                player.sendTitle(message, null, 20,40,20);
             }
         }
     }
@@ -63,7 +64,8 @@ public class PlayerScoreboardListener implements Listener {
         String subtitle = ChatColor.GRAY+"+1 Capture Point(s)";
         for(Player player : event.getBase().getWorld().getPlayers()) {
             if(containsPlayer(player, event.getPlayers())) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
+                //TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
+                player.sendTitle(message, subtitle, 20,40,20);
                 //increment capture score of player
                 PlayerScore score = plugin.getDominationGame().getScoreManager().getPlayerScore(player);
                 if(score == null)
@@ -72,7 +74,8 @@ public class PlayerScoreboardListener implements Listener {
                 plugin.getDominationGame().getScoreManager().savePlayerScore(score);
             }
             else{
-                TitleMessage.sendTitle(player, 20, 40, 20, message, null);
+                //TitleMessage.sendTitle(player, 20, 40, 20, message, null);
+                player.sendTitle(message, null, 20,40,20);
             }
         }
 
@@ -85,7 +88,8 @@ public class PlayerScoreboardListener implements Listener {
         String subtitle = ChatColor.GRAY+"+1 Defend Point(s)";
         for(Player player : event.getBase().getWorld().getPlayers()) {
             if(containsPlayer(player, event.getPlayers())) {
-                TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
+                //TitleMessage.sendTitle(player, 20, 40, 20, message, subtitle);
+                player.sendTitle(message, subtitle, 20,40,20);
                 //increment defend score of player
                 PlayerScore score = plugin.getDominationGame().getScoreManager().getPlayerScore(player);
                 if(score == null)
@@ -94,7 +98,8 @@ public class PlayerScoreboardListener implements Listener {
                 plugin.getDominationGame().getScoreManager().savePlayerScore(score);
             }
             else{
-                TitleMessage.sendTitle(player, 20, 40, 20, message, null);
+                //TitleMessage.sendTitle(player, 20, 40, 20, message, null);
+                player.sendTitle(message, null, 20,40,20);
             }
         }
     }

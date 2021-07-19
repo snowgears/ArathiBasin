@@ -262,17 +262,7 @@ public class Base extends Structure{
 //        if(Domination.getPlugin().isDebug()) {
 //            System.out.println("[Arathi] Setting block at location ("+location.getBlockX()+", "+location.getBlockY()+", "+location.getBlockZ()+") to color "+color.name());
 //        }
-        switch(color){
-            case RED:
-                location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.RED_WOOL);
-                break;
-            case BLUE:
-                location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.BLUE_WOOL);
-                break;
-            case WHITE:
-                location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.WHITE_WOOL);
-                break;
-        }
+        this.playChangeEffect(location, color);
     }
 
     private void setBlock(Block block, boolean isWool, DyeColor color){
@@ -284,16 +274,6 @@ public class Base extends Structure{
 //        if(Domination.getPlugin().isDebug()) {
 //            System.out.println("[Arathi] Setting block at location ("+location.getBlockX()+", "+location.getBlockY()+", "+location.getBlockZ()+") to color "+color.name());
 //        }
-        switch(color){
-            case RED:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.RED_WOOL);
-                break;
-            case BLUE:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.BLUE_WOOL);
-                break;
-            case WHITE:
-                block.getWorld().playEffect(block.getLocation(), Effect.STEP_SOUND, Material.WHITE_WOOL);
-                break;
-        }
+        this.playChangeEffect(block.getLocation(), color);
     }
 }

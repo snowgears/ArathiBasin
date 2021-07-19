@@ -272,6 +272,7 @@ public class StructureManager {
 
     private Location locationFromString(String locString) {
         String[] parts = locString.split(",");
-        return new Location(plugin.getServer().getWorld(parts[0]), Double.parseDouble(parts[1]), Double.parseDouble(parts[2]), Double.parseDouble(parts[3]));
+        //return new Location(plugin.getServer().getWorld(parts[0]), Double.parseDouble(parts[1]), Double.parseDouble(parts[2]), Double.parseDouble(parts[3]));
+        return new Location(plugin.getServer().getWorld(plugin.getWorldName()), Double.parseDouble(parts[1]), Double.parseDouble(parts[2]), Double.parseDouble(parts[3]));
     }
 }

@@ -1,10 +1,7 @@
 package com.snowgears.domination.structure;
 
 import com.snowgears.domination.Domination;
-import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -120,6 +117,20 @@ public abstract class Structure {
             return false;
         }
         return true;
+    }
+
+    protected void playChangeEffect(Location location, DyeColor color){
+        switch(color){
+            case RED:
+                location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.RED_WOOL);
+                break;
+            case BLUE:
+                location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.BLUE_WOOL);
+                break;
+            default:
+                location.getWorld().playEffect(location, Effect.STEP_SOUND, Material.WHITE_WOOL);
+                break;
+        }
     }
 
     public StructureModule getCurrentModule(){

@@ -59,10 +59,9 @@ public class BattleTeam {
                 //create a new player score (and display scoreboard)
                 PlayerScore s = Domination.getPlugin().getDominationGame().getScoreManager().addPlayerScore(player);
 
+                players.put(player.getUniqueId(), true);
             }
         }, 5);
-
-        players.put(player.getUniqueId(), true);
 
         return true;
     }

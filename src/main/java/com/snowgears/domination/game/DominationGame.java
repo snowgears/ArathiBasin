@@ -5,7 +5,6 @@ import com.snowgears.domination.events.GameEndEvent;
 import com.snowgears.domination.events.GameStartEvent;
 import com.snowgears.domination.score.PlayerScore;
 import com.snowgears.domination.score.ScoreManager;
-import com.snowgears.domination.util.TitleMessage;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -47,7 +46,7 @@ public class DominationGame {
 
         for (Player player : Bukkit.getWorld(Domination.getPlugin().getWorldName()).getPlayers()) {
             if(player != null)
-                TitleMessage.clearTitle(player);
+                player.sendTitle("", "", 0,0,0);
         }
 
         startTimer = new DominationStartTimer(Domination.getPlugin());
