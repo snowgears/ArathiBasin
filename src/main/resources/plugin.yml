@@ -1,21 +1,21 @@
-name: ArathiBasin
+name: Domination
 author: SnowGears
 description: Capture the point mini-game based on Arathi Basin from World of Warcraft!
-version: 1.0.9
+version: 1.1
 api-version: 1.13
-main: com.snowgears.arathibasin.ArathiBasin
+main: com.snowgears.domination.Domination
 softdepend: [PlaceholderAPI]
 commands:
-   arathi:
+   domination:
       description: Different commands pertaining to plugin
       usage: /<command>
    structure:
-      description: This command is used for setting up a world to be used for the Arathi game.
+      description: This command is used for setting up a world to be used for the domination game.
       usage: /<command>
 permissions:
-    arathi.play:
-        description: Allows player to play the arathi basin mini-game
+    domination.play:
+        description: Allows player to play the domination mini-game
         default: op
-    arathi.operator:
+    domination.operator:
         description: Allows player use all operator actions associated with plugin
         default: op

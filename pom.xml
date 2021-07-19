@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.snowgears.arathibasin</groupId>
-    <artifactId>ArathiBasin</artifactId>
-    <version>1.0.9</version>
+    <groupId>com.snowgears.domination</groupId>
+    <artifactId>Domination</artifactId>
+    <version>1.1</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

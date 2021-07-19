@@ -1,9 +1,15 @@
-# Thanks for purchasing ArathiBasin! #
+# Thanks for purchasing Domination! #
 # IF YOU HAVE A QUESTION COME HOP IN MY DISCORD: https://discord.gg/GpSwEWS #
 #=====================================#
 
-# If you want to use permissions with ArathiBasin, you must set this to true #
+# If you want to use permissions with Domination, you must set this to true #
 usePermissions: false
+
+# This is the main command of the plugin #
+dominationCommand: "domination"
+
+# This is the main command of the plugin for setting up structures #
+structureCommand: "structure"
 
 # These are the names of the two teams that will be displayed to players #
 blueTeamName: "Alliance"
