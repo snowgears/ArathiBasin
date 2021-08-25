@@ -4,7 +4,7 @@ description: Capture the point mini-game based on Arathi Basin from World of War
 version: 1.1
 api-version: 1.13
 main: com.snowgears.domination.Domination
-softdepend: [Vault, PlaceholderAPI]
+softdepend: [Vault, PlaceholderAPI, ProtocolLib]
 commands:
    domination:
       description: Different commands pertaining to plugin

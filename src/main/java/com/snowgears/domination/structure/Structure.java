@@ -46,8 +46,15 @@ public abstract class Structure {
     }
 
     public ArrayList<Location> getLocations(StructureModule module){
-        if(locations.containsKey(module))
+        if(locations.containsKey(module)) {
+            //TODO i think the problem is that the locations that structure stored have a reference to an old world. try returning a new list of locations with an updated world when using this and make sure to use this getter for all internal calls
+//            ArrayList<Location> locs = locations.get(module);
+//            locs.get(0).getWorld().get
+//            try{
+//                locations.get(0)
+//            }
             return locations.get(module);
+        }
         return null;
     }
 

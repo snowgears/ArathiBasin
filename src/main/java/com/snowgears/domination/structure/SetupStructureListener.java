@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 /**
  * This is a listener class specifically for the setup of {@link Structure}s.
@@ -26,6 +27,11 @@ public class SetupStructureListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
+        try {
+            if (event.getHand() == EquipmentSlot.OFF_HAND) {
+                return; // off hand version, ignore.
+            }
+        } catch (NoSuchMethodError error) {}
 
         Player player = event.getPlayer();
         Structure structure = plugin.getStructureManager().getSelectedStructure(player);

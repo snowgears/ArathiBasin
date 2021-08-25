@@ -1,0 +1,66 @@
+# THIS FILE IS USED TO CONFIGURE WHAT MESSAGES ARE DISPLAYED #
+# ================================================================== #
+# &b : AQUA
+# &0 : BLACK
+# &9 : BLUE
+# &l : BOLD
+# &3 : DARK_AQUA
+# &1 : DARK_BLUE
+# &8 : DARK_GRAY
+# &2 : DARK_GREEN
+# &5 : DARK_PURPLE
+# &4 : DARK_RED
+# &6 : GOLD
+# &7 : GRAY
+# &a : GREEN
+# &o : ITALIC
+# &d : LIGHT_PURPLE
+# &k : MAGIC
+# &c : RED
+# &r : RESET
+# &m : STRIKETHROUGH
+# &n : UNDERLINE
+# &f : WHITE
+# &e : YELLOW
+
+# [main command] - main command of the plugin (default is 'domination') #
+# [structure command] - structure command of the plugin (default is 'structure') #
+# [player] - the name of the player involved
+# [team color] - the team color involved
+
+main_command:
+   join: "&b/[main command] join &7- join the queue to play the domination game"
+   join_output_add_queue: "&aYou have been added to the queue for the domination game."
+   joinTeam: "&b/[main command] join <team> &7- join the queue to play the domination game (on a specific team)"
+   leave: "&b/[main command] leave &7- leave the queue (or game if in progress)"
+   spectate: "&b/[main command] spectate &7- toggles on and off spectating the domination game"
+   tp: "&b/[main command] tp &7- (OP) teleport to the domination world"
+   start: "&b/[main command] start &7- (OP) force start the domination game"
+   end: "&b/[main command] end &7- (OP) force end the domination game"
+   add: "&b/[main command] add <player> <team> &7- (OP) force player into domination game on specific team"
+   permission: "&cYou do not have access to that command."
+
+structure_command:
+   list: "&b/[structure command] list &7- lists all structure in current world"
+   define: "&b/[structure command] define <base/spawn> <name> &7- creates a new structure"
+   select: "&b/[structure command] select <name> &7- selects a structure for editing)"
+   module: "&b/[structure command] module <module> &7- switches to the module of the selected structure"
+   deselect: "&b/[structure command] deselect &7- deselects current structure"
+   remove: "&b/[structure command] remove &7- removes selected structure entirely"
+   color: "&b/[structure command] color <color> &7- sets the color of the selected structure"
+   direction: "&b/[structure command] direction &7- sets the direction of the selected structure to your position"
+
+action:
+   remove: "&aYou have been removed from the domination game."
+   notQueue: "&cYou are not currently queued for the domination game."
+   addSpectate: "&7You are no longer spectating the domination game."
+   removeSpectate: "&7You are now spectating the domination game."
+   forceEnd: "&7You have force ended the domination game."
+   tp: "&7You have been teleported to the domination world."
+   noGame: "&cThere is currently no domination game in progress."
+   forceStart: "&7You have force started the domination game."
+   alreadyGame: "&cThere is already an domination game in progress."
+   resolveTeam: "&cCould not resolve input as a team."
+   addQueueTeam: "&aYou have been added to the [team color] team queue for the domination game."
+   resolvePlayer: "&cNo player with inputted name found on server."
+   addPlayerQueueTeam: "&a[player] has been added to the [team color] team queue for the domination game."

@@ -1,5 +1,10 @@
 package com.snowgears.domination.util;
 
+import com.snowgears.domination.Domination;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+
 import java.io.*;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -111,5 +116,27 @@ public class FileUtils {
                 return FileVisitResult.CONTINUE;
             }
         });
-    };
+    }
+
+    public static void createWorldBackup() throws IOException {
+        File world_domination = new File(Domination.getPlugin().getServer().getWorldContainer(), Domination.getPlugin().getWorldName());
+        File world_domination_backup = new File(Domination.getPlugin().getServer().getWorldContainer(), Domination.getPlugin().getWorldName()+"_backup");
+        copyFolder(world_domination, world_domination_backup);
+    }
+
+    public static void restoreWorldFromBackup() throws IOException {
+        Bukkit.getServer().unloadWorld(Domination.getPlugin().getWorldName(), false);
+        System.out.println("Unloaded domination_world.");
+
+        File world_domination = new File(Domination.getPlugin().getServer().getWorldContainer(), Domination.getPlugin().getWorldName());
+        File world_domination_backup = new File(Domination.getPlugin().getServer().getWorldContainer(), Domination.getPlugin().getWorldName()+"_backup");
+        copyFolder(world_domination_backup, world_domination);
+        System.out.println("Copied backup world to domination world.");
+
+        Bukkit.createWorld(new WorldCreator(Domination.getPlugin().getWorldName()));
+        //WorldCreator wc = new WorldCreator(Domination.getPlugin().getWorldName());
+        //World world = Domination.getPlugin().getServer().createWorld(wc);
+        //Domination.getPlugin().getServer().getWorlds().add(world);
+        System.out.println("Loaded and added domination world.");
+    }
 }

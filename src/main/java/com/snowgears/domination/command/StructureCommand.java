@@ -50,6 +50,7 @@ public class StructureCommand implements CommandExecutor {
             player.sendMessage(ChatColor.AQUA+"/"+baseCommand+" remove"+ChatColor.GRAY+" - removes selected structure entirely");
             player.sendMessage(ChatColor.AQUA+"/"+baseCommand+" color <color>"+ChatColor.GRAY+" - sets the color of the selected structure");
             player.sendMessage(ChatColor.AQUA+"/"+baseCommand+" direction"+ChatColor.GRAY+" - sets the direction of the selected structure to your position");
+            player.sendMessage(ChatColor.AQUA+"/"+baseCommand+" save"+ChatColor.GRAY+" - saves all defined structure to file(s)");
         }
         else if(args.length == 1){
             if(args[0].equalsIgnoreCase("list")){
@@ -99,6 +100,10 @@ public class StructureCommand implements CommandExecutor {
                     structure.setDirection(direction);
                     player.sendMessage(ChatColor.GRAY + "The direction of <"+structure.getName()+"> has been set to "+direction.toString()+".");
                 }
+            }
+            else if(args[0].equalsIgnoreCase("save")) {
+                plugin.getStructureManager().saveStructures();
+                player.sendMessage(ChatColor.GREEN + "Structures saved to file(s).");
             }
         }
         else if(args.length == 2){
@@ -166,7 +171,7 @@ public class StructureCommand implements CommandExecutor {
                     return true;
                 }
                 structure.setColor(color, null);
-                plugin.getStructureManager().addStructure(structure);
+                //plugin.getStructureManager().addStructure(structure); TODO
                 player.sendMessage(ChatColor.GRAY+"The color of the selected structure has been set to "+color.toString());
             }
         }

@@ -2,6 +2,8 @@ package com.snowgears.domination.score;
 
 import com.snowgears.domination.Domination;
 import com.snowgears.domination.game.BattleTeam;
+import com.snowgears.domination.util.tabbed.item.TextTabItem;
+import com.snowgears.domination.util.tabbed.tablist.TableTabList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -31,7 +33,7 @@ public class PlayerScore {
     private boolean isSpectator;
 
     private Scoreboard scoreboard;
-    //private TableTabList tabList;
+    private TableTabList tabList;
 
     public PlayerScore(Player player){
         this.playerName = player.getName();
@@ -45,7 +47,7 @@ public class PlayerScore {
         else{
             setupScoreboardSpectator();
         }
-        //initTabList();
+        initTabList();
     }
 
     public String getPlayerName(){
@@ -246,7 +248,7 @@ public class PlayerScore {
         //scoreboard.clearSlot(DisplaySlot.SIDEBAR);
         buffer.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        //refreshTabList();
+        refreshTabList();
     }
 
     public void addPlayerToTeam(Player player, DyeColor color){
@@ -336,96 +338,122 @@ public class PlayerScore {
         }
     }
 
-//    private void initTabList(){
-//        if(Domination.getPlugin().getTabbed() != null) {
-//            Player player = Bukkit.getPlayer(playerUUID);
-//            if(player == null)
-//                return;
-//
-//            if(this.tabList != null)
-//                return;
-//
-//            Domination.getPlugin().getTabbed().destroyTabList(player);
-//            this.tabList = Domination.getPlugin().getTabbed().newTableTabList(player);
-//
-//            refreshTabList();
-//        }
-//    }
-//
-//    private void refreshTabList(){
-//        if(Domination.getPlugin().getTabbed() != null) {
-//
-//            if(tabList == null)
-//                return;
-//
-//            Player player = Bukkit.getPlayer(playerUUID);
-//            if(player == null)
-//                return;
-//
-//            //tabList = Domination.getPlugin().getTabbed().getTabList(player); //TODO might need to try this
-//
-//            //TODO you may need to loop batch update in tabbed in ScoreTask to not get blinking tabs for players
-//
-//            //this.tabList = Domination.getPlugin().getTabbed().newTableTabList(player);
-//
-//            //List<TabItem> items = new ArrayList<TabItem>();
-//
-//            tabList.setBatchEnabled(true);
-//
-//            //initialize row headers first
-//            tabList.set(0, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"Name"));
-//            tabList.set(20, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"Points"));
-//            tabList.set(40, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"A / C / D"));
-//            tabList.set(60, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"Kills / Deaths"));
-//
-//            BattleTeam currentTeam;
-//            Player scorePlayer;
-//            ChatColor chatColor;
-//            int tabIndex = 1;
-//            int i=0;
-//            for(PlayerScore score : Domination.getPlugin().getDominationGame().getScoreManager().getOrderedPlayerScores()){
-//                //tablist only has room for 20 rows
-//                if(i > 18) //was 17
-//                    break;
-//
-//                scorePlayer = Bukkit.getPlayer(score.getPlayerName());
-//
-//                if(scorePlayer != null){
-//                    currentTeam = Domination.getPlugin().getDominationGame().getTeamManager().getCurrentTeam(scorePlayer);
-//                    if(currentTeam != null) {
-//                        chatColor = currentTeam.getChatColor();
-//                        //tabList.set(tabIndex, new PlayerTabItem(scorePlayer)); // this works (without chatcolor on player) but does not pull down skin
-//                        //tabList.set(tabIndex, new TextTabItem(chatColor+scorePlayer.getName(), 1000, Skins.getPlayer(score.getPlayerName())));
-//                        tabList.set(tabIndex, new TextTabItem(chatColor+scorePlayer.getName())); //this works but does not pull in skin
-//                        tabList.set(tabIndex+20, new TextTabItem(chatColor+""+score.getPoints()));
-//                        tabList.set(tabIndex+40, new TextTabItem(chatColor+""+score.getAssaults()+" / "+score.getCaptures()+" / "+score.getDefends()));
-//                        tabList.set(tabIndex+60, new TextTabItem(chatColor+""+score.getKills()+" / "+score.getDeaths()));
-//                        tabIndex++;
-//                    }
-//                }
-//
-//                i++;
-//            }
-//            while(i < 19){ //was 18
-//                tabList.set(tabIndex, new TextTabItem(""));
-//                tabList.set(tabIndex+20, new TextTabItem(""));
-//                tabList.set(tabIndex+40, new TextTabItem(""));
-//                tabList.set(tabIndex+60, new TextTabItem(""));
-//                tabIndex++;
-//                i++;
-//            }
-//            //tabList.fill(0, 0, 1, 1, items, TableTabList.TableCorner.TOP_LEFT, TableTabList.FillDirection.HORIZONTAL);
-//
-//            //tabList.setHeader(ChatColor.GOLD + ""+ChatColor.BOLD+"Mizkif"+ChatColor.RESET+ChatColor.GRAY+" x "+ChatColor.DARK_PURPLE+ChatColor.BOLD+"Twitch Rivals "+ChatColor.RED+ChatColor.BOLD+"Domination");
-//
-//            //tabList.setFooter(ChatColor.LIGHT_PURPLE + ""+ChatColor.BOLD+"To download this mini-game, visit: "+ChatColor.RESET+ChatColor.AQUA+ChatColor.BOLD+"smarturl.it/arathi");
-//
-//            tabList.setHeader(ChatColor.GOLD + ""+ChatColor.BOLD+"Mizkif"+ChatColor.RESET+ChatColor.GRAY+" x "+ChatColor.DARK_PURPLE+ChatColor.BOLD+"Twitch Rivals "+ChatColor.RED+ChatColor.BOLD+"Domination");
-//
-//            tabList.setFooter(ChatColor.LIGHT_PURPLE + ""+ChatColor.BOLD+"To download this mini-game, visit: "+ChatColor.RESET+ChatColor.AQUA+ChatColor.BOLD+"smarturl.it/arathi");
-//
-//            tabList.batchUpdate();
-//            tabList.setBatchEnabled(false);
-//        }
-//    }
+    private void initTabList(){
+        if(Domination.getPlugin().getTabbedManager() == null)
+            return;
+
+        Player player = Bukkit.getPlayer(playerUUID);
+        if(player == null)
+            return;
+
+        if(this.tabList != null)
+            return;
+
+        Domination.getPlugin().getTabbedManager().destroyTabList(player);
+        this.tabList = Domination.getPlugin().getTabbedManager().newTableTabList(player);
+
+        refreshTabList();
+    }
+
+    private void refreshTabList(){
+        if(Domination.getPlugin().getTabbedManager() == null)
+            return;
+
+        if(tabList == null)
+            return;
+
+        Player player = Bukkit.getPlayer(playerUUID);
+        if(player == null)
+            return;
+
+        tabList.setBatchEnabled(true);
+
+        //initialize row headers first
+        tabList.set(0, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"Name"));
+        tabList.set(20, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"Points"));
+        tabList.set(40, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"A / C / D"));
+        tabList.set(60, new TextTabItem(ChatColor.WHITE+""+ChatColor.BOLD+"Kills / Deaths"));
+
+        BattleTeam currentTeam;
+        Player scorePlayer;
+        ChatColor chatColor;
+        int tabIndex = 1;
+        int i=0;
+        for(PlayerScore score : Domination.getPlugin().getDominationGame().getScoreManager().getOrderedPlayerScores()){
+            //tablist only has room for 20 rows
+            if(i > 18) //was 17
+                break;
+
+            scorePlayer = Bukkit.getPlayer(score.getPlayerName());
+
+            if(scorePlayer != null){
+                currentTeam = Domination.getPlugin().getDominationGame().getTeamManager().getCurrentTeam(scorePlayer);
+                if(currentTeam != null) {
+                    chatColor = currentTeam.getChatColor();
+                    //tabList.set(tabIndex, new PlayerTabItem(scorePlayer)); // this works (without chatcolor on player) but does not pull down skin
+                    //tabList.set(tabIndex, new TextTabItem(chatColor+scorePlayer.getName(), 1000, Skins.getPlayer(score.getPlayerName())));
+                    tabList.set(tabIndex, new TextTabItem(chatColor+scorePlayer.getName())); //this works but does not pull in skin
+                    tabList.set(tabIndex+20, new TextTabItem(chatColor+""+score.getPoints()));
+                    tabList.set(tabIndex+40, new TextTabItem(chatColor+""+score.getAssaults()+" / "+score.getCaptures()+" / "+score.getDefends()));
+                    tabList.set(tabIndex+60, new TextTabItem(chatColor+""+score.getKills()+" / "+score.getDeaths()));
+                    tabIndex++;
+                }
+            }
+
+            i++;
+        }
+        while(i < 19){ //was 18
+            tabList.set(tabIndex, new TextTabItem(""));
+            tabList.set(tabIndex+20, new TextTabItem(""));
+            tabList.set(tabIndex+40, new TextTabItem(""));
+            tabList.set(tabIndex+60, new TextTabItem(""));
+            tabIndex++;
+            i++;
+        }
+        //tabList.fill(0, 0, 1, 1, items, TableTabList.TableCorner.TOP_LEFT, TableTabList.FillDirection.HORIZONTAL);
+
+        //tabList.setHeader(ChatColor.GOLD + ""+ChatColor.BOLD+"Mizkif"+ChatColor.RESET+ChatColor.GRAY+" x "+ChatColor.DARK_PURPLE+ChatColor.BOLD+"Twitch Rivals "+ChatColor.RED+ChatColor.BOLD+"Domination");
+
+        //tabList.setFooter(ChatColor.LIGHT_PURPLE + ""+ChatColor.BOLD+"To download this mini-game, visit: "+ChatColor.RESET+ChatColor.AQUA+ChatColor.BOLD+"smarturl.it/arathi");
+
+        player.setPlayerListHeader(ChatColor.GOLD + ""+ChatColor.BOLD+"Domination");
+
+        player.setPlayerListFooter(ChatColor.LIGHT_PURPLE + ""+ChatColor.BOLD+"Capture bases and defend them to win!");
+
+        tabList.batchUpdate();
+        tabList.setBatchEnabled(false);
+    }
+
+    public void resetTabList(Player player){
+        System.out.println("Called resetTabList");
+        if(Domination.getPlugin().getTabbedManager() == null)
+            return;
+
+        //Domination.getPlugin().getTabbedManager().getTabList(player);
+        if(tabList == null)
+            return;
+
+        System.out.println("TabList was not null");
+        //tabList.batchReset();
+        //tabList.disable();
+        tabList.setBatchEnabled(true);
+
+        int i=0;
+        int tabIndex=0;
+        while(i < 19){
+            tabList.set(tabIndex, new TextTabItem(""));
+            tabList.set(tabIndex+20, new TextTabItem(""));
+            tabList.set(tabIndex+40, new TextTabItem(""));
+            tabList.set(tabIndex+60, new TextTabItem(""));
+            tabIndex++;
+            i++;
+        }
+
+        tabList.batchUpdate();
+        tabList.setBatchEnabled(false);
+        tabList = null;
+        //Domination.getPlugin().getTabbedManager().destroyTabList(player);
+        //Domination.getPlugin().getTabbedManager().newTitledTabList(player);
+        player.setPlayerListHeaderFooter(null, null);
+    }
 }

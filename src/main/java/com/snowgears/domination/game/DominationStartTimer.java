@@ -2,6 +2,8 @@ package com.snowgears.domination.game;
 
 
 import com.snowgears.domination.Domination;
+import com.snowgears.domination.events.SpawnGatesOpenEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,6 +25,10 @@ public class DominationStartTimer extends BukkitRunnable{
         if(timeTilGatesOpen < 0){
             plugin.getStructureManager().startStructureTasks();
             plugin.getDominationGame().getScoreManager().startScoreTask();
+
+            SpawnGatesOpenEvent event = new SpawnGatesOpenEvent();
+            Bukkit.getServer().getPluginManager().callEvent(event);
+
             this.cancel();
             return;
         }

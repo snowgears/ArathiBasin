@@ -46,7 +46,7 @@ public class BattleTeam {
                 player.setDisplayName(ChatColor.valueOf(color.toString()) + player.getName() + ChatColor.RESET);
                 //player.setPlayerListName(player.getDisplayName()); //might not need this once scoreboards work correctly
                 player.getInventory().clear();
-                player.setGameMode(GameMode.ADVENTURE);
+                player.setGameMode(Domination.getPlugin().getPlayerGameMode());
                 player.teleport(getSpawnLocation());
 
                 //players.put(player.getUniqueId(), true);
@@ -56,10 +56,13 @@ public class BattleTeam {
                         p.sendMessage(player.getDisplayName()+ChatColor.YELLOW+" has joined the battle!");
                 }
 
+                players.put(player.getUniqueId(), true);
+
                 //create a new player score (and display scoreboard)
+                System.out.println("Added "+player.getName()+" to BattleTeam and creating new PlayerScore.");
                 PlayerScore s = Domination.getPlugin().getDominationGame().getScoreManager().addPlayerScore(player);
 
-                players.put(player.getUniqueId(), true);
+                //players.put(player.getUniqueId(), true); //TODO no idea why this was under rather than over adding of the score
             }
         }, 5);
 

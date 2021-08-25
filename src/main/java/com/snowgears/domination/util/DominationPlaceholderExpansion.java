@@ -133,6 +133,14 @@ public class DominationPlaceholderExpansion extends PlaceholderExpansion {
             //stat_self_kills
             //stat_self_place
 
+            //TODO come back and add all these so leaderboard plugins can integrate
+            //%domination_wins%
+            //%domination_played%
+            //%domination_most_points%
+            //%domination_most_defends%
+            //%domination_most_assaults%
+            //%domination_status_<arena>%
+
             String[] split = identifier.split("_");
             if(split[1].equals("self")){
                 return this.getSelfScoreValue(player, split[2]);

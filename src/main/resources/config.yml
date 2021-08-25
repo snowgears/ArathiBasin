@@ -25,6 +25,13 @@ debug: false
 #                           GAME SETTINGS                             #
 # =================================================================== #
 
+# This is the mode players will be placed in when entering the battleground #
+gamemode: "ADVENTURE"
+
+# This will make a copy of the domination world at the start of each game, and rollback from the copy at the end #
+# This is useful if you are allowing the placement of blocks in the world during gameplay #
+rollbackWorldAfterGame: false
+
 # These are the names of the two teams that will be displayed to players #
 blueTeamName: "Alliance"
 redTeamName: "Horde"

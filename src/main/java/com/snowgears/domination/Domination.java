@@ -1,5 +1,7 @@
 package com.snowgears.domination;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.snowgears.domination.command.DominationCommand;
 import com.snowgears.domination.command.StructureCommand;
 import com.snowgears.domination.game.DominationGame;
@@ -11,8 +13,10 @@ import com.snowgears.domination.util.ConfigUpdater;
 import com.snowgears.domination.util.DominationPlaceholderExpansion;
 import com.snowgears.domination.util.FileUtils;
 import com.snowgears.domination.util.UnzipUtility;
+import com.snowgears.domination.util.tabbed.TabbedManager;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -33,11 +37,14 @@ public class Domination extends JavaPlugin {
     private SetupStructureListener setupListener;
     private StructureManager structureManager;
     private DominationGame dominationGame;
+    private TabbedManager tabbedManager;
 
     private boolean usePerms;
     private String dominationCommand;
     private String structureCommand;
     private String worldName;
+    private GameMode playerGameMode;
+    private boolean rollbackWorld;
     private String blueTeamName;
     private String redTeamName;
     private int minTeamSize;
@@ -60,6 +67,17 @@ public class Domination extends JavaPlugin {
 
     public static Domination getPlugin() {
         return plugin;
+    }
+
+    public void onLoad() {
+        try {
+            //try loading the protocollib plugin to see if we will be using custom player lists
+            ProtocolLibrary.getProtocolManager();
+
+            tabbedManager = new TabbedManager();
+        }catch(NoClassDefFoundError e){
+            tabbedManager = null;
+        }
     }
 
     public void onEnable() {
@@ -93,6 +111,12 @@ public class Domination extends JavaPlugin {
         dominationCommand = config.getString("dominationCommand");
         structureCommand = config.getString("structureCommand");
         worldName = config.getString("worldName");
+        try {
+            playerGameMode = GameMode.valueOf(config.getString("gamemode"));
+        } catch (IllegalArgumentException e){
+            playerGameMode = GameMode.ADVENTURE;
+        }
+        rollbackWorld = config.getBoolean("rollbackWorldAfterGame");
         blueTeamName = config.getString("blueTeamName");
         redTeamName = config.getString("redTeamName");
         minTeamSize = config.getInt("minTeamSize");
@@ -120,8 +144,9 @@ public class Domination extends JavaPlugin {
 
         generateWorld();
 
-        structureManager = new StructureManager(this);
         dominationGame = new DominationGame();
+        structureManager = new StructureManager(this);
+        //dominationGame = new DominationGame();
 
         if (vaultEntryCost > 0 && !setupEconomy()) {
             System.out.println("[Domination] [ERROR] Vault hook not detected!");
@@ -132,7 +157,7 @@ public class Domination extends JavaPlugin {
 
     public void onDisable() {
         plugin = null;
-        this.structureManager.saveStructures();
+        //this.structureManager.saveStructures();
     }
 
     public boolean usePerms(){
@@ -157,6 +182,14 @@ public class Domination extends JavaPlugin {
 
     public DominationGame getDominationGame(){
         return dominationGame;
+    }
+
+    public GameMode getPlayerGameMode(){
+        return playerGameMode;
+    }
+
+    public boolean getRollbackWorld(){
+        return rollbackWorld;
     }
 
     public String getBlueTeamName(){
@@ -288,4 +321,9 @@ public class Domination extends JavaPlugin {
         econ = rsp.getProvider();
         return econ != null;
     }
+
+    public TabbedManager getTabbedManager(){
+        return tabbedManager;
+    }
+
 }

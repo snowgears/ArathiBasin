@@ -4,6 +4,7 @@ import com.snowgears.domination.Domination;
 import com.snowgears.domination.game.BattleTeam;
 import com.snowgears.domination.structure.Base;
 import com.snowgears.domination.structure.Structure;
+import com.snowgears.domination.util.tabbed.tablist.SimpleTabList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -144,6 +145,7 @@ public class ScoreManager {
                 }
             }
 
+            //System.out.println("Elapsed minutes: "+elapsedMinutes+", Game Max Time: "+plugin.getGameMaxTime());
             if(elapsedMinutes >= plugin.getGameMaxTime()){
                 //time limit has been reached, next point wins
 
@@ -176,18 +178,29 @@ public class ScoreManager {
     }
 
     public PlayerScore addPlayerScore(Player player){
-        if(playerScores.containsKey(player.getUniqueId()))
+        System.out.println("Adding player score: "+player.getName());
+        if(playerScores.containsKey(player.getUniqueId())) {
+            System.out.println("There is already a playerscore for this player. Returning that value.");
             return playerScores.get(player.getUniqueId());
+        }
+        System.out.println("Creating new playerscore.");
         PlayerScore score = new PlayerScore(player);
         this.savePlayerScore(score);
 
         BattleTeam team = plugin.getDominationGame().getTeamManager().getCurrentTeam(player);
         if(team != null) {
+            System.out.println("Team was not null: "+team.getColor().toString());
             for (PlayerScore s : this.playerScores.values()) {
+                //assign the playerscore to a team (for scoreboard)
                 s.addPlayerToTeam(player, team.getColor());
-                if(!orderedPlayerScores.contains(score))
+                if(!orderedPlayerScores.contains(score)) {
                     orderedPlayerScores.add(score);
+                    System.out.println("Added score to orderedPlayerScores.");
+                }
             }
+        }
+        else{
+            System.out.println("Team was null.");
         }
 
         return score;
@@ -195,8 +208,8 @@ public class ScoreManager {
 
     public boolean removePlayerScore(Player player){
         if(playerScores.containsKey(player.getUniqueId())) {
-            playerScores.remove(player.getUniqueId());
-            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+//            playerScores.remove(player.getUniqueId());
+//            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
             BattleTeam team = plugin.getDominationGame().getTeamManager().getCurrentTeam(player);
             if(team != null) {
@@ -208,7 +221,13 @@ public class ScoreManager {
                 if (orderedPlayerScores.contains(score))
                     orderedPlayerScores.remove(score);
 
+                //not sure if this is the best way to reset tab list to default but trying it anyway
+                score.resetTabList(player);
+
             }
+            playerScores.remove(player.getUniqueId());
+            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+
             return true;
         }
         return false;
@@ -239,6 +258,8 @@ public class ScoreManager {
     }
 
     public PlayerScore getPlayerScore(Player player){
+        if(player == null)
+            return null;
         if(playerScores.containsKey(player.getUniqueId()))
             return playerScores.get(player.getUniqueId());
         return null;
@@ -258,6 +279,12 @@ public class ScoreManager {
         blueBases = 0;
         redWarning = false;
         blueWarning = false;
+        for(UUID playerUUID : playerScores.keySet()){
+            Player player = Bukkit.getPlayer(playerUUID);
+            if(player != null && player.isOnline()){
+                removePlayerScore(player);
+            }
+        }
         playerScores.clear();
         orderedPlayerScores.clear();
         this.startTimeMillis = 0;

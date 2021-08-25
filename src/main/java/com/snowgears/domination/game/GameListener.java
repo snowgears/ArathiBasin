@@ -8,15 +8,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Tag;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,6 +114,16 @@ public class GameListener implements Listener{
         }
     }
 
+    @EventHandler
+    public void livingEntitySpawnEvent(EntitySpawnEvent event){
+        if(event.getEntity().getWorld().getName().equals(plugin.getWorldName())) {
+            if (event.getEntity() instanceof LivingEntity) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onWeatherChange(WeatherChangeEvent event){
         if(event.getWorld().getName().equals(plugin.getWorldName())){
@@ -159,6 +172,13 @@ public class GameListener implements Listener{
         if (event.isCancelled()) {
             return;
         }
+        if(!plugin.getDominationGame().isInProgress())
+            return;
+        try {
+            if (event.getHand() == EquipmentSlot.OFF_HAND) {
+                return; // off hand version, ignore.
+            }
+        } catch (NoSuchMethodError error) {}
 
         Player player = event.getPlayer();
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK && Tag.WOOL.isTagged(event.getClickedBlock().getType())){

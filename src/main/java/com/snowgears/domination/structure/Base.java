@@ -183,8 +183,10 @@ public class Base extends Structure{
         this.previousColor = this.color;
         this.color = color;
 
-        if(this.color != this.previousColor) {
-            Bukkit.getScheduler().cancelTask(delayedCaptureTaskID);
+        if(Domination.getPlugin().getDominationGame().isInProgress()) {
+            if (this.color != this.previousColor) {
+                Bukkit.getScheduler().cancelTask(delayedCaptureTaskID);
+            }
         }
 
         for(Map.Entry<StructureModule, ArrayList<Location>> entry : locations.entrySet()){
@@ -206,36 +208,34 @@ public class Base extends Structure{
             }
         }
 
-        //set a delayed task for the transition of the base from secondary color to primary color
-        if(color == DyeColor.PINK || color == DyeColor.LIGHT_BLUE) {
-            setupDelayedCaptureTask(players);
-            if(color != previousColor){
-                if(color == DyeColor.PINK) {
-                    BaseAssaultEvent event = new BaseAssaultEvent(this, DyeColor.RED, players);
-                    Bukkit.getServer().getPluginManager().callEvent(event);
-                }
-                else{
-                    BaseAssaultEvent event = new BaseAssaultEvent(this, DyeColor.BLUE, players);
-                    Bukkit.getServer().getPluginManager().callEvent(event);
+        if(Domination.getPlugin().getDominationGame().isInProgress()) {
+            //set a delayed task for the transition of the base from secondary color to primary color
+            if (color == DyeColor.PINK || color == DyeColor.LIGHT_BLUE) {
+                setupDelayedCaptureTask(players);
+                if (color != previousColor) {
+                    if (color == DyeColor.PINK) {
+                        BaseAssaultEvent event = new BaseAssaultEvent(this, DyeColor.RED, players);
+                        Bukkit.getServer().getPluginManager().callEvent(event);
+                    } else {
+                        BaseAssaultEvent event = new BaseAssaultEvent(this, DyeColor.BLUE, players);
+                        Bukkit.getServer().getPluginManager().callEvent(event);
+                    }
                 }
             }
-        }
 
-        if(color == DyeColor.RED && previousColor == DyeColor.LIGHT_BLUE){
-            BaseDefendEvent event = new BaseDefendEvent(this, DyeColor.RED, players);
-            Bukkit.getServer().getPluginManager().callEvent(event);
-        }
-        else if(color == DyeColor.BLUE && previousColor == DyeColor.PINK){
-            BaseDefendEvent event = new BaseDefendEvent(this, DyeColor.BLUE, players);
-            Bukkit.getServer().getPluginManager().callEvent(event);
-        }
-        else if(color == DyeColor.RED && previousColor != color) {
-            BaseCaptureEvent event = new BaseCaptureEvent(this, DyeColor.RED, players);
-            Bukkit.getServer().getPluginManager().callEvent(event);
-        }
-        else if(color == DyeColor.BLUE && previousColor != color) {
-            BaseCaptureEvent event = new BaseCaptureEvent(this, DyeColor.BLUE, players);
-            Bukkit.getServer().getPluginManager().callEvent(event);
+            if (color == DyeColor.RED && previousColor == DyeColor.LIGHT_BLUE) {
+                BaseDefendEvent event = new BaseDefendEvent(this, DyeColor.RED, players);
+                Bukkit.getServer().getPluginManager().callEvent(event);
+            } else if (color == DyeColor.BLUE && previousColor == DyeColor.PINK) {
+                BaseDefendEvent event = new BaseDefendEvent(this, DyeColor.BLUE, players);
+                Bukkit.getServer().getPluginManager().callEvent(event);
+            } else if (color == DyeColor.RED && previousColor != color) {
+                BaseCaptureEvent event = new BaseCaptureEvent(this, DyeColor.RED, players);
+                Bukkit.getServer().getPluginManager().callEvent(event);
+            } else if (color == DyeColor.BLUE && previousColor != color) {
+                BaseCaptureEvent event = new BaseCaptureEvent(this, DyeColor.BLUE, players);
+                Bukkit.getServer().getPluginManager().callEvent(event);
+            }
         }
     }
 

@@ -112,6 +112,10 @@ public class StructureManager {
     }
 
     public void resetStructures(String world){
+        if(plugin.getRollbackWorld()) {
+            //reload structures to update World reference in structure locations
+            this.loadStructures();
+        }
         for(Structure structure : structures.values()){
             if(structure.getWorld().getName().equals(world)){
                 if(structure instanceof Base)
@@ -188,6 +192,7 @@ public class StructureManager {
                     for (File structureFile : worldDirectory.listFiles()) {
                         if (structureFile.getName().endsWith(".yml")) {
                             YamlConfiguration config = YamlConfiguration.loadConfiguration(structureFile);
+                            System.out.println("Loading structure file: "+structureFile.getName());
 
                             String name = structureFile.getName().substring(0, structureFile.getName().length() - 4); //remove .yml
                             String world = worldDirectory.getName();

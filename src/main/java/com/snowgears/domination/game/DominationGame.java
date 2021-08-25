@@ -5,6 +5,7 @@ import com.snowgears.domination.events.GameEndEvent;
 import com.snowgears.domination.events.GameStartEvent;
 import com.snowgears.domination.score.PlayerScore;
 import com.snowgears.domination.score.ScoreManager;
+import com.snowgears.domination.util.FileUtils;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +45,12 @@ public class DominationGame {
         Domination.getPlugin().getStructureManager().resetStructures(Domination.getPlugin().getWorldName());
         inProgress = true;
         isEnding = false;
+
+        if(Domination.getPlugin().getRollbackWorld()){
+            try {
+                FileUtils.createWorldBackup();
+            } catch (IOException e) { e.printStackTrace(); }
+        }
 
         for (Player player : Bukkit.getWorld(Domination.getPlugin().getWorldName()).getPlayers()) {
             if(player != null)
@@ -122,6 +130,12 @@ public class DominationGame {
                     if(player != null){
                         Domination.getPlugin().runLoserCommands(player);
                     }
+                }
+
+                if(Domination.getPlugin().getRollbackWorld()){
+                    try {
+                        FileUtils.restoreWorldFromBackup();
+                    } catch (IOException e) { e.printStackTrace(); }
                 }
             }
         }, delayTicks);
