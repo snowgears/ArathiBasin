@@ -1,51 +1,70 @@
-# Domination
+<div align="center">
 
-**A capture-the-point mini-game plugin for Spigot/Paper Minecraft servers, based on the Arathi Basin battleground from World of Warcraft.**
+<img src="https://i.imgur.com/IAshDsJ.png" alt="Domination" />
 
-[![Spigot](https://img.shields.io/badge/Spigot-27977-orange)](https://www.spigotmc.org/resources/arathibasin-a-domination-mini-game.27977/)
+### Capture-the-point mini-game for Spigot/Paper servers, based on the Arathi Basin battleground from World of Warcraft
+
+*Control resources for your team to win!*
+
 [![Discord](https://img.shields.io/badge/Discord-join-5865F2)](https://discord.gg/GpSwEWS)
 
-Two teams battle for control of five bases on a map. While your team controls a base, it generates resources — the first team to reach **1,600 resources** (configurable) wins.
+**This plugin was featured in a Twitch Rivals tournament with 64 popular streamers!**
+[Check out the gameplay here.](https://youtu.be/8UsLoQXirGg?list=PLQizl_mKEXqRvQh5gBGEu_pFZ3ltzdnDe&t=30)
 
-> 🎥 This plugin was featured in a **Twitch Rivals tournament with 64 popular streamers!** [Check out the gameplay here.](https://youtu.be/8UsLoQXirGg?list=PLQizl_mKEXqRvQh5gBGEu_pFZ3ltzdnDe&t=30)
+Comes fully preconfigured with the default world shown below, including a complete arena and an advanced player queue system. It can just as easily be integrated into any world you want to use ([tutorial](WORLD_SETUP.md)).
 
----
+<img src="https://i.imgur.com/bRWI9Fa.jpg" alt="The default Domination world" />
+
+</div>
 
 ## How to Play
 
-- **Control bases on the map.** Each base your team controls generates resources over time.
-- **To capture a base**, stand near its flag — your team will begin to *assault* it. If it remains uncontested for 1 minute (configurable), your team captures it.
-- Once captured, the base is colored for your team, generates resources, and becomes a **teleport destination** from your spawn via the wall map.
-- **Defend what you take** — the other team can assault your bases and flip them back at any time.
-- First team to the winning score takes the game.
+<div align="center">
+
+**The goal is to control bases on the map** *(default map is provided)*.
+**While a base is controlled, it generates resources for your team.**
+**The first team to gain 1,600 resources** *(configurable)* **wins the game.**
+
+</div>
+
+To capture a base, simply stand near its flag and your team will begin to assault it. If it remains uncontested for 1 minute, your team will capture it. Once a base is captured, it will be fully colored and will begin to generate resources for your team. Your team will then also have access to teleport to it from their spawn via a wall map (shown in the gifs below).
+
+Once you capture a base you will need to defend it, because the other team can still assault it and try to take it for themselves!
+
+<div align="center">
+
+<img src="https://i.imgur.com/fKbNtv2.jpg" alt="Domination gameplay" />
+
+<img src="https://media.giphy.com/media/9qW86tVJ7vb9e/giphy.gif" alt="Assaulting a base" /> <img src="https://media.giphy.com/media/l2SpLBEPqowSbpjY4/giphy.gif" alt="Capturing a base" />
+
+<img src="https://media.giphy.com/media/l0MYzQcoPnMIBZAoU/giphy.gif" alt="Teleporting via the spawn wall map" /> <img src="https://media.giphy.com/media/l3vRciF72H26tXJS0/giphy.gif" alt="Defending a base" />
+
+<img src="https://media.giphy.com/media/3o6ZtbXc16agMqVgwE/giphy.gif" alt="Winning the game" />
+
+</div>
 
 ## Features
 
-- 🌍 **Plug and play** — a fully built Domination world ships inside the plugin and is auto-generated on first run, with spawns and bases already configured. No setup required.
-- 🔁 **Advanced queue system** — players queue up, and games start and end automatically. No manual game management needed.
-- 🗺️ **Bring your own world** — set up any custom world to work with the game (see [Setting Up a Custom World](WORLD_SETUP.md)).
-- ⚙️ **Configurable teams** — team names, minimum and maximum sizes.
-- 🎮 **Configurable gameplay** — score to win, lobby/prep time, capture times, game time limits, world rollback, and more.
-- 🏆 **Reward system** — run any console commands for winners and losers (optional).
-- 💰 **Vault integration** — charge players an entry fee to play (optional).
-- 📊 **PlaceholderAPI support** — expose live scores and player stats to other plugins (see [Placeholders](#placeholderapi-placeholders)).
-- 🔒 **Permissions are optional** — enable them only if you want them.
+- The Domination world is included in the plugin and auto-generated on first run, with spawns and bases already set up. No setup needed if you don't want any.
+- Advanced queue system: players join the queue for the battleground, and games start and end automatically so you don't have to manage them.
+- Set up your own custom world to work with the game ([tutorial](WORLD_SETUP.md)).
+- Configurable teams, including names and minimum/maximum sizes.
+- Configurable gameplay: score to win, lobby time, capture times, time limits, world rollback, and more.
+- Reward system for wins and losses (optional).
+- Vault integration to charge players entry fees to play (optional).
+- PlaceholderAPI support for live scores and player stats (see [Placeholders](#placeholderapi-placeholders)).
+- Permissions are optional!
 
-### Recommended companion plugins
-
-- A kits plugin with sign support (such as [PlayerKits](https://www.spigotmc.org/resources/playerkits-fully-configurable-kits-1-8-1-17.75185/)) so players can choose weapon/armor classes in their spawns.
-- A command-sign plugin (such as [ServerSigns](https://www.spigotmc.org/resources/serversigns.10693/)) so players can join the game by hitting a sign that runs `/domination join`.
-
----
+It is highly recommended to use a kits plugin with sign support (such as [PlayerKits](https://www.spigotmc.org/resources/playerkits-fully-configurable-kits-1-8-1-17.75185/)) so players can choose classes of weapons and armor in their respective spawns. A plugin such as [ServerSigns](https://www.spigotmc.org/resources/serversigns.10693/) is also useful so players can hit a sign to join the game (by executing `/domination join`).
 
 ## Installation
 
 1. Download the plugin jar (or [build it yourself](#building-from-source)).
 2. Drop `Domination.jar` into your server's `plugins/` folder.
 3. Restart the server. The default `world_domination` world is extracted and loaded automatically.
-4. That's it — players can `/domination join` immediately. Tweak `plugins/Domination/config.yml` as desired.
+4. Players can now `/domination join`. Tweak `plugins/Domination/config.yml` as desired.
 
-**Optional dependencies** (soft-depends — the plugin works without them):
+Optional dependencies (soft-depends, so the plugin works without them):
 
 | Plugin | Enables |
 |---|---|
@@ -65,7 +84,7 @@ Two teams battle for control of five bases on a map. While your team controls a 
 | `/domination start` | Force start the game | OP |
 | `/domination end` | Force end the game | OP |
 
-The `/structure` command is used to set up a custom world to work with the mini-game — the full walkthrough lives in **[WORLD_SETUP.md](WORLD_SETUP.md)**.
+The `/structure` command is used to set up a custom world to work with the mini-game. The full walkthrough lives in [WORLD_SETUP.md](WORLD_SETUP.md).
 
 | Command | Description |
 |---|---|
@@ -79,11 +98,11 @@ The `/structure` command is used to set up a custom world to work with the mini-
 | `/structure deselect` | Deselect the current structure |
 | `/structure remove` | Remove the selected structure entirely |
 
-> The base command names (`domination`, `structure`) are configurable in `config.yml`.
+The base command names (`domination`, `structure`) are configurable in `config.yml`.
 
 ## Permissions
 
-Permissions are **off by default** (`usePermissions: false` in `config.yml`). When enabled:
+Permissions are off by default (`usePermissions: false` in `config.yml`). When enabled:
 
 | Permission | Description | Default |
 |---|---|---|
@@ -92,7 +111,7 @@ Permissions are **off by default** (`usePermissions: false` in `config.yml`). Wh
 
 ## Configuration
 
-`plugins/Domination/config.yml` — the key options:
+The key options in `plugins/Domination/config.yml`:
 
 | Option | Default | Description |
 |---|---|---|
@@ -110,7 +129,7 @@ Permissions are **off by default** (`usePermissions: false` in `config.yml`). Wh
 | `baseAssaultInterval` | `40` | Ticks between base scans for nearby players |
 | `baseCaptureInterval` | `60` | Seconds a base must stay controlled before capture |
 | `vaultEntryCost` | `0` | Entry fee (requires Vault) |
-| `winnerCommands` / `loserCommands` | — | Console commands run per player at game end (use `[player]` as a placeholder) |
+| `winnerCommands` / `loserCommands` | (empty) | Console commands run per player at game end (use `[player]` as a placeholder) |
 
 Messages are customizable in `config_messages.yml`.
 
@@ -127,11 +146,9 @@ With PlaceholderAPI installed, the `domination` expansion registers automaticall
 
 Available `<stat>` values: `name`, `points`, `kills`, `deaths`, `captures`, `assaults`, `defends`. Rank-based values are prefixed with the player's team color.
 
----
-
 ## Building from Source
 
-The project is a standard Maven build targeting **Java 8** and the **Spigot 1.17 API** (`api-version: 1.13`, so it runs on 1.13+ servers).
+The project is a standard Maven build targeting Java 8 and the Spigot 1.17 API (`api-version: 1.13`, so it runs on 1.13+ servers).
 
 ```bash
 git clone https://github.com/snowgears/ArathiBasin.git
@@ -139,13 +156,13 @@ cd ArathiBasin
 mvn package
 ```
 
-The plugin jar is produced in `target/`. Dependencies (Spigot API, VaultAPI, PlaceholderAPI, ProtocolLib, json-simple) are pulled from the repositories declared in `pom.xml` — no manual jar installs needed.
+The plugin jar is produced in `target/`. Dependencies (Spigot API, VaultAPI, PlaceholderAPI, ProtocolLib, json-simple) are pulled from the repositories declared in `pom.xml`, so no manual jar installs are needed.
 
 ## Project Structure (for developers)
 
 ```
 src/main/java/com/snowgears/domination/
-├── Domination.java          # Plugin main class — config loading, world setup, wiring
+├── Domination.java          # Plugin main class: config loading, world setup, wiring
 ├── command/                 # /domination and /structure command handlers
 ├── game/                    # Core game loop: DominationGame, BattleTeam, TeamManager,
 │                            #   PlayerQueue (auto start/stop), GameListener, start timer
@@ -174,15 +191,13 @@ Other plugins can listen to these Bukkit events fired by Domination:
 
 ### Structures and modules
 
-Every physical game element in the world is a **structure** made of **modules** (named lists of block locations), saved to file per world:
+Every physical game element in the world is a structure made of modules (named lists of block locations), saved to file per world:
 
 - **Spawn** (one red, one blue): `SPAWN` (respawn locations), `SPAWN_GATE` (blocks removed at game start, rebuilt at game end)
 - **Base** (five, neutral): `BASE_FLAG`, `BASE_GLASS_FLOOR`, `BASE_SKY`, `BASE_GLASS_BEACON`, `BASE_MAP`
 
-See **[WORLD_SETUP.md](WORLD_SETUP.md)** for the complete world-building walkthrough.
-
----
+See [WORLD_SETUP.md](WORLD_SETUP.md) for the complete world-building walkthrough.
 
 ## Support
 
-Questions or issues? Come hang out in the [Discord server](https://discord.gg/GpSwEWS).
+Questions or issues? Come hang out in the [Discord server](https://discord.gg/GpSwEWS)!
